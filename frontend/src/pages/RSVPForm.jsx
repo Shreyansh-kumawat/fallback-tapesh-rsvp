@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useEffect } from 'react'
+import { useMemo, useRef, useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabase.js'
@@ -33,6 +33,114 @@ const emptyAdult = () => ({ name: '', phone: '' })
 const emptyChild = () => ({ name: '', age: '' })
 
 const MAPS_LINK = 'https://maps.app.goo.gl/6EnhNqNissXUDHJ59'
+
+/* ── SVG Play/Pause Hook ─────────────────────────────
+   Listens for clicks, keydowns, input events, scroll.
+   On interaction → play SVG for 1s → then pause.
+   Mouse movement is intentionally excluded.
+─────────────────────────────────────────────────────── */
+function useSvgPlayPause(svgRef) {
+  const timerRef = useRef(null)
+
+  const play = useCallback(() => {
+    const svg = svgRef.current
+    if (!svg) return
+    // Resume all animations
+    svg.unpauseAnimations()
+    // Clear any existing timer
+    if (timerRef.current) clearTimeout(timerRef.current)
+    // Pause after 1 second of inactivity
+    timerRef.current = setTimeout(() => {
+      svg.pauseAnimations()
+    }, 1000)
+  }, [svgRef])
+
+  useEffect(() => {
+    // Start paused
+    const svg = svgRef.current
+    if (svg) svg.pauseAnimations()
+
+    const events = ['click', 'keydown', 'input', 'change', 'scroll', 'touchstart']
+    events.forEach(ev => document.addEventListener(ev, play, { passive: true }))
+
+    return () => {
+      events.forEach(ev => document.removeEventListener(ev, play))
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [play, svgRef])
+}
+
+/* ── Background SVG ──────────────────────────────────── */
+function BgSvg({ svgRef }) {
+  return (
+    <svg
+      ref={svgRef}
+      className="rf-bg-svg"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="http://www.w3.org/1999/xlink"
+      viewBox="0 0 700 400"
+      shapeRendering="geometricPrecision"
+      textRendering="geometricPrecision"
+      aria-hidden="true"
+      preserveAspectRatio="xMidYMid slice"
+    >
+      <style>{`
+        #rBg3_tr {animation: rBg3_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes rBg3_tr__tr { 0% {transform: translate(1485.265524px,923.716668px) rotate(107.849898deg)} 100% {transform: translate(1485.265524px,923.716668px) rotate(252.130785deg)}}
+        #rBg4_tr {animation: rBg4_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes rBg4_tr__tr { 0% {transform: translate(1106.552084px,11.479169px) rotate(-104.755169deg)} 100% {transform: translate(1106.552084px,11.479169px) rotate(-194.755169deg)}}
+        #rBg5_tr {animation: rBg5_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes rBg5_tr__tr { 0% {transform: translate(77.951956px,316.57267px) rotate(179.858074deg)} 100% {transform: translate(77.951956px,316.57267px) rotate(107.849898deg)}}
+        #rBg6_to {animation: rBg6_to__to 12000ms linear infinite normal forwards}
+        @keyframes rBg6_to__to { 0% {offset-distance: 0%} 50% {offset-distance: 49.378847%} 100% {offset-distance: 100%}}
+        #rBg7_to {animation: rBg7_to__to 12000ms linear infinite normal forwards}
+        @keyframes rBg7_to__to { 0% {transform: translate(1625.977098px,922.267927px)} 33.333333% {transform: translate(1567.951321px,818.908093px)} 66.666667% {transform: translate(1427.428392px,987.533986px)} 100% {transform: translate(1625.977098px,922.267927px)}}
+        #rBg8_to {animation: rBg8_to__to 12000ms linear infinite normal forwards}
+        @keyframes rBg8_to__to { 0% {offset-distance: 0%} 50% {offset-distance: 50.699739%} 100% {offset-distance: 100%}}
+        #rBg9_tr {animation: rBg9_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes rBg9_tr__tr { 0% {transform: translate(1332.072109px,696.229369px) rotate(179.858074deg)} 100% {transform: translate(1332.072109px,696.229369px) rotate(323.892738deg)}}
+        #rBg10_tr {animation: rBg10_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes rBg10_tr__tr { 0% {transform: translate(820.871069px,284.144659px) rotate(179.858074deg)} 100% {transform: translate(820.871069px,284.144659px) rotate(-35.842484deg)}}
+        #rBg11_tr {animation: rBg11_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes rBg11_tr__tr { 0% {transform: translate(762.743219px,965.073357px) rotate(0deg)} 100% {transform: translate(762.743219px,965.073357px) rotate(360deg)}}
+        #rBg12_tr {animation: rBg12_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes rBg12_tr__tr { 0% {transform: translate(1474.519794px,224.809739px) rotate(390.798193deg)} 100% {transform: translate(1474.519794px,224.809739px) rotate(30.798193deg)}}
+      `}</style>
+      <g transform="matrix(.388384 0 0 0.388384 0.446734-9.821674)">
+        <g id="rBg3_tr" transform="translate(1485.265524,923.716668) rotate(107.849898)">
+          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605" transform="scale(3.947276,3.947276) translate(0,0)" fill="#e3f1fb" strokeWidth="0"/>
+        </g>
+        <g id="rBg4_tr" transform="translate(1106.552084,11.479169) rotate(-104.755169)">
+          <rect width="274.170362" height="274.170362" rx="0" ry="0" transform="scale(2.383871,2.383871) translate(-137.085181,-137.085181)" fill="#e9f3f8" strokeWidth="0"/>
+        </g>
+        <g id="rBg5_tr" transform="translate(77.951956,316.57267) rotate(179.858074)">
+          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605" transform="scale(3.253384,3.253384) translate(0,0)" fill="#def6f6" strokeWidth="0"/>
+        </g>
+        <g id="rBg6_to" style={{offsetPath:"path('M182.879698,901.477028C182.879698,819.603496,543.979817,653.846134,593.96611,782.977375C643.952403,912.108616,182.879698,986.922985,182.879698,901.477028')", offsetRotate:'0deg'}}>
+          <ellipse rx="289.447928" ry="289.447928" transform="scale(0.232635,0.232635) translate(0,0)" fill="#bee1fa" strokeWidth="0"/>
+        </g>
+        <g id="rBg7_to" transform="translate(1625.977098,922.267927)">
+          <ellipse rx="289.447928" ry="289.447928" transform="scale(0.080091,0.080091) translate(0,0)" fill="#c5e4e4" strokeWidth="0"/>
+        </g>
+        <g id="rBg8_to" style={{offsetPath:"path('M1220.487918,290.262889C1110.853792,377.293206,903.033468,181.544933,1184.090696,96.285342C1465.147924,11.025751,1334.309017,201.397504,1220.487918,290.262888')", offsetRotate:'0deg'}}>
+          <ellipse rx="289.447928" ry="289.447928" transform="scale(0.107632,0.107632) translate(0,0)" fill="#a3d6d5" strokeWidth="0"/>
+        </g>
+        <g id="rBg9_tr" transform="translate(1332.072109,696.229369) rotate(179.858074)">
+          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605" transform="scale(1.200094,1.200094) translate(0,0)" fill="#bee1fa" strokeWidth="0"/>
+        </g>
+        <g id="rBg10_tr" transform="translate(820.871069,284.144659) rotate(179.858074)">
+          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605" transform="scale(0.6936,0.6936) translate(0,0)" fill="#c9e7ec" strokeWidth="0"/>
+        </g>
+        <g id="rBg11_tr" transform="translate(762.743219,965.073357) rotate(0)">
+          <path d="M0,0v277.977304L234.170207,138.840986L0,0Z" transform="scale(1.31015,1.31015) translate(-128.822737,-138.988652)" fill="#d3e9f6" strokeWidth="3.6"/>
+        </g>
+        <g id="rBg12_tr" transform="translate(1474.519794,224.809739) rotate(390.798193)">
+          <path d="M0,0v277.977304L234.170207,138.840986L0,0Z" transform="scale(0.512094,0.512094) translate(-128.822737,-138.988652)" fill="#bacedc" strokeWidth="3.6"/>
+        </g>
+      </g>
+    </svg>
+  )
+}
 
 /* ── SVG Icons ────────────────────────────────────── */
 const IconPlane = () => (
@@ -143,7 +251,11 @@ export default function RSVPForm() {
   const navigate = useNavigate()
   const [cur, setCur] = useState(1)
   const [submitting, setSubmitting] = useState(false)
-  const [stepDir, setStepDir] = useState('forward') // 'forward' | 'back'
+  const [stepDir, setStepDir] = useState('forward')
+
+  // SVG ref for play/pause control
+  const svgRef = useRef(null)
+  useSvgPlayPause(svgRef)
 
   const [form, setForm] = useState({
     name: '', age: '', phone: '', email: '',
@@ -224,6 +336,9 @@ export default function RSVPForm() {
 
   return (
     <div className="rsvp-page">
+
+      {/* ── ANIMATED SVG BACKGROUND ── */}
+      <BgSvg svgRef={svgRef} />
 
       {/* ── TOP NAV ── */}
       <nav className="rf-topnav">

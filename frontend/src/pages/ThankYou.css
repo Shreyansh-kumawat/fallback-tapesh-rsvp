@@ -1,0 +1,236 @@
+/* =====================================================================
+   THANK YOU PAGE
+   Fonts : Cormorant Garamond (display) + Jost (body)  — same as RSVP
+   Theme : Warm Ivory + Deep Forest Green + Champagne Gold
+   ===================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Page shell ───────────────────────────────────── */
+.ty-page {
+  min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  position: relative;
+  font-family: 'Jost', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Overlay ──────────────────────────────────────── */
+.ty-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.07);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Particles ────────────────────────────────────── */
+.ty-particles {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+.ty-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: #c9a84c;
+}
+
+/* ── Main card ────────────────────────────────────── */
+.ty-wrap {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+/* ── Logo ─────────────────────────────────────────── */
+.ty-logo {
+  width: 160px;
+  max-width: 50vw;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+/* ── Heading ──────────────────────────────────────── */
+.ty-heading {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 500;
+  font-style: italic;
+  color: #4a2e0a;
+  margin: 6px 0 4px;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+
+/* ── Ornament divider ─────────────────────────────── */
+.ty-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.ty-divider-line {
+  display: inline-block;
+  width: 32px; height: 1px;
+  background: rgba(139, 106, 46, 0.45);
+}
+.ty-divider-gem {
+  color: #c9a84c;
+  font-size: 0.6rem;
+  line-height: 1;
+}
+
+/* ── Message box ──────────────────────────────────── */
+.ty-msg {
+  background: rgba(255, 248, 235, 0.62);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(201, 168, 76, 0.32);
+  border-top: 2px solid rgba(201, 168, 76, 0.52);
+  border-radius: 8px;
+  padding: 12px 18px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+.ty-msg-primary {
+  font-size: 0.83rem;
+  color: #3d2b0e;
+  margin-bottom: 5px;
+  line-height: 1.55;
+  font-family: 'Jost', sans-serif;
+}
+.ty-msg-primary strong {
+  font-weight: 600;
+  color: #7a4f18;
+}
+.ty-msg-secondary {
+  font-size: 0.76rem;
+  color: #5e3e14;
+  line-height: 1.58;
+  margin: 0;
+  font-weight: 300;
+  font-family: 'Jost', sans-serif;
+}
+
+/* ── Attending details block ──────────────────────── */
+.ty-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+}
+
+/* Date + Venue meta row */
+.ty-meta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+}
+.ty-meta-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.ty-meta-label {
+  font-size: 0.48rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+}
+.ty-meta-value {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #3d2b0e;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: 0.01em;
+}
+.ty-meta-sep {
+  width: 1px;
+  height: 30px;
+  background: rgba(139, 106, 46, 0.28);
+}
+
+/* Maps link */
+.ty-maps-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  font-family: 'Jost', sans-serif;
+  background: rgba(255, 248, 235, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(201, 168, 76, 0.38);
+  color: #6b3e10;
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.ty-maps-link:hover {
+  background: rgba(255, 248, 235, 0.92);
+  box-shadow: 0 3px 14px rgba(184, 147, 74, 0.22);
+}
+
+/* QR block */
+.ty-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.ty-qr-label {
+  font-size: 0.48rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+}
+.ty-qr-frame {
+  padding: 7px;
+  border-radius: 8px;
+  background: rgba(255, 248, 235, 0.82);
+  border: 1px solid rgba(201, 168, 76, 0.32);
+  display: inline-block;
+}
+.ty-qr-img {
+  width: 88px;
+  height: 88px;
+  display: block;
+}
+
+/* ── Footer ───────────────────────────────────────── */
+.ty-footer {
+  font-size: 0.5rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(107, 76, 30, 0.52);
+  margin-top: 12px;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+}

@@ -1,0 +1,97 @@
+[
+  {
+    "type": "dependency",
+    "name": "@reduxjs/toolkit",
+    "version": "^2.11.2"
+  },
+  {
+    "type": "dependency",
+    "name": "@tailwindcss/vite",
+    "version": "^4.1.18"
+  },
+  {
+    "type": "dependency",
+    "name": "axios",
+    "version": "^1.13.4"
+  },
+  {
+    "type": "dependency",
+    "name": "chart.js",
+    "version": "^4.5.1"
+  },
+  {
+    "type": "dependency",
+    "name": "clsx",
+    "version": "^2.1.1"
+  },
+  {
+    "type": "dependency",
+    "name": "date-fns",
+    "version": "^4.1.0"
+  },
+  {
+    "type": "dependency",
+    "name": "framer-motion",
+    "version": "^12.30.0"
+  },
+  {
+    "type": "dependency",
+    "name": "jwt-decode",
+    "version": "^4.0.0"
+  },
+  {
+    "type": "dependency",
+    "name": "lodash",
+    "version": "^4.17.23"
+  },
+  {
+    "type": "dependency",
+    "name": "react",
+    "version": "^19.2.0"
+  },
+  {
+    "type": "dependency",
+    "name": "react-dom",
+    "version": "^19.2.0"
+  },
+  {
+    "type": "dependency",
+    "name": "react-hook-form",
+    "version": "^7.71.1"
+  },
+  {
+    "type": "dependency",
+    "name": "react-hot-toast",
+    "version": "^2.6.0"
+  },
+  {
+    "type": "dependency",
+    "name": "react-icons",
+    "version": "^5.5.0"
+  },
+  {
+    "type": "dependency",
+    "name": "react-redux",
+    "version": "^9.2.0"
+  },
+  {
+    "type": "dependency",
+    "name": "react-router-dom",
+    "version": "^7.13.0"
+  },
+  {
+    "type": "dependency",
+    "name": "tailwindcss",
+    "version": "^4.1.18"
+  },
+  {
+    "type": "dependency",
+    "name": "yup",
+    "version": "^1.7.1"
+  },
+  {
+    "type": "dependency",
+    "name": "zustand",
+    "version": "^5.0.11"
+  }
+]

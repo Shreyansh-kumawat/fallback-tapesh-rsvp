@@ -18,6 +18,7 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
   const [mode, setMode] = useState('days')
   const wrapRef = useRef(null)
   const triggerRef = useRef(null)
+  const popupRef = useRef(null)
 
   useEffect(() => {
     if (value) {
@@ -50,42 +51,39 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
   }, [open])
 
   const POPUP_W = 300
-  const POPUP_H = 390
-  const GAP = 6
+  const POPUP_H = 400
+  const GAP = 8
 
   const calcPosition = () => {
     if (!triggerRef.current) return
-    // getBoundingClientRect gives viewport-relative coords.
-    // Since popup is position:fixed, these coords map directly
-    // to fixed positioning — no scroll offset needed.
+
     const rect = triggerRef.current.getBoundingClientRect()
     const vw = window.innerWidth
     const vh = window.innerHeight
 
-    // Prefer opening below; flip above if not enough space
-    const spaceBelow = vh - rect.bottom
-    const spaceAbove = rect.top
-    const goUp = spaceBelow < POPUP_H + GAP && spaceAbove > spaceBelow
+    // Prefer below, flip to above if not enough space
+    let spaceBelow = vh - rect.bottom
+    let spaceAbove = rect.top
+    const goUp = spaceBelow < POPUP_H + GAP * 2 && spaceAbove > spaceBelow + GAP * 2
 
     setOpenUp(goUp)
 
-    // Horizontal: align with trigger left edge, clamp to viewport
+    // Horizontal positioning
     let left = rect.left
-    const maxLeft = vw - POPUP_W - 8
-    left = Math.max(8, Math.min(left, maxLeft))
+    const maxLeft = vw - POPUP_W - 12
+    left = Math.max(12, Math.min(left, maxLeft))
 
     const style = {
       position: 'fixed',
-      width: `${Math.min(POPUP_W, vw - 16)}px`,
+      width: `${Math.min(POPUP_W, vw - 24)}px`,
       left: `${left}px`,
+      zIndex: 99999,
     }
 
     if (goUp) {
-      // Anchor bottom of popup to top of trigger
       style.top = 'auto'
       style.bottom = `${vh - rect.top + GAP}px`
     } else {
-      // Anchor top of popup to bottom of trigger
       style.top = `${rect.bottom + GAP}px`
       style.bottom = 'auto'
     }
@@ -94,9 +92,13 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
   }
 
   const handleOpen = () => {
-    if (!open) calcPosition()
     setOpen(p => !p)
     setMode('days')
+    
+    // Small delay to ensure DOM is updated
+    setTimeout(() => {
+      calcPosition()
+    }, 10)
   }
 
   const selectedDate = value ? new Date(value + 'T00:00:00') : null
@@ -176,6 +178,7 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
 
       {open && (
         <div
+          ref={popupRef}
           className={`cdp-popup${openUp ? ' open-up' : ''}`}
           style={popupStyle}
         >

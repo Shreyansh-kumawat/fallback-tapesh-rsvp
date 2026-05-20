@@ -1,13 +1,14 @@
 /* =====================================================================
    RSVP FORM — Wedding
    Fonts : Cormorant Garamond (display) + Jost (body)
-   Theme : Gold + Ivory + Warm neutrals
+   Theme : Gold + Rose + Ivory — warm celebratory palette
    Layout: Full-viewport — NO white card boxes, open layout, 85/15 split
    ===================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap');
 
-/* ─── TOKENS ─────────────────────────────────────────────────────────── */
+/* ─── TOKENS ─────────────────────────────────────────────────── */
 :root {
+  /* — Gold (primary accent) — */
   --gold:         #b8962e;
   --gold-light:   #d4b050;
   --gold-dark:    #8a6e1a;
@@ -15,10 +16,20 @@
   --gold-dim:     rgba(184,150,46,.1);
   --gold-glow:    rgba(184,150,46,.18);
 
+  /* — Rose (complementary accent: used for done-steps, section accents, highlights) — */
+  --rose:         #b85060;
+  --rose-light:   #d4788a;
+  --rose-dark:    #8a3040;
+  --rose-pale:    #fdf0f2;
+  --rose-dim:     rgba(184,80,96,.09);
+  --rose-glow:    rgba(184,80,96,.20);
+
+  /* — Yellow (CTA button fill) — */
   --yellow:       #f5c518;
   --yellow-dim:   rgba(245,197,24,.12);
   --yellow-text:  #7a5f00;
 
+  /* — Blue (kept for misc UI if needed) — */
   --blue:         #2a6db5;
   --blue-dim:     rgba(42,109,181,.08);
   --blue-mid:     #3a7fcf;
@@ -29,16 +40,17 @@
   --bg-input:     rgba(255,255,255,0.82);
   --bg-group:     rgba(255,255,255,0.55);
 
-  /* ── Improved contrast tokens ── */
+  /* — Text — improved contrast — */
   --text:         #18171a;
-  --text-mid:     #3d3a35;   /* was #55524d — darker for better readability */
-  --text-light:   #6b6760;   /* was #8a8580 — darker for WCAG AA on light bg */
-  --text-faint:   #a09b94;   /* was #c0bbb4 — slightly darker */
+  --text-mid:     #3d3a35;
+  --text-light:   #6b6760;
+  --text-faint:   #a09b94;
 
   --border:       rgba(0,0,0,.10);
   --border-solid: rgba(0,0,0,.12);
   --border-focus: var(--gold);
 
+  /* — Transport boxes — */
   --sage-bg:      rgba(220,240,230,0.95);
   --sage-border:  #8fbc9e;
   --sage-text:    #1a3828;
@@ -59,7 +71,7 @@
   --ease:   cubic-bezier(.4,0,.2,1);
 }
 
-/* ─── BASE ───────────────────────────────────────────────────────────── */
+/* ─── BASE ─────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 .rsvp-page {
@@ -74,7 +86,7 @@
   position: relative;
 }
 
-/* ─── ANIMATED SVG BACKGROUND — 70% opacity ─────────────────────────── */
+/* ─── ANIMATED SVG BACKGROUND ───────────────────────────────── */
 .rf-bg-svg {
   position: fixed;
   inset: 0;
@@ -85,7 +97,7 @@
   opacity: 0.7;
 }
 
-/* ─── TOP NAV ────────────────────────────────────────────────────────── */
+/* ─── TOP NAV ──────────────────────────────────────────────── */
 .rf-topnav {
   height: 56px;
   flex-shrink: 0;
@@ -111,7 +123,7 @@
 .rf-nav-step-sep   { font-size: .62rem; color: rgba(44,31,14,.35); }
 .rf-nav-step-tot   { font-size: .62rem; color: rgba(44,31,14,.4); }
 
-/* ─── STEPPER ────────────────────────────────────────────────────────── */
+/* ─── STEPPER ──────────────────────────────────────────────── */
 .rf-progress-wrap {
   flex-shrink: 0;
   background: rgba(255,255,255,0.55);
@@ -124,7 +136,8 @@
 .rf-prog-track { height: 2px; background: rgba(0,0,0,.06); }
 .rf-prog-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--gold), var(--yellow));
+  /* gold → rose gradient for the progress bar — shows wedding warmth */
+  background: linear-gradient(90deg, var(--gold), var(--rose-light));
   transition: width .55s var(--ease);
   border-radius: 0 2px 2px 0;
 }
@@ -148,7 +161,7 @@
   margin-right: .35rem;
   transition: background .35s;
 }
-.rf-si.done + .rf-si::before  { background: var(--gold); }
+.rf-si.done + .rf-si::before  { background: var(--rose); }
 .rf-si.active + .rf-si::before { background: var(--gold); }
 
 .rf-si-dot {
@@ -162,10 +175,13 @@
   backdrop-filter: blur(4px);
 }
 .rf-si-num { font-size: .58rem; font-weight: 600; }
+
+/* Done steps — rose instead of plain blue */
 .rf-si.done .rf-si-dot {
-  background: var(--blue); border-color: var(--blue); color: #fff;
+  background: var(--rose); border-color: var(--rose-dark); color: #fff;
 }
 .rf-si.done .rf-si-dot svg { width: 11px; height: 11px; stroke: #fff; }
+
 .rf-si.active .rf-si-dot {
   background: var(--gold); border-color: var(--gold); color: #fff; font-weight: 700;
   box-shadow: 0 0 0 3px var(--gold-dim), 0 2px 10px var(--gold-glow);
@@ -178,9 +194,10 @@
   transition: color .2s;
 }
 .rf-si.active .rf-si-lbl { color: var(--gold-dark); font-weight: 600; }
-.rf-si.done .rf-si-lbl   { color: var(--blue); }
+/* Done label — rose tone */
+.rf-si.done .rf-si-lbl   { color: var(--rose-dark); }
 
-/* ─── STEP ANIMATION ─────────────────────────────────────────────────── */
+/* ─── STEP ANIMATION ────────────────────────────────────────── */
 @keyframes rf-step-forward {
   from { opacity: 0; transform: translateX(18px); }
   to   { opacity: 1; transform: translateX(0); }
@@ -192,41 +209,38 @@
 .rf-step-enter--forward { animation: rf-step-forward .25s var(--ease) both; }
 .rf-step-enter--back    { animation: rf-step-back    .25s var(--ease) both; }
 
-/* ─── MAIN LAYOUT — two-column split ───────────────────────────────────── */
+/* ─── MAIN LAYOUT ───────────────────────────────────────────── */
 .rf-page-wrap {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 220px;
   gap: 0;
-  padding: 1.8rem 2.5rem 2rem 2rem;   /* reduced left padding: was 3.5rem */
-  max-width: 1060px;                   /* was 1180px — tighter container = less dead space */
+  padding: 1.8rem 2.5rem 2rem 2rem;
+  max-width: 1060px;
   width: 100%;
   margin: 0 auto;
   align-items: start;
   position: relative;
   z-index: 10;
 }
-
-/* vh-fit: steps 1,3,4,5 — fit content in 98vh minus nav+stepper (~112px) */
 .rf-page-wrap--vh {
   min-height: calc(98vh - 112px);
-  align-items: center;   /* vertically center content in remaining space */
+  align-items: center;
 }
-
 .rf-card-col--fit  { display: flex; flex-direction: column; }
 
-/* ─── FORM AREA — no box, open on BG ────────────────────────────────── */
+/* ─── FORM AREA ─────────────────────────────────────────────── */
 .rf-form-card {
   background: transparent;
   border: none;
   border-radius: 0;
   box-shadow: none;
   display: flex; flex-direction: column;
-  padding-right: 2rem;   /* was 2.5rem */
+  padding-right: 2rem;
 }
 .rf-form-card::before { display: none; }
 
-/* ─── CARD HEAD ──────────────────────────────────────────────────────── */
+/* ─── CARD HEAD ────────────────────────────────────────────── */
 .rf-form-card-head {
   padding: 0 0 1.4rem 0;
   background: transparent;
@@ -257,19 +271,19 @@
 
 .rf-step-desc {
   font-size: .85rem;
-  font-weight: 400;           /* was 300 — heavier weight = more readable */
+  font-weight: 400;
   color: var(--text-mid);
   line-height: 1.7; margin: 0;
 }
 .rf-step-desc--sm { font-size: .82rem; }
 
-/* ─── CARD BODY ──────────────────────────────────────────────────────── */
+/* ─── CARD BODY ────────────────────────────────────────────── */
 .rf-form-card-body {
   padding: 0;
   margin-bottom: 1.8rem;
 }
 
-/* ─── FIELD GROUPS — frosted glass tiles ────────────────────────────── */
+/* ─── FIELD GROUPS ────────────────────────────────────────── */
 .rf-field-group-box {
   background: rgba(255,255,255,0.6);
   backdrop-filter: blur(12px);
@@ -299,7 +313,7 @@
   backdrop-filter: blur(8px);
 }
 
-/* ─── FIELDS ─────────────────────────────────────────────────────────── */
+/* ─── FIELDS ────────────────────────────────────────────────── */
 .rf-field { margin-bottom: 1.2rem; position: relative; }
 .rf-field--compact { margin-bottom: .8rem; }
 
@@ -350,7 +364,7 @@
   background: rgba(255,255,255,0.6); border-radius: 3px;
 }
 
-/* ─── PHONE INPUT ────────────────────────────────────────────────────── */
+/* ─── PHONE INPUT ──────────────────────────────────────────── */
 .rf-phone-wrap .PhoneInput {
   display: flex; align-items: center;
   border: 1.5px solid rgba(255,255,255,0.7); border-radius: var(--r);
@@ -384,7 +398,7 @@
 }
 .rf-phone-wrap .PhoneInputInput::placeholder { color: var(--text-faint); }
 
-/* ─── SEARCHABLE SELECT ──────────────────────────────────────────────── */
+/* ─── SEARCHABLE SELECT ────────────────────────────────────── */
 .rf-csel-wrap { position: relative; }
 .rf-csel-btn {
   width: 100%; padding: .82rem 2.4rem .82rem 1.05rem;
@@ -442,7 +456,7 @@
 .rf-csel-opt.sel { background: var(--gold-pale); color: var(--gold-dark); font-weight: 500; }
 .rf-csel-empty { padding: .9rem; text-align: center; font-size: .78rem; color: var(--text-light); }
 
-/* ─── TRAVEL GRID ─────────────────────────────────────────────────────── */
+/* ─── TRAVEL GRID ─────────────────────────────────────────────── */
 .rf-travel-grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -478,16 +492,17 @@
   background: linear-gradient(to bottom, transparent, rgba(0,0,0,.1), transparent);
   min-height: 18px;
 }
+/* Travel divider dot — rose accent */
 .rf-travel-divider-dot {
   width: 30px; height: 30px; border-radius: 50%;
-  background: rgba(44,31,14,0.88);
+  background: linear-gradient(135deg, #2c1f0e 0%, var(--rose-dark) 100%);
   display: flex; align-items: center; justify-content: center;
   color: var(--gold-light); box-shadow: 0 3px 12px rgba(0,0,0,.2);
   flex-shrink: 0; margin: 5px 0;
 }
 .rf-travel-divider-dot svg { stroke: var(--gold-light); }
 
-/* ─── DATE INPUT ──────────────────────────────────────────────────────── */
+/* ─── DATE INPUT ─────────────────────────────────────────────── */
 .rf-date-input {
   width: 100%; padding: .82rem 1.05rem;
   border: 1.5px solid rgba(255,255,255,0.7); background: rgba(255,255,255,0.72);
@@ -505,7 +520,7 @@
   filter: invert(55%) sepia(60%) saturate(500%) hue-rotate(5deg) brightness(85%);
 }
 
-/* ─── TRANSPORT BOX ───────────────────────────────────────────────────── */
+/* ─── TRANSPORT BOX ───────────────────────────────────────────── */
 .rf-transport-box {
   display: flex; gap: .85rem; align-items: flex-start;
   border-radius: var(--r-lg); padding: 1rem 1.2rem;
@@ -522,7 +537,7 @@
 .rf-transport-box.yellow { background: var(--amber-bg); border-color: var(--amber-border); color: var(--amber-text); }
 .rf-tb-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
 
-/* ─── GUESTS ──────────────────────────────────────────────────────────── */
+/* ─── GUESTS ───────────────────────────────────────────────────── */
 .rf-guests-group         { margin-bottom: 1.4rem; }
 .rf-guests-group--compact{ margin-bottom: 1rem; }
 .rf-guests-group:last-of-type { margin-bottom: 0; }
@@ -531,9 +546,10 @@
   font-family: var(--serif); font-size: 1.1rem; font-weight: 500;
   color: var(--text); display: flex; align-items: center; gap: .5rem; margin: 0;
 }
+/* Section label accent bar — gold → rose gradient */
 .rf-sec-label::before {
   content: ''; width: 3px; height: 1em;
-  background: linear-gradient(to bottom, var(--gold), var(--yellow)); border-radius: 2px; flex-shrink: 0;
+  background: linear-gradient(to bottom, var(--gold), var(--rose)); border-radius: 2px; flex-shrink: 0;
 }
 .rf-sec-count {
   font-family: var(--sans); font-size: .6rem; font-weight: 600;
@@ -570,8 +586,10 @@
   color: var(--text); margin-bottom: .48rem;
   display: flex; align-items: center; gap: .45rem;
 }
+/* Pax badge — rose tone instead of plain dark */
 .rf-pax-badge {
-  width: 18px; height: 18px; border-radius: 50%; background: #2c1f0e;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: linear-gradient(135deg, #2c1f0e 0%, var(--rose-dark) 100%);
   display: flex; align-items: center; justify-content: center;
   font-family: var(--sans); font-size: .5rem; font-weight: 700;
   color: var(--yellow); flex-shrink: 0;
@@ -584,7 +602,7 @@
 }
 .rf-pax-rm:hover { background: #ffe0e0; border-color: #d08080; transform: scale(1.08); }
 
-/* ─── ADD BUTTON ──────────────────────────────────────────────────────── */
+/* ─── ADD BUTTON ─────────────────────────────────────────────────── */
 .rf-add-btn {
   display: inline-flex; align-items: center; gap: .45rem;
   padding: .46rem 1.05rem;
@@ -599,7 +617,7 @@
 }
 .rf-add-btn:disabled { opacity: .32; cursor: not-allowed; }
 
-/* ─── NAV BUTTONS ─────────────────────────────────────────────────────── */
+/* ─── NAV BUTTONS ───────────────────────────────────────────────── */
 .rf-nav-btns {
   display: flex; gap: .6rem; align-items: center;
   padding: 0;
@@ -617,50 +635,54 @@
 .rf-btn-back:hover { color: var(--text); }
 .rf-btn-back:hover::before { transform: translateX(-3px); }
 
+/* Next button — gold → rose gradient for visual interest */
 .rf-btn-next {
   flex: 1; padding: .78rem 1.4rem;
   border-radius: 50px; font-family: var(--sans); font-size: .72rem; font-weight: 700;
   cursor: pointer; transition: all .22s var(--ease); letter-spacing: .1em; text-transform: uppercase;
-  background: linear-gradient(135deg, #d4b050 0%, #b8962e 60%, #c8a43a 100%);
-  color: #1a1100;
-  border: 2px solid #1a1100;
-  box-shadow: 0 3px 16px rgba(184,150,46,.35), inset 0 1px 0 rgba(255,255,255,.25);
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--rose) 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 3px 16px rgba(184,150,46,.35), 0 1px 0 rgba(255,255,255,.15) inset;
   display: flex; align-items: center; justify-content: center; gap: .45rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,.18);
 }
 .rf-btn-next svg { transition: transform .2s var(--ease); }
 .rf-btn-next:hover {
-  background: linear-gradient(135deg, #e0bc5c 0%, #c8a43a 60%, #d4b050 100%);
-  box-shadow: 0 6px 24px rgba(184,150,46,.5), inset 0 1px 0 rgba(255,255,255,.3);
+  background: linear-gradient(135deg, var(--gold) 0%, var(--rose-light) 50%, var(--rose) 100%);
+  box-shadow: 0 6px 24px rgba(184,80,96,.35), 0 1px 0 rgba(255,255,255,.2) inset;
   transform: translateY(-1px);
 }
 .rf-btn-next:hover svg { transform: translateX(3px); }
 .rf-btn-next:active { transform: translateY(0); }
 
+/* Submit button — rose dominant for final CTA, feels celebratory */
 .rf-btn-submit {
   flex: 1; padding: .78rem 1.4rem;
   border-radius: 50px; font-family: var(--sans); font-size: .72rem; font-weight: 700;
   cursor: pointer; transition: all .22s var(--ease); letter-spacing: .1em; text-transform: uppercase;
-  background: linear-gradient(135deg, #f5c518 0%, #d4a820 60%, #e8b830 100%);
-  color: #1a1100;
-  border: 2px solid #1a1100;
-  box-shadow: 0 3px 16px rgba(245,197,24,.4), inset 0 1px 0 rgba(255,255,255,.3);
+  background: linear-gradient(135deg, var(--rose-light) 0%, var(--rose) 60%, var(--rose-dark) 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 3px 16px var(--rose-glow), 0 1px 0 rgba(255,255,255,.15) inset;
   display: flex; align-items: center; justify-content: center; gap: .45rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,.2);
 }
 .rf-btn-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ffd020 0%, #e8b830 60%, #f5c518 100%);
-  box-shadow: 0 6px 24px rgba(245,197,24,.55);
+  background: linear-gradient(135deg, var(--rose) 0%, var(--rose-dark) 100%);
+  box-shadow: 0 6px 24px var(--rose-glow);
   transform: translateY(-1px);
 }
 .rf-btn-submit:active { transform: translateY(0); }
 .rf-btn-submit:disabled { opacity: .45; cursor: not-allowed; }
 .rf-spinner {
   display: inline-block; width: 15px; height: 15px;
-  border: 2px solid rgba(26,17,0,.2); border-top-color: #1a1100;
+  border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
   border-radius: 50%; animation: rf-spin .65s linear infinite;
 }
 @keyframes rf-spin { to { transform: rotate(360deg); } }
 
-/* ─── REVIEW ──────────────────────────────────────────────────────────── */
+/* ─── REVIEW ───────────────────────────────────────────────────── */
 .rf-rev-block {
   border: 1px solid rgba(255,255,255,0.7); border-radius: var(--r-lg);
   overflow: hidden; margin-bottom: 1rem;
@@ -677,12 +699,12 @@
 }
 .rf-rev-head-title { font-family: var(--serif); font-size: .95rem; font-weight: 500; color: var(--text); }
 .rf-rev-edit {
-  font-size: .58rem; font-weight: 600; color: var(--gold-dark);
-  background: rgba(253,246,224,0.8); border: 1px solid rgba(184,150,46,.4);
+  font-size: .58rem; font-weight: 600; color: var(--rose-dark);
+  background: var(--rose-pale); border: 1px solid rgba(184,80,96,.3);
   padding: .2rem .6rem; border-radius: 4px; cursor: pointer;
   transition: all .18s; letter-spacing: .05em; text-transform: uppercase;
 }
-.rf-rev-edit:hover { background: var(--gold); color: #fff; box-shadow: 0 2px 8px var(--gold-glow); }
+.rf-rev-edit:hover { background: var(--rose); color: #fff; box-shadow: 0 2px 8px var(--rose-glow); }
 .rf-rev-row {
   display: flex; justify-content: space-between; align-items: baseline;
   padding: .5rem 1.1rem; font-size: .82rem;
@@ -696,7 +718,7 @@
 .rf-rev-transport-note.green  { background: var(--sage-bg);  color: var(--sage-text);  border: 1px solid var(--sage-border); }
 .rf-rev-transport-note.yellow { background: var(--amber-bg); color: var(--amber-text); border: 1px solid var(--amber-border); }
 
-/* ─── SIDEBAR — floating info panel, no box ─────────────────────────── */
+/* ─── SIDEBAR ───────────────────────────────────────────────────── */
 .rf-sidebar {
   position: sticky;
   top: 2.2rem;
@@ -788,7 +810,7 @@
 .rf-sb-contact a { color: var(--gold-dark); text-decoration: none; }
 .rf-sb-contact a:hover { text-decoration: underline; }
 
-/* ─── RESPONSIVE ──────────────────────────────────────────────────────── */
+/* ─── RESPONSIVE ───────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .rf-page-wrap {
     grid-template-columns: 1fr;

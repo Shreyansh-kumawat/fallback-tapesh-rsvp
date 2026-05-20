@@ -50,12 +50,13 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     const vw = window.innerWidth
     const vh = window.innerHeight
     const POPUP_W = Math.min(300, vw - 32)
-    const POPUP_H = 420
-    const GAP = 6
+    const POPUP_H = 320
+    const GAP = 4
 
     const spaceBelow = vh - rect.bottom
     const spaceAbove = rect.top
-    const preferUp = spaceBelow < POPUP_H + GAP && spaceAbove > POPUP_H + GAP
+    // Only flip upward if there genuinely isn't enough space below AND there is enough space above
+    const preferUp = spaceBelow < POPUP_H + GAP && spaceAbove >= POPUP_H + GAP
     setOpenUp(preferUp)
 
     // Align left edge of popup with left edge of trigger, clamp to viewport

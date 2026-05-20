@@ -64,15 +64,8 @@
 }
 .cdp-chevron.open { transform: rotate(180deg); }
 
-/* POPUP — absolute positioning anchored to trigger */
+/* POPUP — rendered via Portal into document.body, positioned via JS */
 .cdp-popup {
-  position: absolute;
-  z-index: 99999;
-  top: calc(100% + 6px);
-  left: 0;
-  width: 100%;
-  min-width: 288px;
-  max-width: 320px;
   background: #fff;
   border: 1.5px solid var(--border);
   border-radius: var(--r-lg);
@@ -81,10 +74,7 @@
   animation: cdp-in .18s cubic-bezier(.4,0,.2,1);
 }
 
-/* Open upward when not enough space below */
 .cdp-popup.open-up {
-  top: auto;
-  bottom: calc(100% + 6px);
   animation: cdp-in-up .18s cubic-bezier(.4,0,.2,1);
 }
 
@@ -273,11 +263,9 @@
   color: var(--text-mid);
 }
 
-/* Mobile: ensure popup fits within viewport */
 @media (max-width: 420px) {
   .cdp-popup {
     min-width: unset;
-    width: 100%;
-    max-width: 100%;
+    width: calc(100vw - 2rem) !important;
   }
 }

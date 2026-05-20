@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect } from 'react'
+import { createPortal } from 'react-dom'
 import './CustomDatePicker.css'
 
 const MONTHS = [
@@ -7,18 +8,22 @@ const MONTHS = [
 ]
 const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa']
 
+const POPUP_WIDTH = 288
+const POPUP_HEIGHT = 380
+
 export default function CustomDatePicker({ label, value, onChange, placeholder = 'Select date...' }) {
   const today = new Date()
   const initDate = value ? new Date(value + 'T00:00:00') : null
   const [open, setOpen] = useState(false)
+  const [popupStyle, setPopupStyle] = useState({})
   const [openUp, setOpenUp] = useState(false)
   const [viewYear, setViewYear] = useState(initDate ? initDate.getFullYear() : today.getFullYear())
   const [viewMonth, setViewMonth] = useState(initDate ? initDate.getMonth() : today.getMonth())
-  const [mode, setMode] = useState('days') // 'days' | 'months' | 'years'
+  const [mode, setMode] = useState('days')
   const wrapRef = useRef(null)
   const triggerRef = useRef(null)
+  const popupRef = useRef(null)
 
-  // sync view when value changes externally
   useEffect(() => {
     if (value) {
       const d = new Date(value + 'T00:00:00')
@@ -27,29 +32,74 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     }
   }, [value])
 
+  // Close on outside click
   useEffect(() => {
+    if (!open) return
     const handler = e => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target)) {
+      if (
+        wrapRef.current && !wrapRef.current.contains(e.target) &&
+        popupRef.current && !popupRef.current.contains(e.target)
+      ) {
         setOpen(false)
         setMode('days')
       }
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
-  }, [])
+  }, [open])
 
-  const POPUP_HEIGHT = 380
-
-  const calcOpenUp = () => {
-    if (!triggerRef.current) return false
+  const calcPos = () => {
+    if (!triggerRef.current) return
     const rect = triggerRef.current.getBoundingClientRect()
-    return (window.innerHeight - rect.bottom) < POPUP_HEIGHT
+    const spaceBelow = window.innerHeight - rect.bottom
+    const goUp = spaceBelow < POPUP_HEIGHT && rect.top > POPUP_HEIGHT
+    setOpenUp(goUp)
+
+    let left = rect.left
+    const maxLeft = window.innerWidth - POPUP_WIDTH - 8
+    if (left > maxLeft) left = maxLeft
+    if (left < 8) left = 8
+
+    const width = Math.min(POPUP_WIDTH, window.innerWidth - 16)
+
+    if (goUp) {
+      setPopupStyle({
+        position: 'fixed',
+        left: `${left}px`,
+        width: `${width}px`,
+        bottom: `${window.innerHeight - rect.top + 6}px`,
+        top: 'auto',
+        zIndex: 99999,
+      })
+    } else {
+      setPopupStyle({
+        position: 'fixed',
+        left: `${left}px`,
+        width: `${width}px`,
+        top: `${rect.bottom + 6}px`,
+        bottom: 'auto',
+        zIndex: 99999,
+      })
+    }
   }
 
-  const handleOpen = () => {
-    if (!open) {
-      setOpenUp(calcOpenUp())
+  // Recalculate on scroll/resize while open
+  useEffect(() => {
+    if (!open) return
+    window.addEventListener('scroll', calcPos, true)
+    window.addEventListener('resize', calcPos)
+    return () => {
+      window.removeEventListener('scroll', calcPos, true)
+      window.removeEventListener('resize', calcPos)
     }
+  }, [open])
+
+  // Synchronously calculate position before paint
+  useLayoutEffect(() => {
+    if (open) calcPos()
+  }, [open])
+
+  const handleOpen = () => {
     setOpen(p => !p)
     setMode('days')
   }
@@ -87,18 +137,16 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     setMode('days')
   }
 
-  const isToday = day => {
-    return today.getDate() === day &&
-      today.getMonth() === viewMonth &&
-      today.getFullYear() === viewYear
-  }
+  const isToday = day =>
+    today.getDate() === day &&
+    today.getMonth() === viewMonth &&
+    today.getFullYear() === viewYear
 
-  const isSelected = day => {
-    return selectedDate &&
-      selectedDate.getDate() === day &&
-      selectedDate.getMonth() === viewMonth &&
-      selectedDate.getFullYear() === viewYear
-  }
+  const isSelected = day =>
+    selectedDate &&
+    selectedDate.getDate() === day &&
+    selectedDate.getMonth() === viewMonth &&
+    selectedDate.getFullYear() === viewYear
 
   const daysCount = getDaysInMonth(viewYear, viewMonth)
   const firstDay = getFirstDay(viewYear, viewMonth)
@@ -106,9 +154,97 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
   for (let i = 0; i < firstDay; i++) cells.push(null)
   for (let d = 1; d <= daysCount; d++) cells.push(d)
 
-  // Year range for year picker
   const yearStart = Math.floor(viewYear / 12) * 12
   const years = Array.from({ length: 12 }, (_, i) => yearStart + i)
+
+  const popup = open ? (
+    <div
+      ref={popupRef}
+      className={`cdp-popup${openUp ? ' open-up' : ''}`}
+      style={popupStyle}
+    >
+      <div className="cdp-header">
+        <button type="button" className="cdp-nav-btn"
+          onClick={mode === 'years' ? () => setViewYear(y => y - 12) : prevMonth}
+          aria-label="Previous">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M8 2L4 6l4 4"/></svg>
+        </button>
+        <div className="cdp-header-center">
+          <button type="button" className="cdp-month-btn"
+            onClick={() => setMode(m => m === 'months' ? 'days' : 'months')}>
+            {MONTHS[viewMonth]}
+          </button>
+          <button type="button" className="cdp-year-btn"
+            onClick={() => setMode(m => m === 'years' ? 'days' : 'years')}>
+            {viewYear}
+          </button>
+        </div>
+        <button type="button" className="cdp-nav-btn"
+          onClick={mode === 'years' ? () => setViewYear(y => y + 12) : nextMonth}
+          aria-label="Next">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M4 2l4 4-4 4"/></svg>
+        </button>
+      </div>
+
+      {mode === 'days' && (
+        <div className="cdp-days-view">
+          <div className="cdp-weekdays">
+            {DAYS.map(d => <div key={d} className="cdp-wd">{d}</div>)}
+          </div>
+          <div className="cdp-grid">
+            {cells.map((day, i) =>
+              day === null
+                ? <div key={`e-${i}`} className="cdp-cell empty" />
+                : <button key={day} type="button"
+                    className={`cdp-cell${isSelected(day) ? ' selected' : isToday(day) ? ' today' : ''}`}
+                    onClick={() => selectDay(day)}>{day}</button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {mode === 'months' && (
+        <div className="cdp-months-view">
+          {MONTHS.map((m, i) => (
+            <button key={m} type="button"
+              className={`cdp-month-cell${i === viewMonth ? ' selected' : ''}${
+                selectedDate && selectedDate.getFullYear() === viewYear && selectedDate.getMonth() === i ? ' has-sel' : ''}`}
+              onClick={() => { setViewMonth(i); setMode('days') }}>
+              {m.slice(0,3)}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {mode === 'years' && (
+        <div className="cdp-years-view">
+          {years.map(y => (
+            <button key={y} type="button"
+              className={`cdp-year-cell${y === viewYear ? ' selected' : ''}${
+                selectedDate && selectedDate.getFullYear() === y ? ' has-sel' : ''}`}
+              onClick={() => { setViewYear(y); setMode('months') }}>
+              {y}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="cdp-footer">
+        <button type="button" className="cdp-today-btn" onClick={() => {
+          const t = new Date()
+          setViewYear(t.getFullYear())
+          setViewMonth(t.getMonth())
+          setMode('days')
+          onChange(toYMD(t))
+          setOpen(false)
+        }}>Today</button>
+        {value && (
+          <button type="button" className="cdp-clear-btn"
+            onClick={() => { onChange(''); setOpen(false) }}>Clear</button>
+        )}
+      </div>
+    </div>
+  ) : null
 
   return (
     <div className="cdp-wrap" ref={wrapRef}>
@@ -131,112 +267,7 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
           <path d="M2 4l4 4 4-4"/>
         </svg>
       </button>
-
-      {open && (
-        <div className={`cdp-popup${openUp ? ' open-up' : ''}`}>
-          {/* Header */}
-          <div className="cdp-header">
-            <button type="button" className="cdp-nav-btn" onClick={mode === 'years' ? () => { setViewYear(y => y - 12) } : prevMonth} aria-label="Previous">
-              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M8 2L4 6l4 4"/></svg>
-            </button>
-
-            <div className="cdp-header-center">
-              <button
-                type="button"
-                className="cdp-month-btn"
-                onClick={() => setMode(m => m === 'months' ? 'days' : 'months')}
-              >
-                {MONTHS[viewMonth]}
-              </button>
-              <button
-                type="button"
-                className="cdp-year-btn"
-                onClick={() => setMode(m => m === 'years' ? 'days' : 'years')}
-              >
-                {viewYear}
-              </button>
-            </div>
-
-            <button type="button" className="cdp-nav-btn" onClick={mode === 'years' ? () => { setViewYear(y => y + 12) } : nextMonth} aria-label="Next">
-              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M4 2l4 4-4 4"/></svg>
-            </button>
-          </div>
-
-          {/* DAYS VIEW */}
-          {mode === 'days' && (
-            <div className="cdp-days-view">
-              <div className="cdp-weekdays">
-                {DAYS.map(d => <div key={d} className="cdp-wd">{d}</div>)}
-              </div>
-              <div className="cdp-grid">
-                {cells.map((day, i) =>
-                  day === null
-                    ? <div key={`e-${i}`} className="cdp-cell empty" />
-                    : <button
-                        key={day}
-                        type="button"
-                        className={`cdp-cell${
-                          isSelected(day) ? ' selected' : isToday(day) ? ' today' : ''
-                        }`}
-                        onClick={() => selectDay(day)}
-                      >{day}</button>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* MONTHS VIEW */}
-          {mode === 'months' && (
-            <div className="cdp-months-view">
-              {MONTHS.map((m, i) => (
-                <button
-                  key={m}
-                  type="button"
-                  className={`cdp-month-cell${
-                    i === viewMonth ? ' selected' : ''
-                  }${
-                    selectedDate && selectedDate.getFullYear() === viewYear && selectedDate.getMonth() === i ? ' has-sel' : ''
-                  }`}
-                  onClick={() => { setViewMonth(i); setMode('days') }}
-                >{m.slice(0,3)}</button>
-              ))}
-            </div>
-          )}
-
-          {/* YEARS VIEW */}
-          {mode === 'years' && (
-            <div className="cdp-years-view">
-              {years.map(y => (
-                <button
-                  key={y}
-                  type="button"
-                  className={`cdp-year-cell${
-                    y === viewYear ? ' selected' : ''
-                  }${
-                    selectedDate && selectedDate.getFullYear() === y ? ' has-sel' : ''
-                  }`}
-                  onClick={() => { setViewYear(y); setMode('months') }}
-                >{y}</button>
-              ))}
-            </div>
-          )}
-
-          {/* Footer */}
-          <div className="cdp-footer">
-            <button type="button" className="cdp-today-btn" onClick={() => {
-              const t = new Date()
-              setViewYear(t.getFullYear())
-              setViewMonth(t.getMonth())
-              setMode('days')
-              onChange(toYMD(t))
-              setOpen(false)
-            }}>Today</button>
-            {value && (
-              <button type="button" className="cdp-clear-btn" onClick={() => { onChange(''); setOpen(false) }}>Clear</button>
-            )}
-          </div>
-        </div>
-      )}
+      {createPortal(popup, document.body)}
     </div>
   )
 }

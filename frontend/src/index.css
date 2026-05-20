@@ -1,8 +1,48 @@
 @import "tailwindcss";
 
-html { scroll-behavior: smooth; }
+/* ── Global Reset & Base ─────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: #f8f6f0;
+  font-family: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+  color: #18171a;
+}
+
+/* ── Scrollbar ──────────────────────────────────── */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: #f0ece4; }
-::-webkit-scrollbar-thumb { background: #b8922a; border-radius: 3px; }
+::-webkit-scrollbar-thumb {
+  background: #c9a84c;
+  border-radius: 99px;
+  border: 1px solid #f0ece4;
+}
+::-webkit-scrollbar-thumb:hover { background: #b8962e; }
+
+/* ── Selection ──────────────────────────────────── */
+::selection {
+  background: rgba(184,150,46,.22);
+  color: #1a1100;
+}
+
+/* ── Focus ring ─────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #b8962e;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Transitions for interactive elements ───────── */
+a, button, [role="button"] {
+  transition: color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}

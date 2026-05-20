@@ -6,7 +6,7 @@
    ===================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap');
 
-/* ─── TOKENS ─────────────────────────────────────────────────── */
+/* ─── TOKENS ───────────────────────────────────────────────── */
 :root {
   /* — Gold — richer, warmer — */
   --gold:         #c09020;
@@ -41,13 +41,6 @@
   --bg-input:     rgba(255,255,255,0.86);
   --bg-group:     rgba(255,255,255,0.60);
 
-  /* ─────────────────────────────────────────────────────────────
-     TEXT — IMPROVED CONTRAST (WCAG AA compliant)
-     --text       : #18171a  (primary — near-black)    ~17:1 on white
-     --text-mid   : #3a3530  (secondary — dark brown)  ~10:1 on white
-     --text-light : #5c5248  (tertiary — medium brown)  ~6:1 on white
-     --text-faint : #8c8278  (decorative only)           ~4:1 on white
-     ───────────────────────────────────────────────────────────── */
   --text:         #18171a;
   --text-mid:     #3a3530;
   --text-light:   #5c5248;
@@ -57,14 +50,13 @@
   --border-solid: rgba(0,0,0,.14);
   --border-focus: var(--gold);
 
-  /* — Transport / status boxes — richer, more readable — */
   --sage-bg:      rgba(210,240,225,0.97);
   --sage-border:  #6aaa82;
-  --sage-text:    #0e3020;    /* dark green — ~12:1 contrast */
+  --sage-text:    #0e3020;
 
   --amber-bg:     rgba(255,244,200,0.98);
   --amber-border: #c09030;
-  --amber-text:   #3e2800;    /* dark amber — ~14:1 contrast */
+  --amber-text:   #3e2800;
 
   --serif:  'Cormorant Garamond', 'Georgia', serif;
   --sans:   'Jost', 'Helvetica Neue', sans-serif;
@@ -79,7 +71,7 @@
   --ease:   cubic-bezier(.4,0,.2,1);
 }
 
-/* ─── BASE ─────────────────────────────────────────────────── */
+/* ─── BASE ───────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
@@ -101,7 +93,7 @@ html, body {
   overflow: hidden;
 }
 
-/* ─── ANIMATED SVG BACKGROUND ───────────────────────────────── */
+/* ─── ANIMATED SVG BACKGROUND ───────────────────────── */
 .rf-bg-svg {
   position: fixed;
   inset: 0;
@@ -112,7 +104,7 @@ html, body {
   opacity: 0.7;
 }
 
-/* ─── TOP NAV ──────────────────────────────────────────────── */
+/* ─── TOP NAV ─────────────────────────────────────── */
 .rf-topnav {
   height: 52px;
   flex-shrink: 0;
@@ -129,7 +121,7 @@ html, body {
 .rf-nav-center {
   font-family: var(--serif);
   font-size: 1.35rem; font-weight: 600;
-  color: #1e1408;                    /* darker — better contrast */
+  color: #1e1408;
   letter-spacing: .06em;
 }
 .rf-nav-ornament { font-size: .38rem; color: rgba(122,90,14,.55); line-height: 1; }
@@ -138,7 +130,7 @@ html, body {
 .rf-nav-step-sep   { font-size: .62rem; color: rgba(30,20,8,.40); }
 .rf-nav-step-tot   { font-size: .62rem; color: rgba(30,20,8,.40); }
 
-/* ─── STEPPER ──────────────────────────────────────────────── */
+/* ─── STEPPER ─────────────────────────────────────── */
 .rf-progress-wrap {
   flex-shrink: 0;
   background: rgba(255,253,248,0.72);
@@ -209,7 +201,7 @@ html, body {
 .rf-si.active .rf-si-lbl { color: var(--gold-dark); font-weight: 700; }
 .rf-si.done .rf-si-lbl   { color: var(--rose-dark); }
 
-/* ─── STEP ANIMATION ────────────────────────────────────────── */
+/* ─── STEP ANIMATION ──────────────────────────────── */
 @keyframes rf-step-forward {
   from { opacity: 0; transform: translateX(18px); }
   to   { opacity: 1; transform: translateX(0); }
@@ -221,7 +213,7 @@ html, body {
 .rf-step-enter--forward { animation: rf-step-forward .25s var(--ease) both; }
 .rf-step-enter--back    { animation: rf-step-back    .25s var(--ease) both; }
 
-/* ─── MAIN LAYOUT ───────────────────────────────────────────── */
+/* ─── MAIN LAYOUT ─────────────────────────────────── */
 .rf-page-wrap {
   flex: 1;
   min-height: 0;
@@ -241,11 +233,13 @@ html, body {
 .rf-card-col--fit {
   display: flex;
   flex-direction: column;
+  /* KEY FIX: must be 100% of the grid row height so rf-form-card can fill it */
   height: 100%;
   min-height: 0;
+  overflow: hidden;
 }
 
-/* ─── FORM AREA ─────────────────────────────────────────────── */
+/* ─── FORM AREA ───────────────────────────────────── */
 .rf-form-card {
   background: transparent;
   border: none;
@@ -253,11 +247,13 @@ html, body {
   box-shadow: none;
   display: flex; flex-direction: column;
   padding-right: 1.8rem;
-  height: 100%;
+  /* Must fill parent height so body can flex-grow and scroll */
+  flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
-/* ─── CARD HEAD ────────────────────────────────────────────── */
+/* ─── CARD HEAD ──────────────────────────────────── */
 .rf-form-card-head {
   padding: 0 0 1rem 0;
   background: transparent;
@@ -287,11 +283,11 @@ html, body {
 .rf-step-desc {
   font-size: .84rem;
   font-weight: 400;
-  color: var(--text-mid);     /* was text-mid — now #3a3530 — ~10:1 contrast ✓ */
+  color: var(--text-mid);
   line-height: 1.6; margin: 0;
 }
 
-/* ─── CARD BODY ─────────────────────────────────────────────── */
+/* ─── CARD BODY ───────────────────────────────────── */
 .rf-form-card-body {
   flex: 1;
   min-height: 0;
@@ -306,7 +302,7 @@ html, body {
 .rf-form-card-body::-webkit-scrollbar-track { background: transparent; }
 .rf-form-card-body::-webkit-scrollbar-thumb { background: rgba(192,144,32,.32); border-radius: 4px; }
 
-/* ─── FIELD GROUPS ────────────────────────────────────────── */
+/* ─── FIELD GROUPS ───────────────────────────────── */
 .rf-field-group-box {
   background: rgba(255,255,255,0.68);
   backdrop-filter: blur(12px);
@@ -349,7 +345,7 @@ html, body {
   backdrop-filter: blur(8px);
 }
 
-/* ─── FIELDS ────────────────────────────────────────────────── */
+/* ─── FIELDS ────────────────────────────────────────── */
 .rf-field { margin-bottom: 1rem; position: relative; }
 .rf-field--compact { margin-bottom: .7rem; }
 
@@ -357,7 +353,7 @@ html, body {
   display: flex; align-items: center; gap: .3rem;
   font-size: .68rem; font-weight: 700;
   letter-spacing: .12em; text-transform: uppercase;
-  color: var(--text-mid);     /* #3a3530 — ~10:1 contrast ✓ */
+  color: var(--text-mid);
   margin-bottom: .38rem;
   font-family: var(--sans);
 }
@@ -389,7 +385,7 @@ html, body {
 .rf-field textarea { resize: vertical; min-height: 100px; line-height: 1.65; }
 .rf-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
 .rf-field-hint {
-  font-size: .68rem; color: var(--text-light);  /* #5c5248 — ~6:1 ✓ */
+  font-size: .68rem; color: var(--text-light);
   margin-top: .28rem; line-height: 1.5;
   display: flex; align-items: center; gap: .28rem;
 }
@@ -402,7 +398,7 @@ html, body {
   border: 1px solid rgba(0,0,0,.07);
 }
 
-/* ─── PHONE INPUT ──────────────────────────────────────────── */
+/* ─── PHONE INPUT ────────────────────────────────── */
 .rf-phone-wrap .PhoneInput {
   display: flex; align-items: center;
   border: 1.5px solid rgba(0,0,0,.10); border-radius: var(--r);
@@ -436,7 +432,7 @@ html, body {
 }
 .rf-phone-wrap .PhoneInputInput::placeholder { color: var(--text-faint); }
 
-/* ─── SEARCHABLE SELECT ────────────────────────────────────── */
+/* ─── SEARCHABLE SELECT ────────────────────────────── */
 .rf-csel-wrap { position: relative; }
 .rf-csel-btn {
   width: 100%; padding: .75rem 2.2rem .75rem 1rem;
@@ -494,7 +490,7 @@ html, body {
 .rf-csel-opt.sel { background: var(--gold-pale); color: var(--gold-dark); font-weight: 600; }
 .rf-csel-empty { padding: .9rem; text-align: center; font-size: .78rem; color: var(--text-light); }
 
-/* ─── TRAVEL GRID ─────────────────────────────────────────────── */
+/* ─── TRAVEL GRID ────────────────────────────────────── */
 .rf-travel-grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -541,7 +537,7 @@ html, body {
 }
 .rf-travel-divider-dot svg { stroke: var(--gold-light); }
 
-/* ─── DATE INPUT ─────────────────────────────────────────────── */
+/* ─── DATE INPUT ───────────────────────────────────── */
 .rf-date-input {
   width: 100%; padding: .75rem 1rem;
   border: 1.5px solid rgba(0,0,0,.10); background: rgba(255,255,255,0.80);
@@ -559,7 +555,7 @@ html, body {
   filter: invert(40%) sepia(80%) saturate(400%) hue-rotate(5deg) brightness(90%);
 }
 
-/* ─── TRANSPORT BOX ───────────────────────────────────────────── */
+/* ─── TRANSPORT BOX ───────────────────────────────────── */
 .rf-transport-box {
   display: flex; gap: .85rem; align-items: flex-start;
   border-radius: var(--r-lg); padding: .9rem 1.1rem;
@@ -572,21 +568,19 @@ html, body {
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-/* Green — Jaipur (cab available) */
 .rf-transport-box.green  {
   background: var(--sage-bg);
   border-color: var(--sage-border);
-  color: var(--sage-text);    /* #0e3020 — ~12:1 ✓ */
+  color: var(--sage-text);
 }
-/* Yellow — Other cities */
 .rf-transport-box.yellow {
   background: var(--amber-bg);
   border-color: var(--amber-border);
-  color: var(--amber-text);   /* #3e2800 — ~14:1 ✓ */
+  color: var(--amber-text);
 }
 .rf-tb-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
 
-/* ─── GUESTS ───────────────────────────────────────────────────── */
+/* ─── GUESTS ─────────────────────────────────────────────── */
 .rf-guests-group         { margin-bottom: 1.2rem; }
 .rf-guests-group--compact{ margin-bottom: .8rem; }
 .rf-guests-group:last-of-type { margin-bottom: 0; }
@@ -652,7 +646,7 @@ html, body {
 }
 .rf-pax-rm:hover { background: #ffd5d5; border-color: #c07070; color: #7a2020; transform: scale(1.08); }
 
-/* ─── ADD BUTTON ─────────────────────────────────────────────────── */
+/* ─── ADD BUTTON ─────────────────────────────────────────── */
 .rf-add-btn {
   display: inline-flex; align-items: center; gap: .45rem;
   padding: .42rem .95rem;
@@ -667,7 +661,7 @@ html, body {
 }
 .rf-add-btn:disabled { opacity: .30; cursor: not-allowed; }
 
-/* ─── NAV BUTTONS ───────────────────────────────────────────────── */
+/* ─── NAV BUTTONS ───────────────────────────────────────── */
 .rf-nav-btns {
   display: flex; gap: .6rem; align-items: center;
   padding: 0;
@@ -729,7 +723,7 @@ html, body {
 }
 @keyframes rf-spin { to { transform: rotate(360deg); } }
 
-/* ─── REVIEW ───────────────────────────────────────────────────── */
+/* ─── REVIEW ─────────────────────────────────────────────── */
 .rf-rev-block {
   border: 1px solid rgba(255,255,255,0.75); border-radius: var(--r-lg);
   overflow: hidden; margin-bottom: .8rem;
@@ -765,7 +759,7 @@ html, body {
 .rf-rev-transport-note.green  { background: var(--sage-bg);  color: var(--sage-text);  border: 1px solid var(--sage-border); }
 .rf-rev-transport-note.yellow { background: var(--amber-bg); color: var(--amber-text); border: 1px solid var(--amber-border); }
 
-/* ─── SIDEBAR ───────────────────────────────────────────────────── */
+/* ─── SIDEBAR ─────────────────────────────────────────────── */
 .rf-sidebar {
   position: sticky;
   top: 1.2rem;
@@ -808,7 +802,7 @@ html, body {
 .rf-sb-name {
   font-family: var(--serif);
   font-size: 1.45rem; font-weight: 600;
-  color: #1e1408;                /* darker for better contrast */
+  color: #1e1408;
   margin-bottom: .08rem;
   text-align: center;
   letter-spacing: .02em;
@@ -816,7 +810,7 @@ html, body {
 .rf-sb-sub {
   font-size: .55rem; font-weight: 700;
   letter-spacing: .22em; text-transform: uppercase;
-  color: var(--text-light);       /* #5c5248 — ~6:1 ✓ */
+  color: var(--text-light);
   text-align: center; margin-bottom: .85rem;
 }
 .rf-sb-rows { display: flex; flex-direction: column; gap: .38rem; margin-bottom: .75rem; }
@@ -853,7 +847,7 @@ html, body {
 .rf-sb-contact a { color: var(--gold-dark); text-decoration: none; font-weight: 500; }
 .rf-sb-contact a:hover { text-decoration: underline; }
 
-/* ─── RESPONSIVE ───────────────────────────────────────────────── */
+/* ─── RESPONSIVE ───────────────────────────────────────────── */
 @media (max-width: 900px) {
   html, body { overflow: auto; }
   .rsvp-page { height: auto; max-height: none; overflow: visible; }
@@ -862,7 +856,8 @@ html, body {
     padding: 1.2rem 1.2rem 1.8rem;
     overflow: visible;
   }
-  .rf-form-card { height: auto; }
+  .rf-card-col--fit { height: auto; overflow: visible; }
+  .rf-form-card { height: auto; flex: none; overflow: visible; }
   .rf-form-card-body { overflow: visible; max-height: none; }
   .rf-sidebar {
     border-left: none;

@@ -73,7 +73,7 @@
   position: relative;
 }
 
-/* ─── ANIMATED SVG BACKGROUND ───────────────────────────────────────── */
+/* ─── ANIMATED SVG BACKGROUND — 70% opacity ─────────────────────────── */
 .rf-bg-svg {
   position: fixed;
   inset: 0;
@@ -81,6 +81,7 @@
   height: 100%;
   z-index: 0;
   pointer-events: none;
+  opacity: 0.7;
 }
 
 /* ─── TOP NAV ────────────────────────────────────────────────────────── */

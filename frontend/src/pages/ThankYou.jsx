@@ -1,17 +1,112 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { useEffect } from 'react'
-import bgImg from '../assets/imgs/bigbg-22.png'
+import { useEffect, useRef, useCallback } from 'react'
 import logoImg from '../assets/imgs/logoHD--1.png'
-import qrImg from '../assets/imgs/qr.png'
+import qrImg   from '../assets/imgs/qr.png'
 import './ThankYou.css'
 
 const MAPS_LINK = 'https://maps.app.goo.gl/6EnhNqNissXUDHJ59'
+
+/* ── Same animated SVG background as RSVPForm ────────── */
+function useSvgPlayPause(svgRef) {
+  const timerRef = useRef(null)
+  const play = useCallback(() => {
+    const svg = svgRef.current
+    if (!svg) return
+    svg.unpauseAnimations()
+    if (timerRef.current) clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => svg.pauseAnimations(), 1000)
+  }, [svgRef])
+
+  useEffect(() => {
+    const svg = svgRef.current
+    if (svg) svg.pauseAnimations()
+    const events = ['click', 'keydown', 'input', 'change', 'scroll', 'touchstart']
+    events.forEach(ev => document.addEventListener(ev, play, { passive: true }))
+    return () => {
+      events.forEach(ev => document.removeEventListener(ev, play))
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [play, svgRef])
+}
+
+function BgSvg({ svgRef }) {
+  return (
+    <svg
+      ref={svgRef}
+      className="ty-bg-svg"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="http://www.w3.org/1999/xlink"
+      viewBox="0 0 700 400"
+      shapeRendering="geometricPrecision"
+      textRendering="geometricPrecision"
+      aria-hidden="true"
+      preserveAspectRatio="xMidYMid slice"
+    >
+      <style>{`
+        #tBg3_tr {animation: tBg3_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes tBg3_tr__tr { 0% {transform: translate(1485.265524px,923.716668px) rotate(107.849898deg)} 100% {transform: translate(1485.265524px,923.716668px) rotate(252.130785deg)}}
+        #tBg4_tr {animation: tBg4_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes tBg4_tr__tr { 0% {transform: translate(1106.552084px,11.479169px) rotate(-104.755169deg)} 100% {transform: translate(1106.552084px,11.479169px) rotate(-194.755169deg)}}
+        #tBg5_tr {animation: tBg5_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes tBg5_tr__tr { 0% {transform: translate(77.951956px,316.57267px) rotate(179.858074deg)} 100% {transform: translate(77.951956px,316.57267px) rotate(107.849898deg)}}
+        #tBg6_to {animation: tBg6_to__to 12000ms linear infinite normal forwards}
+        @keyframes tBg6_to__to { 0% {offset-distance: 0%} 50% {offset-distance: 49.378847%} 100% {offset-distance: 100%}}
+        #tBg7_to {animation: tBg7_to__to 12000ms linear infinite normal forwards}
+        @keyframes tBg7_to__to { 0% {transform: translate(1625.977098px,922.267927px)} 33.333333% {transform: translate(1567.951321px,818.908093px)} 66.666667% {transform: translate(1427.428392px,987.533986px)} 100% {transform: translate(1625.977098px,922.267927px)}}
+        #tBg8_to {animation: tBg8_to__to 12000ms linear infinite normal forwards}
+        @keyframes tBg8_to__to { 0% {offset-distance: 0%} 50% {offset-distance: 50.699739%} 100% {offset-distance: 100%}}
+        #tBg9_tr {animation: tBg9_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes tBg9_tr__tr { 0% {transform: translate(1332.072109px,696.229369px) rotate(179.858074deg)} 100% {transform: translate(1332.072109px,696.229369px) rotate(323.892738deg)}}
+        #tBg10_tr {animation: tBg10_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes tBg10_tr__tr { 0% {transform: translate(820.871069px,284.144659px) rotate(179.858074deg)} 100% {transform: translate(820.871069px,284.144659px) rotate(-35.842484deg)}}
+        #tBg11_tr {animation: tBg11_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes tBg11_tr__tr { 0% {transform: translate(762.743219px,965.073357px) rotate(0deg)} 100% {transform: translate(762.743219px,965.073357px) rotate(360deg)}}
+        #tBg12_tr {animation: tBg12_tr__tr 12000ms linear infinite normal forwards}
+        @keyframes tBg12_tr__tr { 0% {transform: translate(1474.519794px,224.809739px) rotate(390.798193deg)} 100% {transform: translate(1474.519794px,224.809739px) rotate(30.798193deg)}}
+      `}</style>
+      <g transform="matrix(.388384 0 0 0.388384 0.446734-9.821674)">
+        <g id="tBg3_tr" transform="translate(1485.265524,923.716668) rotate(107.849898)">
+          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605" transform="scale(3.947276,3.947276) translate(0,0)" fill="#e3f1fb" strokeWidth="0"/>
+        </g>
+        <g id="tBg4_tr" transform="translate(1106.552084,11.479169) rotate(-104.755169)">
+          <rect width="274.170362" height="274.170362" rx="0" ry="0" transform="scale(2.383871,2.383871) translate(-137.085181,-137.085181)" fill="#e9f3f8" strokeWidth="0"/>
+        </g>
+        <g id="tBg5_tr" transform="translate(77.951956,316.57267) rotate(179.858074)">
+          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605" transform="scale(3.253384,3.253384) translate(0,0)" fill="#def6f6" strokeWidth="0"/>
+        </g>
+        <g id="tBg6_to" style={{offsetPath:"path('M182.879698,901.477028C182.879698,819.603496,543.979817,653.846134,593.96611,782.977375C643.952403,912.108616,182.879698,986.922985,182.879698,901.477028')", offsetRotate:'0deg'}}>
+          <ellipse rx="289.447928" ry="289.447928" transform="scale(0.232635,0.232635) translate(0,0)" fill="#bee1fa" strokeWidth="0"/>
+        </g>
+        <g id="tBg7_to" transform="translate(1625.977098,922.267927)">
+          <ellipse rx="289.447928" ry="289.447928" transform="scale(0.080091,0.080091) translate(0,0)" fill="#c5e4e4" strokeWidth="0"/>
+        </g>
+        <g id="tBg8_to" style={{offsetPath:"path('M1220.487918,290.262889C1110.853792,377.293206,903.033468,181.544933,1184.090696,96.285342C1465.147924,11.025751,1334.309017,201.397504,1220.487918,290.262888')", offsetRotate:'0deg'}}>
+          <ellipse rx="289.447928" ry="289.447928" transform="scale(0.107632,0.107632) translate(0,0)" fill="#a3d6d5" strokeWidth="0"/>
+        </g>
+        <g id="tBg9_tr" transform="translate(1332.072109,696.229369) rotate(179.858074)">
+          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605" transform="scale(1.200094,1.200094) translate(0,0)" fill="#bee1fa" strokeWidth="0"/>
+        </g>
+        <g id="tBg10_tr" transform="translate(820.871069,284.144659) rotate(179.858074)">
+          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605" transform="scale(0.6936,0.6936) translate(0,0)" fill="#c9e7ec" strokeWidth="0"/>
+        </g>
+        <g id="tBg11_tr" transform="translate(762.743219,965.073357) rotate(0)">
+          <path d="M0,0v277.977304L234.170207,138.840986L0,0Z" transform="scale(1.31015,1.31015) translate(-128.822737,-138.988652)" fill="#d3e9f6" strokeWidth="3.6"/>
+        </g>
+        <g id="tBg12_tr" transform="translate(1474.519794,224.809739) rotate(390.798193)">
+          <path d="M0,0v277.977304L234.170207,138.840986L0,0Z" transform="scale(0.512094,0.512094) translate(-128.822737,-138.988652)" fill="#bacedc" strokeWidth="3.6"/>
+        </g>
+      </g>
+    </svg>
+  )
+}
 
 export default function ThankYou() {
   const location = useLocation()
   const navigate = useNavigate()
   const { name, attending } = location.state || {}
+  const svgRef = useRef(null)
+  useSvgPlayPause(svgRef)
 
   useEffect(() => {
     if (!name) navigate('/', { replace: true })
@@ -20,12 +115,15 @@ export default function ThankYou() {
   if (!name) return null
 
   return (
-    <div className="ty-page" style={{ backgroundImage: `url(${bgImg})` }}>
+    <div className="ty-page">
 
-      {/* Overlay */}
+      {/* ── Animated SVG background ── */}
+      <BgSvg svgRef={svgRef} />
+
+      {/* ── Overlay ── */}
       <div className="ty-overlay" />
 
-      {/* Floating gold particles */}
+      {/* ── Floating gold particles ── */}
       <div className="ty-particles">
         {[...Array(12)].map((_, i) => (
           <motion.div
@@ -37,7 +135,7 @@ export default function ThankYou() {
               left:   `${Math.random() * 100}%`,
               top:    `${Math.random() * 100}%`,
             }}
-            animate={{ opacity: [0, 0.5, 0], y: [0, -60, -120] }}
+            animate={{ opacity: [0, 0.6, 0], y: [0, -60, -120] }}
             transition={{
               duration: Math.random() * 6 + 5,
               repeat: Infinity,
@@ -48,11 +146,15 @@ export default function ThankYou() {
         ))}
       </div>
 
-      {/* Main card */}
+      {/* ── Main content ── */}
       <div className="ty-wrap">
 
         {/* Logo */}
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55 }}
+        >
           <img src={logoImg} alt="Nitin and Margarita" className="ty-logo" />
         </motion.div>
 
@@ -78,7 +180,7 @@ export default function ThankYou() {
           className="ty-msg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
+          transition={{ delay: 0.35 }}
         >
           {attending ? (
             <>
@@ -107,7 +209,7 @@ export default function ThankYou() {
             className="ty-details"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55 }}
+            transition={{ delay: 0.5 }}
           >
             {/* Date & Venue */}
             <div className="ty-meta">
@@ -134,9 +236,9 @@ export default function ThankYou() {
             {/* QR Code */}
             <motion.div
               className="ty-qr"
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.7 }}
+              transition={{ delay: 0.65 }}
             >
               <span className="ty-qr-label">Scan to locate venue</span>
               <div className="ty-qr-frame">
@@ -151,7 +253,7 @@ export default function ThankYou() {
           className="ty-footer"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.85 }}
+          transition={{ delay: 0.8 }}
         >
           Nitin &amp; Margarita &nbsp;✦&nbsp; 2026
         </motion.p>

@@ -76,7 +76,7 @@
 
 html, body {
   height: 100%;
-  overflow: hidden;
+  /* overflow: hidden removed — was blocking Review step scroll */
 }
 
 .rsvp-page {
@@ -868,7 +868,6 @@ html, body {
 
 /* ─── RESPONSIVE ───────────────────────────────────────────── */
 @media (max-width: 900px) {
-  html, body { overflow: auto; }
   .rsvp-page { height: auto; max-height: none; overflow: visible; }
   .rf-page-wrap {
     grid-template-columns: 1fr;

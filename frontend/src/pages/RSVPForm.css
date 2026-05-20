@@ -2,13 +2,12 @@
    RSVP FORM — Wedding
    Fonts : Cormorant Garamond (display) + Jost (body)
    Theme : Gold + Rose + Ivory — warm celebratory palette
-   Layout: Full-viewport — NO white card boxes, open layout, 85/15 split
+   Layout: Full-viewport 98vh — NO scroll needed on wide screens
    ===================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap');
 
 /* ─── TOKENS ─────────────────────────────────────────────────── */
 :root {
-  /* — Gold (primary accent) — */
   --gold:         #b8962e;
   --gold-light:   #d4b050;
   --gold-dark:    #8a6e1a;
@@ -16,7 +15,6 @@
   --gold-dim:     rgba(184,150,46,.1);
   --gold-glow:    rgba(184,150,46,.18);
 
-  /* — Rose (complementary accent: used for done-steps, section accents, highlights) — */
   --rose:         #b85060;
   --rose-light:   #d4788a;
   --rose-dark:    #8a3040;
@@ -24,12 +22,10 @@
   --rose-dim:     rgba(184,80,96,.09);
   --rose-glow:    rgba(184,80,96,.20);
 
-  /* — Yellow (CTA button fill) — */
   --yellow:       #f5c518;
   --yellow-dim:   rgba(245,197,24,.12);
   --yellow-text:  #7a5f00;
 
-  /* — Blue (kept for misc UI if needed) — */
   --blue:         #2a6db5;
   --blue-dim:     rgba(42,109,181,.08);
   --blue-mid:     #3a7fcf;
@@ -43,14 +39,13 @@
   /* — Text — improved contrast — */
   --text:         #18171a;
   --text-mid:     #3d3a35;
-  --text-light:   #6b6760;
+  --text-light:   #5a5650;
   --text-faint:   #a09b94;
 
   --border:       rgba(0,0,0,.10);
   --border-solid: rgba(0,0,0,.12);
   --border-focus: var(--gold);
 
-  /* — Transport boxes — */
   --sage-bg:      rgba(220,240,230,0.95);
   --sage-border:  #8fbc9e;
   --sage-text:    #1a3828;
@@ -74,8 +69,14 @@
 /* ─── BASE ─────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 .rsvp-page {
-  min-height: 100vh;
+  height: 98vh;
+  max-height: 98vh;
   font-family: var(--sans);
   font-size: 14px;
   color: var(--text);
@@ -84,6 +85,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
 }
 
 /* ─── ANIMATED SVG BACKGROUND ───────────────────────────────── */
@@ -99,7 +101,7 @@
 
 /* ─── TOP NAV ──────────────────────────────────────────────── */
 .rf-topnav {
-  height: 56px;
+  height: 52px;
   flex-shrink: 0;
   padding: 0 2.5rem;
   display: flex; align-items: center; justify-content: space-between;
@@ -136,7 +138,6 @@
 .rf-prog-track { height: 2px; background: rgba(0,0,0,.06); }
 .rf-prog-fill {
   height: 100%;
-  /* gold → rose gradient for the progress bar — shows wedding warmth */
   background: linear-gradient(90deg, var(--gold), var(--rose-light));
   transition: width .55s var(--ease);
   border-radius: 0 2px 2px 0;
@@ -145,7 +146,7 @@
   display: flex;
   max-width: 860px;
   margin: 0 auto;
-  padding: .65rem 1.5rem .6rem;
+  padding: .55rem 1.5rem .5rem;
   gap: .25rem;
   align-items: center;
   justify-content: center;
@@ -176,7 +177,6 @@
 }
 .rf-si-num { font-size: .58rem; font-weight: 600; }
 
-/* Done steps — rose instead of plain blue */
 .rf-si.done .rf-si-dot {
   background: var(--rose); border-color: var(--rose-dark); color: #fff;
 }
@@ -194,7 +194,6 @@
   transition: color .2s;
 }
 .rf-si.active .rf-si-lbl { color: var(--gold-dark); font-weight: 600; }
-/* Done label — rose tone */
 .rf-si.done .rf-si-lbl   { color: var(--rose-dark); }
 
 /* ─── STEP ANIMATION ────────────────────────────────────────── */
@@ -210,24 +209,29 @@
 .rf-step-enter--back    { animation: rf-step-back    .25s var(--ease) both; }
 
 /* ─── MAIN LAYOUT ───────────────────────────────────────────── */
+/* Remaining height after nav (52px) + stepper (~52px) ≈ 104px total */
 .rf-page-wrap {
   flex: 1;
+  min-height: 0;          /* critical: lets flexbox child shrink */
   display: grid;
-  grid-template-columns: 1fr 220px;
+  grid-template-columns: 1fr 210px;
   gap: 0;
-  padding: 1.8rem 2.5rem 2rem 2rem;
+  padding: 1.2rem 2rem 1.2rem 1.8rem;
   max-width: 1060px;
   width: 100%;
   margin: 0 auto;
   align-items: start;
   position: relative;
   z-index: 10;
+  overflow: hidden;       /* no outer scroll */
 }
-.rf-page-wrap--vh {
-  min-height: calc(98vh - 112px);
-  align-items: center;
+
+.rf-card-col--fit {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
 }
-.rf-card-col--fit  { display: flex; flex-direction: column; }
 
 /* ─── FORM AREA ─────────────────────────────────────────────── */
 .rf-form-card {
@@ -236,26 +240,25 @@
   border-radius: 0;
   box-shadow: none;
   display: flex; flex-direction: column;
-  padding-right: 2rem;
+  padding-right: 1.8rem;
+  height: 100%;
+  min-height: 0;
 }
-.rf-form-card::before { display: none; }
 
 /* ─── CARD HEAD ────────────────────────────────────────────── */
 .rf-form-card-head {
-  padding: 0 0 1.4rem 0;
+  padding: 0 0 1rem 0;
   background: transparent;
   border-bottom: 1px solid rgba(184,150,46,.2);
-  margin-bottom: 1.6rem;
-  position: relative;
-  overflow: visible;
+  margin-bottom: 1.2rem;
+  flex-shrink: 0;
 }
-.rf-form-card-head::after { display: none; }
-.rf-form-card-head--compact { padding-bottom: 1rem; margin-bottom: 1.2rem; }
+.rf-form-card-head--compact { padding-bottom: .75rem; margin-bottom: .9rem; }
 
 .rf-step-num {
   font-size: .52rem; font-weight: 600;
   letter-spacing: .38em; text-transform: uppercase;
-  color: var(--gold-dark); margin-bottom: .32rem;
+  color: var(--gold-dark); margin-bottom: .28rem;
   display: flex; align-items: center; gap: .45rem; font-family: var(--sans);
 }
 .rf-step-num::before { content: ''; width: 20px; height: 1.5px; background: var(--gold); }
@@ -263,25 +266,34 @@
 
 .rf-step-title {
   font-family: var(--serif);
-  font-size: clamp(2rem, 4vw, 2.6rem);
+  font-size: clamp(1.7rem, 3.5vw, 2.3rem);
   font-weight: 500; color: var(--text);
-  line-height: 1.1; margin-bottom: .3rem; letter-spacing: -.01em;
+  line-height: 1.1; margin-bottom: .25rem; letter-spacing: -.01em;
 }
-.rf-step-title--sm { font-size: clamp(1.6rem, 3vw, 2.1rem); margin-bottom: .2rem; }
+.rf-step-title--sm { font-size: clamp(1.4rem, 2.5vw, 1.9rem); margin-bottom: .18rem; }
 
 .rf-step-desc {
-  font-size: .85rem;
+  font-size: .82rem;
   font-weight: 400;
   color: var(--text-mid);
-  line-height: 1.7; margin: 0;
+  line-height: 1.6; margin: 0;
 }
-.rf-step-desc--sm { font-size: .82rem; }
 
-/* ─── CARD BODY ────────────────────────────────────────────── */
+/* ─── CARD BODY — SCROLLABLE INNER AREA ─────────────────────── */
 .rf-form-card-body {
-  padding: 0;
-  margin-bottom: 1.8rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: .3rem;
+  margin-bottom: 1rem;
+  /* subtle scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(184,150,46,.25) transparent;
 }
+.rf-form-card-body::-webkit-scrollbar { width: 4px; }
+.rf-form-card-body::-webkit-scrollbar-track { background: transparent; }
+.rf-form-card-body::-webkit-scrollbar-thumb { background: rgba(184,150,46,.3); border-radius: 4px; }
 
 /* ─── FIELD GROUPS ────────────────────────────────────────── */
 .rf-field-group-box {
@@ -290,45 +302,60 @@
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,0.75);
   border-radius: var(--r-lg);
-  padding: 1.2rem 1.4rem .8rem;
-  margin-bottom: 1.2rem;
+  padding: 1rem 1.2rem .7rem;
+  margin-bottom: 1rem;
   box-shadow: 0 2px 16px rgba(0,0,0,.04);
 }
 .rf-field-group-box:last-child { margin-bottom: 0; }
+
+/* ── Section label — clear, readable, serif + stronger color ── */
 .rf-field-group-label {
   font-family: var(--serif);
-  font-size: .88rem; font-weight: 500;
-  color: var(--text-mid);
-  margin-bottom: .75rem;
-  padding-bottom: .45rem;
-  border-bottom: 1px solid rgba(184,150,46,.18);
-  letter-spacing: .02em;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);            /* was text-mid — now full contrast */
+  margin-bottom: .65rem;
+  padding-bottom: .4rem;
+  border-bottom: 1px solid rgba(184,150,46,.22);
+  letter-spacing: .01em;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
 }
+.rf-field-group-label::before {
+  content: '';
+  width: 3px; height: 1em;
+  background: linear-gradient(to bottom, var(--gold), var(--rose));
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
 .rf-field-group {
   background: rgba(255,255,255,0.55);
   border-radius: var(--r-lg);
-  padding: 1.1rem 1.3rem .55rem;
-  margin-bottom: 1.2rem;
+  padding: 1rem 1.2rem .5rem;
+  margin-bottom: 1rem;
   border: 1px solid rgba(255,255,255,0.7);
   backdrop-filter: blur(8px);
 }
 
 /* ─── FIELDS ────────────────────────────────────────────────── */
-.rf-field { margin-bottom: 1.2rem; position: relative; }
-.rf-field--compact { margin-bottom: .8rem; }
+.rf-field { margin-bottom: 1rem; position: relative; }
+.rf-field--compact { margin-bottom: .7rem; }
 
 .rf-field label {
   display: flex; align-items: center; gap: .3rem;
-  font-size: .62rem; font-weight: 600;
-  letter-spacing: .15em; text-transform: uppercase;
-  color: var(--text-mid); margin-bottom: .45rem;
+  font-size: .68rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-mid);        /* was text-mid at low contrast — now clearly visible */
+  margin-bottom: .38rem;
   font-family: var(--sans);
 }
-.rf-field--compact label { margin-bottom: .3rem; }
+.rf-field--compact label { margin-bottom: .25rem; }
 
 .rf-field input, .rf-field textarea {
   width: 100%;
-  padding: .82rem 1.05rem;
+  padding: .75rem 1rem;
   border: 1.5px solid rgba(255,255,255,0.7);
   background: rgba(255,255,255,0.72);
   backdrop-filter: blur(8px);
@@ -339,7 +366,7 @@
   -webkit-appearance: none;
   box-shadow: 0 1px 6px rgba(0,0,0,.04);
 }
-.rf-field--compact input { padding: .65rem .95rem; }
+.rf-field--compact input { padding: .6rem .9rem; }
 .rf-field input:hover, .rf-field textarea:hover {
   border-color: rgba(184,150,46,.4);
   background: rgba(255,255,255,0.85);
@@ -349,11 +376,11 @@
   background: rgba(255,255,255,0.95);
   box-shadow: var(--sh-glow);
 }
-.rf-field textarea { resize: vertical; min-height: 110px; line-height: 1.65; }
-.rf-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+.rf-field textarea { resize: vertical; min-height: 100px; line-height: 1.65; }
+.rf-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
 .rf-field-hint {
-  font-size: .66rem; color: var(--text-light);
-  margin-top: .3rem; line-height: 1.5;
+  font-size: .67rem; color: var(--text-light);
+  margin-top: .28rem; line-height: 1.5;
   display: flex; align-items: center; gap: .28rem;
 }
 .rf-field-hint::before { content: ''; width: 10px; height: 1px; background: rgba(0,0,0,.15); flex-shrink: 0; }
@@ -380,9 +407,9 @@
   display: flex; align-items: center;
   padding: 0 .7rem; border-right: 1.5px solid rgba(0,0,0,.08);
   background: rgba(248,246,240,0.7); gap: .35rem; flex-shrink: 0;
-  cursor: pointer; height: 100%; min-height: 44px;
+  cursor: pointer; height: 100%; min-height: 42px;
 }
-.rf-field--compact .rf-phone-wrap .PhoneInputCountry { min-height: 38px; }
+.rf-field--compact .rf-phone-wrap .PhoneInputCountry { min-height: 36px; }
 .rf-phone-wrap .PhoneInputCountryIcon {
   width: 22px; height: 15px; border-radius: 2px; overflow: hidden;
   box-shadow: 0 1px 3px rgba(0,0,0,.12); flex-shrink: 0;
@@ -393,7 +420,7 @@
 }
 .rf-phone-wrap .PhoneInputInput {
   flex: 1; border: none; outline: none; background: transparent;
-  padding: .65rem .95rem;
+  padding: .6rem .9rem;
   font-family: var(--sans); font-size: .88rem; color: var(--text);
 }
 .rf-phone-wrap .PhoneInputInput::placeholder { color: var(--text-faint); }
@@ -401,7 +428,7 @@
 /* ─── SEARCHABLE SELECT ────────────────────────────────────── */
 .rf-csel-wrap { position: relative; }
 .rf-csel-btn {
-  width: 100%; padding: .82rem 2.4rem .82rem 1.05rem;
+  width: 100%; padding: .75rem 2.2rem .75rem 1rem;
   border: 1.5px solid rgba(255,255,255,0.7); background: rgba(255,255,255,0.72);
   backdrop-filter: blur(8px);
   font-family: var(--sans); font-size: .88rem; color: var(--text);
@@ -440,13 +467,13 @@
   to   { opacity: 1; transform: translateY(0)   scaleY(1); }
 }
 .rf-csel-search {
-  padding: .62rem .95rem; border: none; border-bottom: 1px solid rgba(0,0,0,.07);
+  padding: .6rem .9rem; border: none; border-bottom: 1px solid rgba(0,0,0,.07);
   font-family: var(--sans); font-size: .84rem; color: var(--text);
   outline: none; background: rgba(248,246,240,.6); flex-shrink: 0;
 }
 .rf-csel-list { overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .rf-csel-opt {
-  width: 100%; padding: .62rem .95rem; font-size: .84rem; cursor: pointer;
+  width: 100%; padding: .6rem .9rem; font-size: .84rem; cursor: pointer;
   display: flex; align-items: center;
   border: none; border-bottom: 1px solid rgba(0,0,0,.025);
   background: transparent; text-align: left; color: var(--text);
@@ -460,39 +487,41 @@
 .rf-travel-grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  align-items: start; margin-bottom: 1rem;
+  align-items: start; margin-bottom: .8rem;
 }
 .rf-travel-card {
   background: rgba(255,255,255,0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,0.75);
-  padding: 1.05rem 1.1rem .85rem;
+  padding: .9rem 1rem .75rem;
   transition: border-color .2s, box-shadow .2s;
   box-shadow: 0 2px 16px rgba(0,0,0,.04);
 }
 .rf-travel-card:focus-within { border-color: var(--gold); box-shadow: 0 0 0 2.5px var(--gold-dim); }
 .rf-travel-from { border-radius: var(--r-lg) 0 0 var(--r-lg); border-right: none; }
 .rf-travel-to   { border-radius: 0 var(--r-lg) var(--r-lg) 0; border-left: none; }
-.rf-travel-card .rf-field { margin-bottom: .7rem; }
+.rf-travel-card .rf-field { margin-bottom: .6rem; }
 .rf-travel-card .rf-field:last-child { margin-bottom: 0; }
+
+/* Travel card label — clear, serif, good contrast */
 .rf-travel-card-label {
   display: flex; align-items: center; gap: .48rem;
-  font-family: var(--serif); font-size: .92rem; font-weight: 500;
-  color: var(--text); margin-bottom: .8rem; letter-spacing: .01em;
+  font-family: var(--serif); font-size: 1rem; font-weight: 600;
+  color: var(--text);             /* was text — keeping full contrast */
+  margin-bottom: .65rem; letter-spacing: .01em;
 }
 .rf-travel-svg-icon { width: 15px; height: 15px; flex-shrink: 0; color: var(--gold-dark); stroke: var(--gold-dark); }
 .rf-travel-divider {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  z-index: 2; margin-top: 2.6rem; padding: 0 2px;
+  z-index: 2; margin-top: 2.4rem; padding: 0 2px;
 }
 .rf-travel-divider-line {
   width: 1.5px; flex: 1;
   background: linear-gradient(to bottom, transparent, rgba(0,0,0,.1), transparent);
   min-height: 18px;
 }
-/* Travel divider dot — rose accent */
 .rf-travel-divider-dot {
   width: 30px; height: 30px; border-radius: 50%;
   background: linear-gradient(135deg, #2c1f0e 0%, var(--rose-dark) 100%);
@@ -504,7 +533,7 @@
 
 /* ─── DATE INPUT ─────────────────────────────────────────────── */
 .rf-date-input {
-  width: 100%; padding: .82rem 1.05rem;
+  width: 100%; padding: .75rem 1rem;
   border: 1.5px solid rgba(255,255,255,0.7); background: rgba(255,255,255,0.72);
   backdrop-filter: blur(8px);
   font-family: var(--sans); font-size: .88rem; color: var(--text);
@@ -523,8 +552,8 @@
 /* ─── TRANSPORT BOX ───────────────────────────────────────────── */
 .rf-transport-box {
   display: flex; gap: .85rem; align-items: flex-start;
-  border-radius: var(--r-lg); padding: 1rem 1.2rem;
-  font-size: .85rem; line-height: 1.7; margin-top: 0;
+  border-radius: var(--r-lg); padding: .85rem 1.1rem;
+  font-size: .84rem; line-height: 1.7; margin-top: 0;
   border: 1px solid transparent;
   backdrop-filter: blur(8px);
   animation: rf-fadein .28s var(--ease);
@@ -538,15 +567,16 @@
 .rf-tb-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
 
 /* ─── GUESTS ───────────────────────────────────────────────────── */
-.rf-guests-group         { margin-bottom: 1.4rem; }
-.rf-guests-group--compact{ margin-bottom: 1rem; }
+.rf-guests-group         { margin-bottom: 1.2rem; }
+.rf-guests-group--compact{ margin-bottom: .8rem; }
 .rf-guests-group:last-of-type { margin-bottom: 0; }
-.rf-sec-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .7rem; }
+.rf-sec-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; }
+
+/* Section label — Adults / Children — clear serif, good size */
 .rf-sec-label {
-  font-family: var(--serif); font-size: 1.1rem; font-weight: 500;
+  font-family: var(--serif); font-size: 1.05rem; font-weight: 600;
   color: var(--text); display: flex; align-items: center; gap: .5rem; margin: 0;
 }
-/* Section label accent bar — gold → rose gradient */
 .rf-sec-label::before {
   content: ''; width: 3px; height: 1em;
   background: linear-gradient(to bottom, var(--gold), var(--rose)); border-radius: 2px; flex-shrink: 0;
@@ -559,9 +589,9 @@
 }
 .rf-empty-hint {
   display: flex; align-items: center; gap: .65rem;
-  padding: .62rem 1rem;
+  padding: .55rem .9rem;
   border: 1.5px dashed rgba(0,0,0,.1); border-radius: var(--r);
-  margin-bottom: .6rem; color: var(--text-light);
+  margin-bottom: .5rem; color: var(--text-light);
   font-size: .74rem; font-style: italic;
   background: rgba(255,255,255,0.4);
 }
@@ -572,21 +602,24 @@
   font-size: .76rem; font-style: normal; color: var(--text-faint);
   flex-shrink: 0; line-height: 1;
 }
+
+/* Pax card — Adult 1, Adult 2, Child 1 etc */
 .rf-pax-card {
   border: 1px solid rgba(255,255,255,0.7); border-radius: var(--r-lg);
-  padding: .95rem 1.1rem .5rem; margin-bottom: .55rem;
+  padding: .85rem 1rem .45rem; margin-bottom: .5rem;
   background: rgba(255,255,255,0.55);
   backdrop-filter: blur(8px);
   box-shadow: 0 1px 8px rgba(0,0,0,.04); transition: box-shadow .2s;
 }
-.rf-pax-card--compact { padding: .62rem .9rem .4rem; }
+.rf-pax-card--compact { padding: .55rem .85rem .35rem; }
 .rf-pax-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.07); }
+
+/* Adult 1 / Child 1 title — full contrast, serif */
 .rf-pax-title {
-  font-family: var(--serif); font-size: .92rem; font-weight: 500;
-  color: var(--text); margin-bottom: .48rem;
+  font-family: var(--serif); font-size: .95rem; font-weight: 600;
+  color: var(--text); margin-bottom: .42rem;
   display: flex; align-items: center; gap: .45rem;
 }
-/* Pax badge — rose tone instead of plain dark */
 .rf-pax-badge {
   width: 18px; height: 18px; border-radius: 50%;
   background: linear-gradient(135deg, #2c1f0e 0%, var(--rose-dark) 100%);
@@ -605,7 +638,7 @@
 /* ─── ADD BUTTON ─────────────────────────────────────────────────── */
 .rf-add-btn {
   display: inline-flex; align-items: center; gap: .45rem;
-  padding: .46rem 1.05rem;
+  padding: .42rem .95rem;
   border: 1.5px solid var(--gold); background: rgba(255,255,255,0.55);
   color: var(--gold-dark); font-family: var(--sans); font-size: .68rem; font-weight: 600;
   border-radius: 20px; cursor: pointer; transition: all .2s; letter-spacing: .04em;
@@ -621,11 +654,12 @@
 .rf-nav-btns {
   display: flex; gap: .6rem; align-items: center;
   padding: 0;
-  margin-top: .4rem;
+  flex-shrink: 0;
+  margin-top: .3rem;
 }
 
 .rf-btn-back {
-  padding: .72rem .9rem;
+  padding: .68rem .85rem;
   border-radius: var(--r); font-family: var(--sans); font-size: .72rem; font-weight: 500;
   cursor: pointer; transition: all .2s; letter-spacing: .02em;
   background: transparent; border: none; color: var(--text-light);
@@ -635,14 +669,12 @@
 .rf-btn-back:hover { color: var(--text); }
 .rf-btn-back:hover::before { transform: translateX(-3px); }
 
-/* Next button — gold → rose gradient for visual interest */
 .rf-btn-next {
-  flex: 1; padding: .78rem 1.4rem;
+  flex: 1; padding: .72rem 1.3rem;
   border-radius: 50px; font-family: var(--sans); font-size: .72rem; font-weight: 700;
   cursor: pointer; transition: all .22s var(--ease); letter-spacing: .1em; text-transform: uppercase;
   background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--rose) 100%);
-  color: #fff;
-  border: none;
+  color: #fff; border: none;
   box-shadow: 0 3px 16px rgba(184,150,46,.35), 0 1px 0 rgba(255,255,255,.15) inset;
   display: flex; align-items: center; justify-content: center; gap: .45rem;
   text-shadow: 0 1px 2px rgba(0,0,0,.18);
@@ -656,14 +688,12 @@
 .rf-btn-next:hover svg { transform: translateX(3px); }
 .rf-btn-next:active { transform: translateY(0); }
 
-/* Submit button — rose dominant for final CTA, feels celebratory */
 .rf-btn-submit {
-  flex: 1; padding: .78rem 1.4rem;
+  flex: 1; padding: .72rem 1.3rem;
   border-radius: 50px; font-family: var(--sans); font-size: .72rem; font-weight: 700;
   cursor: pointer; transition: all .22s var(--ease); letter-spacing: .1em; text-transform: uppercase;
   background: linear-gradient(135deg, var(--rose-light) 0%, var(--rose) 60%, var(--rose-dark) 100%);
-  color: #fff;
-  border: none;
+  color: #fff; border: none;
   box-shadow: 0 3px 16px var(--rose-glow), 0 1px 0 rgba(255,255,255,.15) inset;
   display: flex; align-items: center; justify-content: center; gap: .45rem;
   text-shadow: 0 1px 2px rgba(0,0,0,.2);
@@ -685,7 +715,7 @@
 /* ─── REVIEW ───────────────────────────────────────────────────── */
 .rf-rev-block {
   border: 1px solid rgba(255,255,255,0.7); border-radius: var(--r-lg);
-  overflow: hidden; margin-bottom: 1rem;
+  overflow: hidden; margin-bottom: .8rem;
   background: rgba(255,255,255,0.55);
   backdrop-filter: blur(12px);
   box-shadow: 0 2px 12px rgba(0,0,0,.04); transition: box-shadow .2s;
@@ -693,11 +723,11 @@
 .rf-rev-block:hover { box-shadow: 0 4px 20px rgba(0,0,0,.07); }
 .rf-rev-head {
   display: flex; align-items: center; justify-content: space-between;
-  padding: .7rem 1.1rem;
+  padding: .65rem 1rem;
   background: rgba(248,246,240,0.6);
   border-bottom: 1px solid rgba(0,0,0,.06);
 }
-.rf-rev-head-title { font-family: var(--serif); font-size: .95rem; font-weight: 500; color: var(--text); }
+.rf-rev-head-title { font-family: var(--serif); font-size: .95rem; font-weight: 600; color: var(--text); }
 .rf-rev-edit {
   font-size: .58rem; font-weight: 600; color: var(--rose-dark);
   background: var(--rose-pale); border: 1px solid rgba(184,80,96,.3);
@@ -707,43 +737,42 @@
 .rf-rev-edit:hover { background: var(--rose); color: #fff; box-shadow: 0 2px 8px var(--rose-glow); }
 .rf-rev-row {
   display: flex; justify-content: space-between; align-items: baseline;
-  padding: .5rem 1.1rem; font-size: .82rem;
+  padding: .45rem 1rem; font-size: .82rem;
   border-bottom: 1px solid rgba(0,0,0,.03); transition: background .12s;
 }
 .rf-rev-row:hover { background: rgba(253,246,224,0.35); }
 .rf-rev-row:last-child { border-bottom: none; }
 .rf-rk { color: var(--text-light); font-size: .7rem; flex-shrink: 0; margin-right: .45rem; }
 .rf-rv { font-weight: 500; color: var(--text); text-align: right; word-break: break-word; display: flex; align-items: center; gap: .3rem; }
-.rf-rev-transport-note { margin: 0 1rem .7rem; padding: .52rem .85rem; border-radius: var(--r); font-size: .78rem; }
+.rf-rev-transport-note { margin: 0 1rem .65rem; padding: .5rem .85rem; border-radius: var(--r); font-size: .78rem; }
 .rf-rev-transport-note.green  { background: var(--sage-bg);  color: var(--sage-text);  border: 1px solid var(--sage-border); }
 .rf-rev-transport-note.yellow { background: var(--amber-bg); color: var(--amber-text); border: 1px solid var(--amber-border); }
 
 /* ─── SIDEBAR ───────────────────────────────────────────────────── */
 .rf-sidebar {
   position: sticky;
-  top: 2.2rem;
-  padding-left: 2rem;
+  top: 1.2rem;
+  padding-left: 1.5rem;
   border-left: 1px solid rgba(184,150,46,.2);
+  height: 100%;
+  overflow: hidden;
 }
 
 .rf-sb-card {
   background: transparent;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
+  border: none; border-radius: 0; box-shadow: none;
   display: flex; flex-direction: column;
 }
-.rf-sb-card::before { display: none; }
 
 .rf-sb-img-wrap {
   position: relative;
-  margin-bottom: 1.4rem;
+  margin-bottom: 1.1rem;
   border-radius: var(--r-xl);
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0,0,0,.12);
 }
 .rf-sb-img {
-  width: 100%; height: 160px; object-fit: cover; display: block;
+  width: 100%; height: 140px; object-fit: cover; display: block;
   filter: brightness(.96) saturate(1.05);
 }
 .rf-sb-img-overlay {
@@ -752,34 +781,31 @@
   pointer-events: none;
 }
 
-.rf-sb-body {
-  padding: 0;
-  display: flex; flex-direction: column; gap: 0;
-}
+.rf-sb-body { padding: 0; display: flex; flex-direction: column; gap: 0; }
 
 .rf-sb-ornament {
   display: block; text-align: center;
   font-size: 1.1rem; color: var(--gold); opacity: .65;
-  margin-bottom: .28rem; font-family: Georgia, serif; line-height: 1;
+  margin-bottom: .22rem; font-family: Georgia, serif; line-height: 1;
 }
 .rf-sb-name {
   font-family: var(--serif);
-  font-size: 1.55rem; font-weight: 600;
+  font-size: 1.45rem; font-weight: 600;
   color: #2c1f0e;
-  margin-bottom: .1rem;
+  margin-bottom: .08rem;
   text-align: center;
   letter-spacing: .02em;
 }
 .rf-sb-sub {
-  font-size: .58rem; font-weight: 600;
-  letter-spacing: .25em; text-transform: uppercase;
+  font-size: .55rem; font-weight: 600;
+  letter-spacing: .22em; text-transform: uppercase;
   color: var(--text-light);
-  text-align: center; margin-bottom: 1rem;
+  text-align: center; margin-bottom: .85rem;
 }
-.rf-sb-rows { display: flex; flex-direction: column; gap: .45rem; margin-bottom: .9rem; }
+.rf-sb-rows { display: flex; flex-direction: column; gap: .38rem; margin-bottom: .75rem; }
 .rf-sb-row {
   display: flex; align-items: flex-start; gap: .5rem;
-  font-size: .78rem; color: var(--text-mid);
+  font-size: .76rem; color: var(--text-mid);
 }
 .rf-sb-row-icon { color: var(--gold); flex-shrink: 0; margin-top: 1px; }
 .rf-sb-map-link { color: var(--text-mid); text-decoration: none; }
@@ -787,15 +813,15 @@
 .rf-sb-sep {
   height: 1px;
   background: linear-gradient(to right, transparent, rgba(184,150,46,.25), transparent);
-  margin: .7rem 0;
+  margin: .55rem 0;
 }
 .rf-sb-maps-btn-wrap { text-align: center; }
 .rf-sb-maps-btn {
   display: inline-flex; align-items: center; gap: .4rem;
-  padding: .5rem 1rem; border-radius: 20px;
+  padding: .45rem .9rem; border-radius: 20px;
   border: 1px solid rgba(184,150,46,.35);
   background: rgba(255,255,255,0.5);
-  font-family: var(--sans); font-size: .7rem; font-weight: 500;
+  font-family: var(--sans); font-size: .68rem; font-weight: 500;
   color: var(--text-mid); text-decoration: none;
   transition: all .2s;
 }
@@ -803,7 +829,7 @@
 
 .rf-sb-contact {
   display: flex; align-items: center; gap: .4rem;
-  font-size: .72rem; color: var(--text-light);
+  font-size: .7rem; color: var(--text-light);
   justify-content: center;
 }
 .rf-sb-contact-icon { color: var(--gold); flex-shrink: 0; }
@@ -812,30 +838,34 @@
 
 /* ─── RESPONSIVE ───────────────────────────────────────────────── */
 @media (max-width: 900px) {
+  html, body { overflow: auto; }
+  .rsvp-page { height: auto; max-height: none; overflow: visible; }
   .rf-page-wrap {
     grid-template-columns: 1fr;
-    padding: 1.5rem 1.5rem 2rem;
+    padding: 1.2rem 1.2rem 1.8rem;
+    overflow: visible;
   }
+  .rf-form-card { height: auto; }
+  .rf-form-card-body { overflow: visible; max-height: none; }
   .rf-sidebar {
     border-left: none;
     border-top: 1px solid rgba(184,150,46,.18);
     padding-left: 0;
-    padding-top: 1.5rem;
-    margin-top: 1.5rem;
+    padding-top: 1.2rem;
+    margin-top: 1.2rem;
+    height: auto;
   }
   .rf-form-card { padding-right: 0; }
-  .rf-steps-strip { gap: .15rem; padding: .55rem .5rem; }
+  .rf-steps-strip { gap: .15rem; padding: .5rem .5rem; }
   .rf-si-lbl { display: none; }
   .rf-si + .rf-si::before { width: 14px; }
 }
 @media (max-width: 600px) {
-  .rf-page-wrap { padding: 1rem 1rem 1.5rem; }
+  .rf-page-wrap { padding: .8rem .9rem 1.2rem; }
   .rf-topnav { padding: 0 1rem; }
   .rf-field-row { grid-template-columns: 1fr; }
-  .rf-travel-grid {
-    grid-template-columns: 1fr;
-  }
-  .rf-travel-divider { flex-direction: row; margin-top: 0; margin: .5rem 0; padding: 0; }
+  .rf-travel-grid { grid-template-columns: 1fr; }
+  .rf-travel-divider { flex-direction: row; margin-top: 0; margin: .4rem 0; padding: 0; }
   .rf-travel-divider-line { width: 1px; height: 1.5px; flex: 1; min-height: unset;
     background: linear-gradient(to right, transparent, rgba(0,0,0,.1), transparent); }
   .rf-travel-from { border-radius: var(--r-lg) var(--r-lg) 0 0; border-right: 1px solid rgba(255,255,255,0.75); border-bottom: none; }

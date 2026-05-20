@@ -542,14 +542,14 @@ export default function RSVPForm() {
 
                   {form.city && (
                     <div className={`rf-transport-box ${isJaipur ? 'green' : 'yellow'}`}>
-                      <div className="rf-tb-icon">{isJaipur ? '🚗' : 'ℹ️'}</div>
+                      <div className="rf-tb-icon">{isJaipur ? '🚗' : '🗺️'}</div>
                       <div>
                         {isJaipur ? (
-                          <><strong>You are all set!</strong><br />
-                          Complimentary cab service is available from Jaipur. We will coordinate your pickup and share the details closer to the date.</>
+                          <><strong>Complimentary cab from Jaipur — you&apos;re all set!</strong><br />
+                          A free cab is available for guests travelling from Jaipur. We will coordinate your pickup and share all details closer to the date.</>
                         ) : (
-                          <><strong>Heads up about your journey to Jaipur</strong><br />
-                          You are arriving in <strong>{form.city.district}, {form.city.state}</strong>. Please note that our complimentary cab service operates from Jaipur only. However, we are happy to help you plan your journey &mdash; feel free to reach out and we will assist you!</>
+                          <><strong>Travelling from outside Jaipur?</strong><br />
+                          You are arriving in <strong>{form.city.district}, {form.city.state}</strong>. Please note that our complimentary cab service is available <strong>from Jaipur only</strong>. However, we would love to help you plan your journey to Jaipur from anywhere in India — reach out to us at <a href="mailto:contact@bride-groom.com" style={{color:'inherit',textDecoration:'underline'}}>contact@bride-groom.com</a> and we will sort it out together!</>
                         )}
                       </div>
                     </div>
@@ -678,7 +678,7 @@ export default function RSVPForm() {
                       <div className={`rf-rev-transport-note ${isJaipur ? 'green' : 'yellow'}`}>
                         {isJaipur
                           ? 'Complimentary cab from Jaipur included — we will share pickup details closer to the date.'
-                          : `Arriving in ${form.city.district}, ${form.city.state} — please arrange your travel to Jaipur. We are happy to help you plan!`
+                          : `Arriving in ${form.city.district}, ${form.city.state} — complimentary cab is from Jaipur only. We are happy to help you plan your journey to Jaipur!`
                         }
                       </div>
                     )}

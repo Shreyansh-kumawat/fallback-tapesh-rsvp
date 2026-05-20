@@ -39,53 +39,45 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  // Better positioning with useLayoutEffect
+  // Positioning — no setTimeout, calculate immediately so popup snaps right below trigger
   useLayoutEffect(() => {
     if (!open || !triggerRef.current) return
 
-    const calcPosition = () => {
-      const rect = triggerRef.current.getBoundingClientRect()
-      const vw = window.innerWidth
-      const vh = window.innerHeight
+    const rect = triggerRef.current.getBoundingClientRect()
+    const vw = window.innerWidth
+    const vh = window.innerHeight
 
-      const POPUP_W = 300
-      const POPUP_H = 420   // increased buffer
-      const GAP = 12
+    const POPUP_W = 300
+    const POPUP_H = 420
+    const GAP = 4
 
-      // Prefer below the input
-      let spaceBelow = vh - rect.bottom
-      let spaceAbove = rect.top
+    const spaceBelow = vh - rect.bottom
+    const spaceAbove = rect.top
+    const preferUp = spaceBelow < POPUP_H + GAP && spaceAbove > POPUP_H + GAP
 
-      const preferUp = spaceBelow < POPUP_H + GAP * 2 && spaceAbove > POPUP_H + GAP * 2
+    setOpenUp(preferUp)
 
-      setOpenUp(preferUp)
+    // Horizontally center-align popup with trigger
+    let left = rect.left + (rect.width / 2) - (POPUP_W / 2)
+    const maxLeft = vw - POPUP_W - 16
+    left = Math.max(16, Math.min(left, maxLeft))
 
-      // Horizontal - center align with trigger
-      let left = rect.left + (rect.width / 2) - (POPUP_W / 2)
-      const maxLeft = vw - POPUP_W - 16
-      left = Math.max(16, Math.min(left, maxLeft))
-
-      const style = {
-        position: 'fixed',
-        width: `${Math.min(POPUP_W, vw - 32)}px`,
-        left: `${left}px`,
-        zIndex: 99999,
-      }
-
-      if (preferUp) {
-        style.top = 'auto'
-        style.bottom = `${vh - rect.top + GAP}px`
-      } else {
-        style.top = `${rect.bottom + GAP}px`
-        style.bottom = 'auto'
-      }
-
-      setPopupStyle(style)
+    const style = {
+      position: 'fixed',
+      width: `${Math.min(POPUP_W, vw - 32)}px`,
+      left: `${left}px`,
+      zIndex: 99999,
     }
 
-    // Small delay + layout effect
-    const timer = setTimeout(calcPosition, 0)
-    return () => clearTimeout(timer)
+    if (preferUp) {
+      style.top = 'auto'
+      style.bottom = `${vh - rect.top + GAP}px`
+    } else {
+      style.top = `${rect.bottom + GAP}px`
+      style.bottom = 'auto'
+    }
+
+    setPopupStyle(style)
   }, [open])
 
   const handleOpen = () => {

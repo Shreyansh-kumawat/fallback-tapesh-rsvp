@@ -43,7 +43,6 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  // Recalculate position on open AND on scroll/resize while open
   const calcPosition = () => {
     if (!triggerRef.current) return
     const rect = triggerRef.current.getBoundingClientRect()
@@ -59,7 +58,6 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     const preferUp = spaceBelow < POPUP_H + GAP && spaceAbove >= POPUP_H + GAP
     setOpenUp(preferUp)
 
-    // Align left edge of popup with left edge of trigger, clamp to viewport
     let left = rect.left
     const maxLeft = vw - POPUP_W - 8
     left = Math.max(8, Math.min(left, maxLeft))
@@ -72,11 +70,17 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     }
 
     if (preferUp) {
+      // open upward: clamp so it doesn't go above viewport top
+      const maxH = Math.min(POPUP_H, spaceAbove - GAP)
       style.top = 'auto'
       style.bottom = `${vh - rect.top + GAP}px`
+      style.maxHeight = `${maxH}px`
     } else {
+      // open downward: clamp so it doesn't go below viewport bottom
+      const maxH = Math.min(POPUP_H, spaceBelow - GAP)
       style.top = `${rect.bottom + GAP}px`
       style.bottom = 'auto'
+      style.maxHeight = `${Math.max(maxH, 200)}px`
     }
 
     setPopupStyle(style)
@@ -272,7 +276,6 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
         </svg>
       </button>
 
-      {/* Popup rendered via portal into document.body — escapes any overflow/scroll container */}
       {createPortal(popup, document.body)}
     </div>
   )

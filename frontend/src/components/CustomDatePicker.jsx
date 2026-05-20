@@ -12,7 +12,7 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
   const today = new Date()
   const initDate = value ? new Date(value + 'T00:00:00') : null
   const [open, setOpen] = useState(false)
-  const [popupStyle, setPopupStyle] = useState({})
+  const [popupStyle, setPopupStyle] = useState({ position: 'fixed', visibility: 'hidden' })
   const [openUp, setOpenUp] = useState(false)
   const [viewYear, setViewYear] = useState(initDate ? initDate.getFullYear() : today.getFullYear())
   const [viewMonth, setViewMonth] = useState(initDate ? initDate.getMonth() : today.getMonth())
@@ -29,7 +29,7 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     }
   }, [value])
 
-  // Close on outside click — checks both wrapRef and popupRef (portal)
+  // Close on outside click
   useEffect(() => {
     const handler = e => {
       const clickedInsideWrap = wrapRef.current && wrapRef.current.contains(e.target)
@@ -50,11 +50,10 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     const vh = window.innerHeight
     const POPUP_W = Math.min(300, vw - 32)
     const POPUP_H = 320
-    const GAP = 4
+    const GAP = 6
 
     const spaceBelow = vh - rect.bottom
     const spaceAbove = rect.top
-    // Only flip upward if there genuinely isn't enough space below AND there is enough space above
     const preferUp = spaceBelow < POPUP_H + GAP && spaceAbove >= POPUP_H + GAP
     setOpenUp(preferUp)
 
@@ -67,27 +66,32 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
       width: `${POPUP_W}px`,
       left: `${left}px`,
       zIndex: 99999,
+      visibility: 'visible',
     }
 
     if (preferUp) {
-      // open upward: clamp so it doesn't go above viewport top
       const maxH = Math.min(POPUP_H, spaceAbove - GAP)
       style.top = 'auto'
       style.bottom = `${vh - rect.top + GAP}px`
       style.maxHeight = `${maxH}px`
     } else {
-      // open downward: clamp so it doesn't go below viewport bottom
-      const maxH = Math.min(POPUP_H, spaceBelow - GAP)
+      // Open directly below the trigger button
+      const maxH = Math.min(POPUP_H, Math.max(spaceBelow - GAP, 200))
       style.top = `${rect.bottom + GAP}px`
       style.bottom = 'auto'
-      style.maxHeight = `${Math.max(maxH, 200)}px`
+      style.maxHeight = `${maxH}px`
     }
 
     setPopupStyle(style)
   }
 
+  // Calculate position immediately when opening (synchronous via useLayoutEffect)
   useLayoutEffect(() => {
-    if (!open) return
+    if (!open) {
+      setPopupStyle({ position: 'fixed', visibility: 'hidden' })
+      return
+    }
+    // Flush synchronously before paint so popup appears in correct position
     calcPosition()
     window.addEventListener('scroll', calcPosition, true)
     window.addEventListener('resize', calcPosition)

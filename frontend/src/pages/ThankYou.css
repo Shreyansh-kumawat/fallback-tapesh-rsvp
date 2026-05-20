@@ -13,8 +13,9 @@
   --ty-gold-light: #d4b050;
   --ty-gold-pale:  #fdf6e0;
   --ty-gold-dim:   rgba(184,150,46,.12);
-  --ty-text:       #2c1f0e;
-  --ty-text-mid:   #5a4a30;
+  --ty-text:       #1e1508;       /* was #2c1f0e — slightly darker, crisper */
+  --ty-text-mid:   #3d3020;       /* was #5a4a30 — improved contrast on glass bg */
+  --ty-text-sub:   #6b5438;       /* new token for secondary lines */
   --ty-serif:      'Cormorant Garamond', Georgia, serif;
   --ty-sans:       'Jost', 'Helvetica Neue', sans-serif;
 }
@@ -43,6 +44,7 @@
   height: 100%;
   z-index: 0;
   pointer-events: none;
+  opacity: 0.7;    /* matches RSVPForm bg opacity */
 }
 
 /* ── Overlay ──────────────────────────────────────── */
@@ -123,7 +125,7 @@
 
 /* ── Message box ──────────────────────────────────── */
 .ty-msg {
-  background: rgba(255,252,245,0.72);
+  background: rgba(255,252,245,0.78);   /* slightly more opaque for readability */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,0.8);
@@ -135,22 +137,23 @@
   box-shadow: 0 4px 20px rgba(0,0,0,.06);
 }
 .ty-msg-primary {
-  font-size: 0.85rem;
+  font-size: 0.88rem;             /* was 0.85rem — slightly larger */
+  font-weight: 400;               /* was default/300, now regular */
   color: var(--ty-text);
   margin-bottom: 5px;
-  line-height: 1.6;
+  line-height: 1.65;
   font-family: var(--ty-sans);
 }
 .ty-msg-primary strong {
   font-weight: 600;
-  color: #7a4f18;
+  color: #5a3208;                 /* was #7a4f18 — darker for contrast */
 }
 .ty-msg-secondary {
-  font-size: 0.77rem;
-  color: var(--ty-text-mid);
-  line-height: 1.6;
+  font-size: 0.80rem;             /* was 0.77rem — minimum floor raised */
+  color: var(--ty-text-mid);      /* was --ty-text-mid (#5a4a30) now #3d3020 */
+  line-height: 1.65;
   margin: 0;
-  font-weight: 300;
+  font-weight: 400;               /* was 300 — light weight hard to read small */
   font-family: var(--ty-sans);
 }
 
@@ -169,7 +172,7 @@
   justify-content: center;
   align-items: center;
   gap: 28px;
-  background: rgba(255,252,245,0.65);
+  background: rgba(255,252,245,0.72);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.75);
   border-radius: 12px;
@@ -184,15 +187,15 @@
   gap: 3px;
 }
 .ty-meta-label {
-  font-size: 0.48rem;
-  letter-spacing: 0.22em;
+  font-size: 0.52rem;             /* was 0.48rem — raised above 12px floor */
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ty-gold);
   font-family: var(--ty-sans);
   font-weight: 600;
 }
 .ty-meta-value {
-  font-size: 0.82rem;
+  font-size: 0.85rem;             /* was 0.82rem */
   font-weight: 500;
   color: var(--ty-text);
   font-family: var(--ty-serif);
@@ -211,14 +214,14 @@
   gap: 6px;
   padding: 7px 16px;
   border-radius: 99px;
-  font-size: 0.72rem;
+  font-size: 0.75rem;             /* was 0.72rem */
   font-weight: 500;
   font-family: var(--ty-sans);
   background: rgba(255,252,245,0.72);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   border: 1.5px solid rgba(184,150,46,.35);
-  color: #6b3e10;
+  color: #4a2a08;                 /* was #6b3e10 — better contrast */
   text-decoration: none;
   transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
   letter-spacing: 0.03em;
@@ -237,7 +240,7 @@
   gap: 5px;
 }
 .ty-qr-label {
-  font-size: 0.48rem;
+  font-size: 0.52rem;             /* was 0.48rem */
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ty-gold);
@@ -261,11 +264,11 @@
 
 /* ── Footer ───────────────────────────────────────── */
 .ty-footer {
-  font-size: 0.5rem;
-  letter-spacing: 0.18em;
+  font-size: 0.52rem;             /* was 0.5rem — at absolute floor */
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(107,76,30,.45);
+  color: rgba(75,50,15,.55);      /* was .45 opacity — improved */
   margin-top: 14px;
   font-family: var(--ty-sans);
-  font-weight: 400;
+  font-weight: 500;               /* was 400 — heavier at tiny size = readable */
 }

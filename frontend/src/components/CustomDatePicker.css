@@ -64,24 +64,27 @@
 }
 .cdp-chevron.open { transform: rotate(180deg); }
 
-/* POPUP — fixed positioning to avoid clipping by parent overflow */
+/* POPUP — absolute positioning anchored to trigger */
 .cdp-popup {
-  position: fixed;
+  position: absolute;
   z-index: 99999;
-  width: 288px;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  min-width: 288px;
+  max-width: 320px;
   background: #fff;
   border: 1.5px solid var(--border);
   border-radius: var(--r-lg);
   box-shadow: 0 16px 48px rgba(0,0,0,.14), 0 4px 16px rgba(0,0,0,.07);
-  /* Clamp height so it never bleeds off the bottom of the viewport */
-  max-height: calc(100vh - 24px);
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   animation: cdp-in .18s cubic-bezier(.4,0,.2,1);
-  /* top/left set via JS inline style */
 }
 
+/* Open upward when not enough space below */
 .cdp-popup.open-up {
+  top: auto;
+  bottom: calc(100% + 6px);
   animation: cdp-in-up .18s cubic-bezier(.4,0,.2,1);
 }
 
@@ -102,10 +105,6 @@
   padding: .75rem 1rem .5rem;
   border-bottom: 1px solid var(--border);
   background: linear-gradient(135deg, #fffef9, #fdf8ee);
-  /* Stick header to top when popup itself scrolls */
-  position: sticky;
-  top: 0;
-  z-index: 1;
 }
 .cdp-header-center {
   display: flex;
@@ -243,10 +242,6 @@
   padding: .5rem .75rem .65rem;
   border-top: 1px solid var(--border);
   background: linear-gradient(135deg, #fffef9, #fdf8ee);
-  /* Stick footer to bottom when popup itself scrolls */
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
 }
 .cdp-today-btn {
   font-size: .72rem;
@@ -281,6 +276,8 @@
 /* Mobile: ensure popup fits within viewport */
 @media (max-width: 420px) {
   .cdp-popup {
-    width: min(288px, calc(100vw - 2rem));
+    min-width: unset;
+    width: 100%;
+    max-width: 100%;
   }
 }

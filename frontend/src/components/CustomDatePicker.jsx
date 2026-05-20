@@ -15,7 +15,6 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
   const initDate = value ? new Date(value + 'T00:00:00') : null
   const [open, setOpen] = useState(false)
   const [popupStyle, setPopupStyle] = useState({})
-  const [openUp, setOpenUp] = useState(false)
   const [viewYear, setViewYear] = useState(initDate ? initDate.getFullYear() : today.getFullYear())
   const [viewMonth, setViewMonth] = useState(initDate ? initDate.getMonth() : today.getMonth())
   const [mode, setMode] = useState('days')
@@ -50,14 +49,6 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
   const calcPos = () => {
     if (!triggerRef.current) return
     const rect = triggerRef.current.getBoundingClientRect()
-    const spaceBelow = window.innerHeight - rect.bottom
-    const spaceAbove = rect.top
-
-    // Use actual popup height if already rendered, else estimate 360
-    const popupH = popupRef.current ? popupRef.current.offsetHeight : 360
-    const goUp = spaceBelow < popupH + 12 && spaceAbove > spaceBelow
-
-    setOpenUp(goUp)
 
     let left = rect.left
     const maxLeft = window.innerWidth - POPUP_WIDTH - 8
@@ -66,28 +57,17 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
 
     const width = Math.min(POPUP_WIDTH, window.innerWidth - 16)
 
-    if (goUp) {
-      setPopupStyle({
-        position: 'fixed',
-        left: `${left}px`,
-        width: `${width}px`,
-        bottom: `${window.innerHeight - rect.top + 6}px`,
-        top: 'auto',
-        zIndex: 99999,
-      })
-    } else {
-      setPopupStyle({
-        position: 'fixed',
-        left: `${left}px`,
-        width: `${width}px`,
-        top: `${rect.bottom + 6}px`,
-        bottom: 'auto',
-        zIndex: 99999,
-      })
-    }
+    // Always open upward — popup sits above the trigger
+    setPopupStyle({
+      position: 'fixed',
+      left: `${left}px`,
+      width: `${width}px`,
+      bottom: `${window.innerHeight - rect.top + 6}px`,
+      top: 'auto',
+      zIndex: 99999,
+    })
   }
 
-  // Recalculate on scroll/resize while open
   useEffect(() => {
     if (!open) return
     window.addEventListener('scroll', calcPos, true)
@@ -98,16 +78,8 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     }
   }, [open])
 
-  // First pass: render hidden, measure, then reposition correctly
   useLayoutEffect(() => {
-    if (!open) return
-    // Initial position (may be wrong direction)
-    calcPos()
-    // After paint, re-check with actual rendered height
-    const raf = requestAnimationFrame(() => {
-      calcPos()
-    })
-    return () => cancelAnimationFrame(raf)
+    if (open) calcPos()
   }, [open])
 
   const handleOpen = () => {
@@ -171,7 +143,7 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
   const popup = open ? (
     <div
       ref={popupRef}
-      className={`cdp-popup${openUp ? ' open-up' : ''}`}
+      className="cdp-popup open-up"
       style={popupStyle}
     >
       <div className="cdp-header">

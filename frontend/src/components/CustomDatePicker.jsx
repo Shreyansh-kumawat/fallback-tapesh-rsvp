@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import './CustomDatePicker.css'
 
 const MONTHS = [
@@ -39,66 +39,58 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  useEffect(() => {
-    if (!open) return
-    const update = () => calcPosition()
-    window.addEventListener('scroll', update, true)
-    window.addEventListener('resize', update)
-    return () => {
-      window.removeEventListener('scroll', update, true)
-      window.removeEventListener('resize', update)
+  // Better positioning with useLayoutEffect
+  useLayoutEffect(() => {
+    if (!open || !triggerRef.current) return
+
+    const calcPosition = () => {
+      const rect = triggerRef.current.getBoundingClientRect()
+      const vw = window.innerWidth
+      const vh = window.innerHeight
+
+      const POPUP_W = 300
+      const POPUP_H = 420   // increased buffer
+      const GAP = 12
+
+      // Prefer below the input
+      let spaceBelow = vh - rect.bottom
+      let spaceAbove = rect.top
+
+      const preferUp = spaceBelow < POPUP_H + GAP * 2 && spaceAbove > POPUP_H + GAP * 2
+
+      setOpenUp(preferUp)
+
+      // Horizontal - center align with trigger
+      let left = rect.left + (rect.width / 2) - (POPUP_W / 2)
+      const maxLeft = vw - POPUP_W - 16
+      left = Math.max(16, Math.min(left, maxLeft))
+
+      const style = {
+        position: 'fixed',
+        width: `${Math.min(POPUP_W, vw - 32)}px`,
+        left: `${left}px`,
+        zIndex: 99999,
+      }
+
+      if (preferUp) {
+        style.top = 'auto'
+        style.bottom = `${vh - rect.top + GAP}px`
+      } else {
+        style.top = `${rect.bottom + GAP}px`
+        style.bottom = 'auto'
+      }
+
+      setPopupStyle(style)
     }
+
+    // Small delay + layout effect
+    const timer = setTimeout(calcPosition, 0)
+    return () => clearTimeout(timer)
   }, [open])
-
-  const POPUP_W = 300
-  const POPUP_H = 400
-  const GAP = 8
-
-  const calcPosition = () => {
-    if (!triggerRef.current) return
-
-    const rect = triggerRef.current.getBoundingClientRect()
-    const vw = window.innerWidth
-    const vh = window.innerHeight
-
-    // Prefer below, flip to above if not enough space
-    let spaceBelow = vh - rect.bottom
-    let spaceAbove = rect.top
-    const goUp = spaceBelow < POPUP_H + GAP * 2 && spaceAbove > spaceBelow + GAP * 2
-
-    setOpenUp(goUp)
-
-    // Horizontal positioning
-    let left = rect.left
-    const maxLeft = vw - POPUP_W - 12
-    left = Math.max(12, Math.min(left, maxLeft))
-
-    const style = {
-      position: 'fixed',
-      width: `${Math.min(POPUP_W, vw - 24)}px`,
-      left: `${left}px`,
-      zIndex: 99999,
-    }
-
-    if (goUp) {
-      style.top = 'auto'
-      style.bottom = `${vh - rect.top + GAP}px`
-    } else {
-      style.top = `${rect.bottom + GAP}px`
-      style.bottom = 'auto'
-    }
-
-    setPopupStyle(style)
-  }
 
   const handleOpen = () => {
     setOpen(p => !p)
     setMode('days')
-    
-    // Small delay to ensure DOM is updated
-    setTimeout(() => {
-      calcPosition()
-    }, 10)
   }
 
   const selectedDate = value ? new Date(value + 'T00:00:00') : null

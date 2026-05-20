@@ -15,8 +15,8 @@
   --adm-border-2:     rgba(0,0,0,0.05);
 
   --adm-text:         #111110;
-  --adm-muted:        #6b6860;
-  --adm-faint:        #b8b5ae;
+  --adm-muted:        #4a4845;   /* was #6b6860 — darker for WCAG AA readability */
+  --adm-faint:        #8a8780;   /* was #b8b5ae — improved contrast for labels */
 
   /* Gold — primary accent */
   --adm-gold:         #9a7a1e;
@@ -56,8 +56,8 @@
   --adm-border:       rgba(255,255,255,0.07);
   --adm-border-2:     rgba(255,255,255,0.04);
   --adm-text:         #eceae4;
-  --adm-muted:        #7a7870;
-  --adm-faint:        #3a3a35;
+  --adm-muted:        #a8a5a0;   /* was #7a7870 — brighter in dark mode for readability */
+  --adm-faint:        #5a5855;   /* was #3a3a35 — slightly brighter */
   --adm-gold:         #c9a830;
   --adm-gold-bright:  #e8c85a;
   --adm-gold-dim:     rgba(201,168,48,0.12);
@@ -279,7 +279,7 @@ body {
   border-color: transparent;
 }
 .adm-stat-card:first-child .adm-stat-num   { color: var(--adm-yellow); }
-.adm-stat-card:first-child .adm-stat-label { color: rgba(255,255,255,.45); }
+.adm-stat-card:first-child .adm-stat-label { color: rgba(255,255,255,.55); }
 
 .adm-stat-num   {
   font-size: 2rem; font-weight: 700;
@@ -398,7 +398,7 @@ body {
   font-size: .56rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: .05em;
   background: var(--adm-yellow-dim);
-  color: #7a5e00;
+  color: #5a4400;
   border-radius: 3px; padding: 2px 6px; margin-right: 4px;
   border: 1px solid rgba(200,160,0,.18);
 }
@@ -409,7 +409,7 @@ body {
   display: inline-block; padding: 3px 9px; border-radius: 4px;
   font-size: .66rem; font-weight: 700; letter-spacing: .03em;
 }
-.adm-badge--gold  { background: var(--adm-yellow-dim); color: #7a5e00; border: 1px solid rgba(200,160,0,.15); }
+.adm-badge--gold  { background: var(--adm-yellow-dim); color: #5a4400; border: 1px solid rgba(200,160,0,.15); }
 .adm-badge--green { background: var(--adm-green-dim);  color: var(--adm-green); }
 .adm-badge--dim   { background: var(--adm-border);     color: var(--adm-muted); }
 

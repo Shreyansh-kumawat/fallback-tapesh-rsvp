@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabase.js'
@@ -212,6 +213,7 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
 
   // Close on outside click
   useEffect(() => {
+    if (!open) return
     const handler = e => {
       if (
         wrapRef.current && !wrapRef.current.contains(e.target) &&
@@ -220,40 +222,45 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
-  }, [])
+  }, [open])
 
-  // Recalculate position whenever open changes
+  // Recalculate portal position whenever open changes
   useEffect(() => {
     if (!open || !btnRef.current) return
-    const calcPos = () => {
-      const rect = btnRef.current.getBoundingClientRect()
-      const spaceBelow = window.innerHeight - rect.bottom
-      const spaceAbove = rect.top
-      const maxH = Math.min(dropHeight, Math.max(spaceBelow, spaceAbove) - 8)
 
-      if (spaceBelow >= 160 || spaceBelow >= spaceAbove) {
-        // Open downward
+    const calcPos = () => {
+      if (!btnRef.current) return
+      const rect = btnRef.current.getBoundingClientRect()
+      const vw = window.innerWidth
+      const vh = window.innerHeight
+      const spaceBelow = vh - rect.bottom
+      const spaceAbove = rect.top
+      const maxH = Math.min(dropHeight, Math.max(spaceBelow, spaceAbove) - 12)
+      // Clamp left so dropdown never goes off screen right edge
+      const w = rect.width
+      const left = Math.min(rect.left, vw - w - 8)
+
+      if (spaceBelow >= 120 || spaceBelow >= spaceAbove) {
         setDropStyle({
           position: 'fixed',
           top: rect.bottom + 4,
-          left: rect.left,
-          width: rect.width,
+          left: Math.max(8, left),
+          width: w,
           maxHeight: maxH,
           zIndex: 99999,
         })
       } else {
-        // Open upward
         setDropStyle({
           position: 'fixed',
-          bottom: window.innerHeight - rect.top + 4,
-          top: 'auto',
-          left: rect.left,
-          width: rect.width,
+          top: rect.top - maxH - 4,
+          left: Math.max(8, left),
+          width: w,
           maxHeight: maxH,
           zIndex: 99999,
         })
       }
     }
+
     calcPos()
     window.addEventListener('scroll', calcPos, true)
     window.addEventListener('resize', calcPos)
@@ -264,6 +271,37 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
   }, [open, dropHeight])
 
   const toggleOpen = () => setOpen(p => !p)
+
+  const dropdownEl = open ? (
+    <div
+      className="rf-csel-drop rf-csel-drop-portal"
+      style={dropStyle}
+    >
+      <input
+        className="rf-csel-search"
+        placeholder="Search..."
+        value={q}
+        onChange={e => setQ(e.target.value)}
+        autoFocus
+      />
+      <div className="rf-csel-list" style={{ maxHeight: ((dropStyle.maxHeight || dropHeight) - 46) + 'px' }}>
+        {filtered.length === 0
+          ? <div className="rf-csel-empty">No results found</div>
+          : filtered.map(item => (
+            <button
+              key={item.value}
+              type="button"
+              className={`rf-csel-opt${value && value.value === item.value ? ' sel' : ''}`}
+              onClick={() => { onChange(item); setOpen(false); setQ('') }}
+            >
+              {showFlags && item.flag && <span className="rf-csel-opt-flag">{item.flag}</span>}
+              {item.label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  ) : null
 
   return (
     <div className="rf-field rf-csel-wrap" ref={wrapRef}>
@@ -283,36 +321,7 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
         <span className={`rf-csel-chevron${open ? ' open' : ''}`}>&#9662;</span>
       </button>
 
-      {open && (
-        <div
-          className="rf-csel-drop rf-csel-drop-portal"
-          style={dropStyle}
-        >
-          <input
-            className="rf-csel-search"
-            placeholder="Search..."
-            value={q}
-            onChange={e => setQ(e.target.value)}
-            autoFocus
-          />
-          <div className="rf-csel-list" style={{ maxHeight: ((dropStyle.maxHeight || dropHeight) - 46) + 'px' }}>
-            {filtered.length === 0
-              ? <div className="rf-csel-empty">No results found</div>
-              : filtered.map(item => (
-                <button
-                  key={item.value}
-                  type="button"
-                  className={`rf-csel-opt${value && value.value === item.value ? ' sel' : ''}`}
-                  onClick={() => { onChange(item); setOpen(false); setQ('') }}
-                >
-                  {showFlags && item.flag && <span className="rf-csel-opt-flag">{item.flag}</span>}
-                  {item.label}
-                </button>
-              ))
-            }
-          </div>
-        </div>
-      )}
+      {createPortal(dropdownEl, document.body)}
     </div>
   )
 }

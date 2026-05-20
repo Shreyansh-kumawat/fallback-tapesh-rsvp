@@ -35,9 +35,18 @@ const emptyChild = () => ({ name: '', age: '' })
 const MAPS_LINK = 'https://maps.app.goo.gl/6EnhNqNissXUDHJ59'
 
 /* ── SVG Play/Pause Hook ─────────────────────────────
-   Listens for clicks, keydowns, input events, scroll.
-   On interaction → play SVG for 1s → then pause.
-   Mouse movement is intentionally excluded.
+   CSS animations (not SMIL) are used in the SVG.
+   pauseAnimations() / unpauseAnimations() only affect SMIL,
+   so we toggle animation-play-state via a CSS class instead.
+
+   Logic:
+   - SVG starts paused (class "rf-bg-svg--paused")
+   - On ANY user interaction (input, change, click, keydown,
+     select, touchstart) → remove paused class → SVG plays
+   - A 1-second debounce timer restores the paused class
+     after the user stops interacting
+   - While the user keeps interacting the timer resets
+     continuously, so the SVG plays without interruption
 ─────────────────────────────────────────────────────── */
 function useSvgPlayPause(svgRef) {
   const timerRef = useRef(null)
@@ -45,20 +54,19 @@ function useSvgPlayPause(svgRef) {
   const play = useCallback(() => {
     const svg = svgRef.current
     if (!svg) return
-    // Resume all animations
-    svg.unpauseAnimations()
-    // Clear any existing timer
+    // Remove paused class → CSS animations run
+    svg.classList.remove('rf-bg-svg--paused')
+    // Reset the 1-second inactivity timer
     if (timerRef.current) clearTimeout(timerRef.current)
-    // Pause after 1 second of inactivity
     timerRef.current = setTimeout(() => {
-      svg.pauseAnimations()
+      svg.classList.add('rf-bg-svg--paused')
     }, 1000)
   }, [svgRef])
 
   useEffect(() => {
     // Start paused
     const svg = svgRef.current
-    if (svg) svg.pauseAnimations()
+    if (svg) svg.classList.add('rf-bg-svg--paused')
 
     const events = ['click', 'keydown', 'input', 'change', 'scroll', 'touchstart']
     events.forEach(ev => document.addEventListener(ev, play, { passive: true }))
@@ -75,7 +83,7 @@ function BgSvg({ svgRef }) {
   return (
     <svg
       ref={svgRef}
-      className="rf-bg-svg"
+      className="rf-bg-svg rf-bg-svg--paused"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
       viewBox="0 0 700 400"
@@ -105,6 +113,20 @@ function BgSvg({ svgRef }) {
         @keyframes rBg11_tr__tr { 0% {transform: translate(762.743219px,965.073357px) rotate(0deg)} 100% {transform: translate(762.743219px,965.073357px) rotate(360deg)}}
         #rBg12_tr {animation: rBg12_tr__tr 12000ms linear infinite normal forwards}
         @keyframes rBg12_tr__tr { 0% {transform: translate(1474.519794px,224.809739px) rotate(390.798193deg)} 100% {transform: translate(1474.519794px,224.809739px) rotate(30.798193deg)}}
+
+        /* ── Pause/Play via class toggle ── */
+        .rf-bg-svg--paused #rBg3_tr,
+        .rf-bg-svg--paused #rBg4_tr,
+        .rf-bg-svg--paused #rBg5_tr,
+        .rf-bg-svg--paused #rBg6_to,
+        .rf-bg-svg--paused #rBg7_to,
+        .rf-bg-svg--paused #rBg8_to,
+        .rf-bg-svg--paused #rBg9_tr,
+        .rf-bg-svg--paused #rBg10_tr,
+        .rf-bg-svg--paused #rBg11_tr,
+        .rf-bg-svg--paused #rBg12_tr {
+          animation-play-state: paused;
+        }
       `}</style>
       <g transform="matrix(.388384 0 0 0.388384 0.446734-9.821674)">
         <g id="rBg3_tr" transform="translate(1485.265524,923.716668) rotate(107.849898)">

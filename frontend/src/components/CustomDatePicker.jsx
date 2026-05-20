@@ -11,15 +11,14 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
   const today = new Date()
   const initDate = value ? new Date(value + 'T00:00:00') : null
   const [open, setOpen] = useState(false)
-  const [openUp, setOpenUp] = useState(false)
   const [popupStyle, setPopupStyle] = useState({})
+  const [openUp, setOpenUp] = useState(false)
   const [viewYear, setViewYear] = useState(initDate ? initDate.getFullYear() : today.getFullYear())
   const [viewMonth, setViewMonth] = useState(initDate ? initDate.getMonth() : today.getMonth())
-  const [mode, setMode] = useState('days') // 'days' | 'months' | 'years'
+  const [mode, setMode] = useState('days')
   const wrapRef = useRef(null)
   const triggerRef = useRef(null)
 
-  // sync view when value changes externally
   useEffect(() => {
     if (value) {
       const d = new Date(value + 'T00:00:00')
@@ -39,44 +38,55 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  // Recalculate popup position on scroll/resize while open
   useEffect(() => {
     if (!open) return
-    const updatePos = () => calcPopupPosition()
-    window.addEventListener('scroll', updatePos, true)
-    window.addEventListener('resize', updatePos)
+    const update = () => calcPosition()
+    window.addEventListener('scroll', update, true)
+    window.addEventListener('resize', update)
     return () => {
-      window.removeEventListener('scroll', updatePos, true)
-      window.removeEventListener('resize', updatePos)
+      window.removeEventListener('scroll', update, true)
+      window.removeEventListener('resize', update)
     }
   }, [open])
 
-  const POPUP_WIDTH = 288
-  const POPUP_HEIGHT = 380
+  const POPUP_W = 300
+  const POPUP_H = 390
+  const GAP = 6
 
-  const calcPopupPosition = () => {
+  const calcPosition = () => {
     if (!triggerRef.current) return
+    // getBoundingClientRect gives viewport-relative coords.
+    // Since popup is position:fixed, these coords map directly
+    // to fixed positioning — no scroll offset needed.
     const rect = triggerRef.current.getBoundingClientRect()
-    const spaceBelow = window.innerHeight - rect.bottom
-    const goUp = spaceBelow < POPUP_HEIGHT
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+
+    // Prefer opening below; flip above if not enough space
+    const spaceBelow = vh - rect.bottom
+    const spaceAbove = rect.top
+    const goUp = spaceBelow < POPUP_H + GAP && spaceAbove > spaceBelow
+
     setOpenUp(goUp)
 
-    // Horizontal: align left edge with trigger, clamp to viewport
+    // Horizontal: align with trigger left edge, clamp to viewport
     let left = rect.left
-    const maxLeft = window.innerWidth - POPUP_WIDTH - 8
-    if (left > maxLeft) left = maxLeft
-    if (left < 8) left = 8
+    const maxLeft = vw - POPUP_W - 8
+    left = Math.max(8, Math.min(left, maxLeft))
 
     const style = {
+      position: 'fixed',
+      width: `${Math.min(POPUP_W, vw - 16)}px`,
       left: `${left}px`,
-      width: `${Math.min(POPUP_WIDTH, window.innerWidth - 16)}px`,
     }
 
     if (goUp) {
+      // Anchor bottom of popup to top of trigger
       style.top = 'auto'
-      style.bottom = `${window.innerHeight - rect.top + 6}px`
+      style.bottom = `${vh - rect.top + GAP}px`
     } else {
-      style.top = `${rect.bottom + 6}px`
+      // Anchor top of popup to bottom of trigger
+      style.top = `${rect.bottom + GAP}px`
       style.bottom = 'auto'
     }
 
@@ -84,9 +94,7 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
   }
 
   const handleOpen = () => {
-    if (!open) {
-      calcPopupPosition()
-    }
+    if (!open) calcPosition()
     setOpen(p => !p)
     setMode('days')
   }
@@ -124,18 +132,16 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     setMode('days')
   }
 
-  const isToday = day => {
-    return today.getDate() === day &&
-      today.getMonth() === viewMonth &&
-      today.getFullYear() === viewYear
-  }
+  const isToday = day =>
+    today.getDate() === day &&
+    today.getMonth() === viewMonth &&
+    today.getFullYear() === viewYear
 
-  const isSelected = day => {
-    return selectedDate &&
-      selectedDate.getDate() === day &&
-      selectedDate.getMonth() === viewMonth &&
-      selectedDate.getFullYear() === viewYear
-  }
+  const isSelected = day =>
+    selectedDate &&
+    selectedDate.getDate() === day &&
+    selectedDate.getMonth() === viewMonth &&
+    selectedDate.getFullYear() === viewYear
 
   const daysCount = getDaysInMonth(viewYear, viewMonth)
   const firstDay = getFirstDay(viewYear, viewMonth)
@@ -143,7 +149,6 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
   for (let i = 0; i < firstDay; i++) cells.push(null)
   for (let d = 1; d <= daysCount; d++) cells.push(d)
 
-  // Year range for year picker
   const yearStart = Math.floor(viewYear / 12) * 12
   const years = Array.from({ length: 12 }, (_, i) => yearStart + i)
 
@@ -176,28 +181,26 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
         >
           {/* Header */}
           <div className="cdp-header">
-            <button type="button" className="cdp-nav-btn" onClick={mode === 'years' ? () => { setViewYear(y => y - 12) } : prevMonth} aria-label="Previous">
+            <button type="button" className="cdp-nav-btn"
+              onClick={mode === 'years' ? () => setViewYear(y => y - 12) : prevMonth}
+              aria-label="Previous">
               <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M8 2L4 6l4 4"/></svg>
             </button>
 
             <div className="cdp-header-center">
-              <button
-                type="button"
-                className="cdp-month-btn"
-                onClick={() => setMode(m => m === 'months' ? 'days' : 'months')}
-              >
+              <button type="button" className="cdp-month-btn"
+                onClick={() => setMode(m => m === 'months' ? 'days' : 'months')}>
                 {MONTHS[viewMonth]}
               </button>
-              <button
-                type="button"
-                className="cdp-year-btn"
-                onClick={() => setMode(m => m === 'years' ? 'days' : 'years')}
-              >
+              <button type="button" className="cdp-year-btn"
+                onClick={() => setMode(m => m === 'years' ? 'days' : 'years')}>
                 {viewYear}
               </button>
             </div>
 
-            <button type="button" className="cdp-nav-btn" onClick={mode === 'years' ? () => { setViewYear(y => y + 12) } : nextMonth} aria-label="Next">
+            <button type="button" className="cdp-nav-btn"
+              onClick={mode === 'years' ? () => setViewYear(y => y + 12) : nextMonth}
+              aria-label="Next">
               <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M4 2l4 4-4 4"/></svg>
             </button>
           </div>
@@ -215,9 +218,7 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
                     : <button
                         key={day}
                         type="button"
-                        className={`cdp-cell${
-                          isSelected(day) ? ' selected' : isToday(day) ? ' today' : ''
-                        }`}
+                        className={`cdp-cell${isSelected(day) ? ' selected' : isToday(day) ? ' today' : ''}`}
                         onClick={() => selectDay(day)}
                       >{day}</button>
                 )}
@@ -229,16 +230,13 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
           {mode === 'months' && (
             <div className="cdp-months-view">
               {MONTHS.map((m, i) => (
-                <button
-                  key={m}
-                  type="button"
-                  className={`cdp-month-cell${
-                    i === viewMonth ? ' selected' : ''
-                  }${
+                <button key={m} type="button"
+                  className={`cdp-month-cell${i === viewMonth ? ' selected' : ''}${
                     selectedDate && selectedDate.getFullYear() === viewYear && selectedDate.getMonth() === i ? ' has-sel' : ''
                   }`}
-                  onClick={() => { setViewMonth(i); setMode('days') }}
-                >{m.slice(0,3)}</button>
+                  onClick={() => { setViewMonth(i); setMode('days') }}>
+                  {m.slice(0, 3)}
+                </button>
               ))}
             </div>
           )}
@@ -247,16 +245,13 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
           {mode === 'years' && (
             <div className="cdp-years-view">
               {years.map(y => (
-                <button
-                  key={y}
-                  type="button"
-                  className={`cdp-year-cell${
-                    y === viewYear ? ' selected' : ''
-                  }${
+                <button key={y} type="button"
+                  className={`cdp-year-cell${y === viewYear ? ' selected' : ''}${
                     selectedDate && selectedDate.getFullYear() === y ? ' has-sel' : ''
                   }`}
-                  onClick={() => { setViewYear(y); setMode('months') }}
-                >{y}</button>
+                  onClick={() => { setViewYear(y); setMode('months') }}>
+                  {y}
+                </button>
               ))}
             </div>
           )}
@@ -272,7 +267,8 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
               setOpen(false)
             }}>Today</button>
             {value && (
-              <button type="button" className="cdp-clear-btn" onClick={() => { onChange(''); setOpen(false) }}>Clear</button>
+              <button type="button" className="cdp-clear-btn"
+                onClick={() => { onChange(''); setOpen(false) }}>Clear</button>
             )}
           </div>
         </div>

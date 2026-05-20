@@ -9,7 +9,6 @@ const MONTHS = [
 const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa']
 
 const POPUP_WIDTH = 288
-const POPUP_HEIGHT = 380
 
 export default function CustomDatePicker({ label, value, onChange, placeholder = 'Select date...' }) {
   const today = new Date()
@@ -52,7 +51,12 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     if (!triggerRef.current) return
     const rect = triggerRef.current.getBoundingClientRect()
     const spaceBelow = window.innerHeight - rect.bottom
-    const goUp = spaceBelow < POPUP_HEIGHT && rect.top > POPUP_HEIGHT
+    const spaceAbove = rect.top
+
+    // Use actual popup height if already rendered, else estimate 360
+    const popupH = popupRef.current ? popupRef.current.offsetHeight : 360
+    const goUp = spaceBelow < popupH + 12 && spaceAbove > spaceBelow
+
     setOpenUp(goUp)
 
     let left = rect.left
@@ -94,9 +98,16 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     }
   }, [open])
 
-  // Synchronously calculate position before paint
+  // First pass: render hidden, measure, then reposition correctly
   useLayoutEffect(() => {
-    if (open) calcPos()
+    if (!open) return
+    // Initial position (may be wrong direction)
+    calcPos()
+    // After paint, re-check with actual rendered height
+    const raf = requestAnimationFrame(() => {
+      calcPos()
+    })
+    return () => cancelAnimationFrame(raf)
   }, [open])
 
   const handleOpen = () => {

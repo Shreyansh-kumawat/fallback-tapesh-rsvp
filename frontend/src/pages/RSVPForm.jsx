@@ -202,36 +202,109 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
   const [open, setOpen] = useState(false)
   const [q, setQ] = useState('')
   const wrapRef = useRef(null)
+  const btnRef = useRef(null)
+  const [dropStyle, setDropStyle] = useState({})
 
   const filtered = useMemo(() => {
     const low = q.trim().toLowerCase()
     return low ? items.filter(i => i.label.toLowerCase().includes(low)) : items
   }, [items, q])
 
+  // Close on outside click
   useEffect(() => {
-    const handler = e => { if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false) }
+    const handler = e => {
+      if (
+        wrapRef.current && !wrapRef.current.contains(e.target) &&
+        !e.target.closest('.rf-csel-drop-portal')
+      ) setOpen(false)
+    }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
+  // Recalculate position whenever open changes
+  useEffect(() => {
+    if (!open || !btnRef.current) return
+    const calcPos = () => {
+      const rect = btnRef.current.getBoundingClientRect()
+      const spaceBelow = window.innerHeight - rect.bottom
+      const spaceAbove = rect.top
+      const maxH = Math.min(dropHeight, Math.max(spaceBelow, spaceAbove) - 8)
+
+      if (spaceBelow >= 160 || spaceBelow >= spaceAbove) {
+        // Open downward
+        setDropStyle({
+          position: 'fixed',
+          top: rect.bottom + 4,
+          left: rect.left,
+          width: rect.width,
+          maxHeight: maxH,
+          zIndex: 99999,
+        })
+      } else {
+        // Open upward
+        setDropStyle({
+          position: 'fixed',
+          bottom: window.innerHeight - rect.top + 4,
+          top: 'auto',
+          left: rect.left,
+          width: rect.width,
+          maxHeight: maxH,
+          zIndex: 99999,
+        })
+      }
+    }
+    calcPos()
+    window.addEventListener('scroll', calcPos, true)
+    window.addEventListener('resize', calcPos)
+    return () => {
+      window.removeEventListener('scroll', calcPos, true)
+      window.removeEventListener('resize', calcPos)
+    }
+  }, [open, dropHeight])
+
+  const toggleOpen = () => setOpen(p => !p)
+
   return (
     <div className="rf-field rf-csel-wrap" ref={wrapRef}>
       {label && <label>{label}</label>}
-      <button type="button" className={`rf-csel-btn${open ? ' open' : ''}`} onClick={() => setOpen(p => !p)}>
+      <button
+        ref={btnRef}
+        type="button"
+        className={`rf-csel-btn${open ? ' open' : ''}`}
+        onClick={toggleOpen}
+      >
         <span className={`rf-csel-value-wrap${!value ? ' placeholder' : ''}`}>
-          {value ? (<>{showFlags && value.flag && <span className="rf-csel-flag">{value.flag}</span>}<span>{value.label}</span></>) : placeholder}
+          {value
+            ? (<>{showFlags && value.flag && <span className="rf-csel-flag">{value.flag}</span>}<span>{value.label}</span></>)
+            : placeholder
+          }
         </span>
         <span className={`rf-csel-chevron${open ? ' open' : ''}`}>&#9662;</span>
       </button>
+
       {open && (
-        <div className="rf-csel-drop" style={{ maxHeight: dropHeight + 'px' }}>
-          <input className="rf-csel-search" placeholder="Search..." value={q} onChange={e => setQ(e.target.value)} autoFocus />
-          <div className="rf-csel-list" style={{ maxHeight: (dropHeight - 46) + 'px' }}>
+        <div
+          className="rf-csel-drop rf-csel-drop-portal"
+          style={dropStyle}
+        >
+          <input
+            className="rf-csel-search"
+            placeholder="Search..."
+            value={q}
+            onChange={e => setQ(e.target.value)}
+            autoFocus
+          />
+          <div className="rf-csel-list" style={{ maxHeight: ((dropStyle.maxHeight || dropHeight) - 46) + 'px' }}>
             {filtered.length === 0
               ? <div className="rf-csel-empty">No results found</div>
               : filtered.map(item => (
-                <button key={item.value} type="button" className={`rf-csel-opt${value && value.value === item.value ? ' sel' : ''}`}
-                  onClick={() => { onChange(item); setOpen(false); setQ('') }}>
+                <button
+                  key={item.value}
+                  type="button"
+                  className={`rf-csel-opt${value && value.value === item.value ? ' sel' : ''}`}
+                  onClick={() => { onChange(item); setOpen(false); setQ('') }}
+                >
                   {showFlags && item.flag && <span className="rf-csel-opt-flag">{item.flag}</span>}
                   {item.label}
                 </button>

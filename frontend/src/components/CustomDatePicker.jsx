@@ -230,7 +230,7 @@ export default function CustomDatePicker({
         <span className={`cdp-trigger-text${!value ? ' placeholder' : ''}`}>
           {value ? formatDisplay(selectedDate) : placeholder}
         </span>
-        <svg className={`cdp-chevron${open ? ' open' : ''}`} viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <svg className="cdp-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
           <path d="M2 4l4 4 4-4"/>
         </svg>
       </button>

@@ -1,7 +1,8 @@
 /* ══════════════════════════════════════════════════════════════════
-   CustomDatePicker — Wedding theme (Tapesh & Margarita)
-   Tokens from RSVPForm.css :root — cream · gold · rose · sage
-   Logic & JSX untouched — CSS-only update
+   CustomDatePicker — Exact HTML Design Match
+   Tokens: --b, --b2, --gold, --gold-l, --gold-p, --gold-dark
+           --rose-l, --sage-l, --ink, --ink3, --r, --r-xl
+           --spring, --smooth, --sh-glow, --serif, --sans
    ══════════════════════════════════════════════════════════════════ */
 
 /* ── WRAPPER ── */
@@ -14,37 +15,38 @@
 .cdp-label {
   display: flex;
   align-items: center;
-  gap: .35rem;
-  font-size: .62rem;
+  gap: 0.35rem;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: .4rem;
+  margin-bottom: 5px;
   font-family: var(--sans);
 }
 
 /* ── TRIGGER BUTTON ── */
 .cdp-trigger {
   width: 100%;
-  padding: .75rem 1rem;
-  border: 1.5px solid var(--border2);
+  padding: 12px 14px;
+  border: 1.5px solid var(--b2);
   background: rgba(255,255,255,0.80);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   font-family: var(--sans);
-  font-size: .88rem;
+  font-size: 14px;
   color: var(--ink);
   border-radius: var(--r);
   cursor: pointer;
   text-align: left;
   display: flex;
   align-items: center;
-  gap: .6rem;
+  gap: 0.6rem;
   transition: border-color .22s var(--smooth), box-shadow .22s var(--smooth), background .22s;
   user-select: none;
   position: relative;
   -webkit-appearance: none;
+  appearance: none;
 }
 .cdp-trigger:hover {
   border-color: var(--gold-l);
@@ -59,7 +61,8 @@
 }
 
 .cdp-cal-icon {
-  width: 16px; height: 16px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
   color: var(--gold);
   transition: color .2s;
@@ -70,10 +73,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.cdp-trigger-text.placeholder { color: var(--ink3); opacity: .5; }
-
+.cdp-trigger-text.placeholder {
+  color: var(--ink3);
+  opacity: 0.5;
+}
 .cdp-chevron {
-  width: 12px; height: 12px;
+  width: 12px;
+  height: 12px;
   flex-shrink: 0;
   color: var(--gold);
   opacity: 0.45;
@@ -102,11 +108,10 @@
 /* ── POPUP — centered on screen ── */
 .cdp-popup {
   background: rgba(253,248,240,0.98);
-  border: 1.5px solid var(--border2);
+  border: 1.5px solid var(--b2);
   border-radius: var(--r-xl);
   box-shadow: 0 20px 60px rgba(44,31,14,.18), 0 6px 20px rgba(44,31,14,.10);
   overflow: hidden;
-  /* top gradient bar matching card style */
   position: relative;
 }
 .cdp-popup::before {
@@ -114,7 +119,7 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--rose-light), var(--gold-l), var(--sage-light));
+  background: linear-gradient(90deg, var(--rose-l), var(--gold-l), var(--sage-l));
   border-radius: var(--r-xl) var(--r-xl) 0 0;
   pointer-events: none;
   z-index: 1;
@@ -145,25 +150,31 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: .85rem 1rem .6rem;
-  border-bottom: 1px solid var(--border);
+  padding: 13px 16px 10px;
+  border-bottom: 1px solid var(--b);
   background: linear-gradient(135deg, rgba(253,248,240,1), rgba(250,243,232,0.9));
 }
 .cdp-header-center {
   display: flex;
   align-items: center;
-  gap: .3rem;
+  gap: 0.3rem;
 }
 
 .cdp-nav-btn {
-  width: 30px; height: 30px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--gold-dark);
   font-size: 1.2rem;
   line-height: 1;
   transition: background .15s, transform .15s var(--spring);
   flex-shrink: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
 }
 .cdp-nav-btn:hover {
   background: var(--gold-p);
@@ -176,11 +187,14 @@
   font-size: 1.05rem;
   font-weight: 500;
   color: var(--ink);
-  padding: .18rem .4rem;
+  padding: 3px 7px;
   border-radius: 6px;
   transition: background .15s, color .15s;
-  letter-spacing: .01em;
+  letter-spacing: 0.01em;
   font-style: italic;
+  border: none;
+  background: none;
+  cursor: pointer;
 }
 .cdp-month-btn:hover,
 .cdp-year-btn:hover {
@@ -189,21 +203,21 @@
 }
 
 /* ── DAYS VIEW ── */
-.cdp-days-view { padding: .65rem .8rem .55rem; }
+.cdp-days-view { padding: 10px 12px 8px; }
 
 .cdp-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  margin-bottom: .3rem;
+  margin-bottom: 4px;
 }
 .cdp-wd {
   text-align: center;
-  font-size: .58rem;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink3);
-  padding: .25rem 0;
+  padding: 4px 0;
 }
 
 .cdp-grid {
@@ -216,22 +230,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: .8rem;
+  font-size: 13px;
   font-family: var(--sans);
   border-radius: 50%;
   transition: background .14s, color .14s, transform .14s var(--spring);
   cursor: pointer;
   position: relative;
+  border: none;
+  background: none;
+  color: var(--ink);
 }
 .cdp-cell.empty { cursor: default; }
 
-/* backdated / disabled — cannot select */
+/* disabled / backdated — cannot select */
 .cdp-cell.disabled {
   color: var(--ink3);
   cursor: not-allowed;
   opacity: 0.35;
 }
-.cdp-cell.disabled:hover { background: none; color: var(--ink3); transform: none; }
+.cdp-cell.disabled:hover {
+  background: none;
+  color: var(--ink3);
+  transform: none;
+}
 
 /* hover */
 .cdp-cell:not(.empty):not(.disabled):not(.selected):hover {
@@ -254,16 +275,19 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 4px;
-  padding: .8rem;
+  padding: 12px;
 }
 .cdp-month-cell {
-  padding: .6rem .3rem;
+  padding: 10px 4px;
   text-align: center;
-  font-size: .82rem;
+  font-size: 13px;
   font-family: var(--sans);
   border-radius: var(--r);
   transition: background .12s, color .12s, transform .14s var(--spring);
   cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--ink);
 }
 .cdp-month-cell:hover {
   background: var(--gold-p);
@@ -276,23 +300,29 @@
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(201,151,58,.35);
 }
-.cdp-month-cell.has-sel { font-weight: 600; color: var(--gold-dark); }
+.cdp-month-cell.has-sel {
+  font-weight: 600;
+  color: var(--gold-dark);
+}
 
 /* ── YEARS VIEW ── */
 .cdp-years-view {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 4px;
-  padding: .8rem;
+  padding: 12px;
 }
 .cdp-year-cell {
-  padding: .55rem .2rem;
+  padding: 9px 3px;
   text-align: center;
-  font-size: .82rem;
+  font-size: 13px;
   font-family: var(--sans);
   border-radius: var(--r);
   transition: background .12s, color .12s, transform .14s var(--spring);
   cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--ink);
 }
 .cdp-year-cell:hover {
   background: var(--gold-p);
@@ -305,27 +335,30 @@
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(201,151,58,.35);
 }
-.cdp-year-cell.has-sel { font-weight: 600; color: var(--gold-dark); }
+.cdp-year-cell.has-sel {
+  font-weight: 600;
+  color: var(--gold-dark);
+}
 
 /* ── FOOTER ── */
 .cdp-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: .5rem .8rem .7rem;
-  border-top: 1px solid var(--border);
+  padding: 8px 12px 11px;
+  border-top: 1px solid var(--b);
   background: linear-gradient(135deg, rgba(253,248,240,1), rgba(250,243,232,0.9));
-  gap: .5rem;
+  gap: 8px;
 }
 
 .cdp-today-btn,
 .cdp-clear-btn {
   font-family: var(--sans);
-  font-size: .65rem;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: .32rem .75rem;
+  padding: 5px 12px;
   border-radius: 20px;
   transition: all .18s var(--smooth);
   cursor: pointer;
@@ -341,7 +374,7 @@
 }
 .cdp-clear-btn {
   color: var(--ink3);
-  border: 1.5px solid var(--border2);
+  border: 1.5px solid var(--b2);
   background: transparent;
 }
 .cdp-clear-btn:hover {
@@ -355,4 +388,5 @@
   .cdp-popup--centered {
     width: min(288px, calc(100vw - 1.5rem));
   }
+  .cdp-days-view { padding: 8px 8px 6px; }
 }

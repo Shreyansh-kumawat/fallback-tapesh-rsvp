@@ -17,6 +17,41 @@ const emptyChild = () => ({ name: '', age: '' })
 
 const MAPS_LINK = 'https://maps.app.goo.gl/6EnhNqNissXUDHJ59'
 
+/* ── BgWash: warm radial gradient overlay (HTML design) ── */
+function BgWash() {
+  return <div className="rf-bg-wash" aria-hidden="true" />
+}
+
+/* ── Floating Petals (HTML design) ── */
+const PETALS = [
+  { left: '8%',  delay: '0s',   dur: '14s',  size: 10, color: '#e8c57a' },
+  { left: '22%', delay: '3s',   dur: '18s',  size: 8,  color: '#e8a09a' },
+  { left: '38%', delay: '6s',   dur: '12s',  size: 12, color: '#a8c5ac' },
+  { left: '55%', delay: '1.5s', dur: '16s',  size: 9,  color: '#e8c57a' },
+  { left: '70%', delay: '4s',   dur: '20s',  size: 7,  color: '#e8a09a' },
+  { left: '85%', delay: '8s',   dur: '15s',  size: 11, color: '#a8c5ac' },
+]
+function FloatingPetals() {
+  return (
+    <>
+      {PETALS.map((p, i) => (
+        <div
+          key={i}
+          className="rf-petal"
+          style={{ left: p.left, animationDelay: p.delay, animationDuration: p.dur }}
+          aria-hidden="true"
+        >
+          <svg width={p.size} height={p.size} viewBox="0 0 12 12">
+            <ellipse cx="6" cy="6" rx="5" ry="3" fill={p.color} opacity="0.85"
+              transform="rotate(-30 6 6)"/>
+          </svg>
+        </div>
+      ))}
+    </>
+  )
+}
+
+/* ── BgSvg: warm gold/rose/sage animated shapes ── */
 function BgSvg() {
   return (
     <svg
@@ -30,16 +65,16 @@ function BgSvg() {
     >
       <defs>
         <linearGradient id="rBgGrad1" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#b8e0e8" stopOpacity="0.5"/>
-          <stop offset="100%" stopColor="#d4eef2" stopOpacity="0.3"/>
+          <stop offset="0%" stopColor="#e8c57a" stopOpacity="0.18"/>
+          <stop offset="100%" stopColor="#f5e8cc" stopOpacity="0.10"/>
         </linearGradient>
         <linearGradient id="rBgGrad2" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#c5dde0" stopOpacity="0.45"/>
-          <stop offset="100%" stopColor="#daeef1" stopOpacity="0.25"/>
+          <stop offset="0%" stopColor="#e8a09a" stopOpacity="0.14"/>
+          <stop offset="100%" stopColor="#faeae9" stopOpacity="0.08"/>
         </linearGradient>
         <linearGradient id="rBgGrad3" x1="1" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#a8d4db" stopOpacity="0.4"/>
-          <stop offset="100%" stopColor="#cce6ea" stopOpacity="0.2"/>
+          <stop offset="0%" stopColor="#a8c5ac" stopOpacity="0.14"/>
+          <stop offset="100%" stopColor="#edf4ee" stopOpacity="0.07"/>
         </linearGradient>
       </defs>
       <style>{`
@@ -393,12 +428,6 @@ function StepConfirm({ form }) {
 
 /* ── Sidebar ────────────────────────────────────── */
 function Sidebar({ eventInfo }) {
-  /* 
-   * FIX: All SVG icons inside sidebar now have EXPLICIT width/height="14"
-   * attributes directly on the <svg> tag. This is the root cause fix —
-   * CSS-only !important can be overridden by SVG's own intrinsic sizing
-   * when no width/height is set on the element itself.
-   */
   return (
     <aside className="rf-sidebar">
       <div className="rf-sb-logo-wrap">
@@ -619,6 +648,11 @@ export default function RSVPForm() {
 
   return (
     <div className="rf-root">
+      {/* warm radial wash */}
+      <BgWash />
+      {/* floating petals */}
+      <FloatingPetals />
+      {/* animated warm shapes */}
       <BgSvg />
 
       <div className="rf-layout">

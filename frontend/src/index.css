@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
 /* ── Global Reset & Base ─────────────────────────── */
-/* *, *::before, *::after { box-sizing: border-box; } */
-
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
@@ -14,30 +12,30 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background: #f8f6f0;
-  font-family: 'Jost', 'Helvetica Neue', Arial, sans-serif;
-  color: #18171a;
+  /* warm cream background matching HTML design */
+  background: #fdf8f0;
+  font-family: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+  color: #2c1f0e;
 }
 
 /* ── Scrollbar ──────────────────────────────────── */
 ::-webkit-scrollbar       { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: #f0ece4; }
+::-webkit-scrollbar-track { background: #faf3e8; }
 ::-webkit-scrollbar-thumb {
-  background: #c9a84c;
+  background: #e8c57a;
   border-radius: 99px;
-  border: 1px solid #f0ece4;
 }
-::-webkit-scrollbar-thumb:hover { background: #b8962e; }
+::-webkit-scrollbar-thumb:hover { background: #c9973a; }
 
 /* ── Selection ──────────────────────────────────── */
 ::selection {
-  background: rgba(184,150,46,.22);
-  color: #1a1100;
+  background: rgba(201,151,58,0.22);
+  color: #2c1f0e;
 }
 
 /* ── Focus ring ─────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid #b8962e;
+  outline: 2px solid #c9973a;
   outline-offset: 3px;
   border-radius: 4px;
 }

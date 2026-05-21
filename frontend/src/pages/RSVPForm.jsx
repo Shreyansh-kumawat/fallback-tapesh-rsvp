@@ -3,8 +3,6 @@ import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabase.js'
-import PhoneInput from 'react-phone-number-input'
-import { isValidPhoneNumber } from 'libphonenumber-js'
 import 'react-phone-number-input/style.css'
 import './RSVPForm.css'
 import CustomDatePicker from '../components/CustomDatePicker.jsx'
@@ -17,30 +15,27 @@ const emptyChild = () => ({ name: '', age: '' })
 
 const MAPS_LINK = 'https://maps.app.goo.gl/6EnhNqNissXUDHJ59'
 
-/* ── BgWash: warm radial gradient overlay (HTML design) ── */
+/* ── BgWash ── */
 function BgWash() {
   return <div className="rf-bg-wash" aria-hidden="true" />
 }
 
-/* ── Floating Petals (HTML design) ── */
+/* ── Floating Petals ── */
 const PETALS = [
-  { left: '8%',  delay: '0s',   dur: '14s',  size: 10, color: '#e8c57a' },
-  { left: '22%', delay: '3s',   dur: '18s',  size: 8,  color: '#e8a09a' },
-  { left: '38%', delay: '6s',   dur: '12s',  size: 12, color: '#a8c5ac' },
-  { left: '55%', delay: '1.5s', dur: '16s',  size: 9,  color: '#e8c57a' },
-  { left: '70%', delay: '4s',   dur: '20s',  size: 7,  color: '#e8a09a' },
-  { left: '85%', delay: '8s',   dur: '15s',  size: 11, color: '#a8c5ac' },
+  { left: '8%',  delay: '0s',   dur: '14s', size: 10, color: '#e8c57a' },
+  { left: '22%', delay: '3s',   dur: '18s', size: 8,  color: '#e8a09a' },
+  { left: '38%', delay: '6s',   dur: '12s', size: 12, color: '#a8c5ac' },
+  { left: '55%', delay: '1.5s', dur: '16s', size: 9,  color: '#e8c57a' },
+  { left: '70%', delay: '4s',   dur: '20s', size: 7,  color: '#e8a09a' },
+  { left: '85%', delay: '8s',   dur: '15s', size: 11, color: '#a8c5ac' },
 ]
 function FloatingPetals() {
   return (
     <>
       {PETALS.map((p, i) => (
-        <div
-          key={i}
-          className="rf-petal"
+        <div key={i} className="rf-petal"
           style={{ left: p.left, animationDelay: p.delay, animationDuration: p.dur }}
-          aria-hidden="true"
-        >
+          aria-hidden="true">
           <svg width={p.size} height={p.size} viewBox="0 0 12 12">
             <ellipse cx="6" cy="6" rx="5" ry="3" fill={p.color} opacity="0.85"
               transform="rotate(-30 6 6)"/>
@@ -51,18 +46,12 @@ function FloatingPetals() {
   )
 }
 
-/* ── BgSvg: warm gold/rose/sage animated shapes ── */
+/* ── BgSvg ── */
 function BgSvg() {
   return (
-    <svg
-      className="rf-bg-svg"
-      xmlns="http://www.w3.org/2000/svg"
-      xmlnsXlink="http://www.w3.org/1999/xlink"
-      viewBox="0 0 700 400"
-      shapeRendering="geometricPrecision"
-      textRendering="geometricPrecision"
-      aria-hidden="true"
-    >
+    <svg className="rf-bg-svg" xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 700 400" shapeRendering="geometricPrecision"
+      textRendering="geometricPrecision" aria-hidden="true">
       <defs>
         <linearGradient id="rBgGrad1" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#e8c57a" stopOpacity="0.18"/>
@@ -78,58 +67,35 @@ function BgSvg() {
         </linearGradient>
       </defs>
       <style>{`
-        #rBg3_tr {animation: rBg3_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes rBg3_tr__tr { 0% {transform: translate(1485.265524px,923.716668px) rotate(107.849898deg)} 100% {transform: translate(1485.265524px,923.716668px) rotate(252.130785deg)}}
-        #rBg4_tr {animation: rBg4_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes rBg4_tr__tr { 0% {transform: translate(1106.552084px,11.479169px) rotate(-104.755169deg)} 100% {transform: translate(1106.552084px,11.479169px) rotate(-194.755169deg)}}
-        #rBg5_tr {animation: rBg5_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes rBg5_tr__tr { 0% {transform: translate(77.951956px,316.57267px) rotate(179.858074deg)} 100% {transform: translate(77.951956px,316.57267px) rotate(107.849898deg)}}
-        #rBg7_to {animation: rBg7_to__to 12000ms linear infinite normal forwards}
-        @keyframes rBg7_to__to { 0% {transform: translate(1625.977098px,922.267927px)} 33.333333% {transform: translate(1567.951321px,818.908093px)} 66.666667% {transform: translate(1427.428392px,987.533986px)} 100% {transform: translate(1625.977098px,922.267927px)}}
-        #rBg9_tr {animation: rBg9_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes rBg9_tr__tr { 0% {transform: translate(1332.072109px,696.229369px) rotate(179.858074deg)} 100% {transform: translate(1332.072109px,696.229369px) rotate(323.892738deg)}}
-        #rBg10_tr {animation: rBg10_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes rBg10_tr__tr { 0% {transform: translate(820.871069px,284.144659px) rotate(179.858074deg)} 100% {transform: translate(820.871069px,284.144659px) rotate(-35.842484deg)}}
-        #rBg11_tr {animation: rBg11_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes rBg11_tr__tr { 0% {transform: translate(762.743219px,965.073357px) rotate(0deg)} 100% {transform: translate(762.743219px,965.073357px) rotate(360deg)}}
-        #rBg12_tr {animation: rBg12_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes rBg12_tr__tr { 0% {transform: translate(1474.519794px,224.809739px) rotate(390.798193deg)} 100% {transform: translate(1474.519794px,224.809739px) rotate(30.798193deg)}}
+        #rBg3_tr{animation:rBg3_tr__tr 12000ms linear infinite}
+        @keyframes rBg3_tr__tr{0%{transform:translate(1485px,924px) rotate(108deg)}100%{transform:translate(1485px,924px) rotate(252deg)}}
+        #rBg7_to{animation:rBg7_to__to 12000ms linear infinite}
+        @keyframes rBg7_to__to{0%{transform:translate(1626px,922px)}33%{transform:translate(1568px,819px)}67%{transform:translate(1427px,988px)}100%{transform:translate(1626px,922px)}}
+        #rBg11_tr{animation:rBg11_tr__tr 12000ms linear infinite}
+        @keyframes rBg11_tr__tr{0%{transform:translate(763px,965px) rotate(0deg)}100%{transform:translate(763px,965px) rotate(360deg)}}
       `}</style>
-      <g id="rBg3_tr" transform="translate(1485.265524px,923.716668px) rotate(107.849898deg)">
+      <g id="rBg3_tr" transform="translate(1485px,924px) rotate(108deg)">
         <polygon points="-120,0 -60,-104 60,-104 120,0 60,104 -60,104" fill="url(#rBgGrad1)" transform="translate(-1485,-924)"/>
       </g>
-      <g id="rBg4_tr" transform="translate(1106.552084px,11.479169px) rotate(-104.755169deg)">
-        <polygon points="-80,0 -40,-69 40,-69 80,0 40,69 -40,69" fill="url(#rBgGrad2)" transform="translate(-1107,-11)"/>
-      </g>
-      <g id="rBg5_tr" transform="translate(77.951956px,316.57267px) rotate(179.858074deg)">
-        <polygon points="-60,0 -30,-52 30,-52 60,0 30,52 -30,52" fill="url(#rBgGrad3)" transform="translate(-78,-317)"/>
-      </g>
-      <g id="rBg7_to" transform="translate(1625.977098px,922.267927px)">
+      <g id="rBg7_to" transform="translate(1626px,922px)">
         <circle r="90" fill="url(#rBgGrad1)" transform="translate(-1626,-922)"/>
       </g>
-      <g id="rBg9_tr" transform="translate(1332.072109px,696.229369px) rotate(179.858074deg)">
-        <circle r="45" fill="url(#rBgGrad2)" transform="translate(-1332,-696)"/>
-      </g>
-      <g id="rBg10_tr" transform="translate(820.871069px,284.144659px) rotate(179.858074deg)">
-        <rect x="-55" y="-55" width="110" height="110" fill="url(#rBgGrad3)" transform="translate(-821,-284)"/>
-      </g>
-      <g id="rBg11_tr" transform="translate(762.743219px,965.073357px) rotate(0deg)">
-        <circle r="130" fill="url(#rBgGrad1)" transform="translate(-763,-965)"/>
-      </g>
-      <g id="rBg12_tr" transform="translate(1474.519794px,224.809739px) rotate(390.798193deg)">
-        <polygon points="0,-70 70,0 0,70 -70,0" fill="url(#rBgGrad2)" transform="translate(-1475,-225)"/>
+      <g id="rBg11_tr" transform="translate(763px,965px) rotate(0deg)">
+        <circle r="130" fill="url(#rBgGrad2)" transform="translate(-763,-965)"/>
       </g>
     </svg>
   )
 }
 
-/* ── tiny helpers ───────────────────────────────── */
+/* ── MEAL OPTIONS ── */
 const MEAL_OPTIONS = [
   { value: 'veg',    label: 'Vegetarian' },
   { value: 'nonveg', label: 'Non-Vegetarian' },
   { value: 'jain',   label: 'Jain' },
   { value: 'vegan',  label: 'Vegan' },
 ]
+
+/* ── COUNTRY CODE SELECT ── */
 const COUNTRY_OPTIONS = [
   { code: '+91',  flag: '🇮🇳', name: 'India' },
   { code: '+1',   flag: '🇺🇸', name: 'USA' },
@@ -139,7 +105,6 @@ const COUNTRY_OPTIONS = [
   { code: '+65',  flag: '🇸🇬', name: 'Singapore' },
   { code: '+1',   flag: '🇨🇦', name: 'Canada' },
 ]
-
 function CountryCodeSelect({ value, onChange }) {
   const [open, setOpen] = useState(false)
   const [sel, setSel] = useState(COUNTRY_OPTIONS[0])
@@ -148,30 +113,29 @@ function CountryCodeSelect({ value, onChange }) {
       onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false) }}>
       <button type="button" className="rf-cc-trigger" onClick={() => setOpen(p => !p)}>
         <span>{sel.flag}</span>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
           <path d="M2 4l4 4 4-4"/>
         </svg>
       </button>
       {open && createPortal(
         <div className="rf-cc-dropdown">
           {COUNTRY_OPTIONS.map((c, i) => (
-            <button key={i} type="button" className={`rf-cc-option${sel.code === c.code && sel.flag === c.flag ? ' selected' : ''}`}
+            <button key={i} type="button"
+              className={`rf-cc-option${sel.code === c.code && sel.flag === c.flag ? ' selected' : ''}`}
               onClick={() => { setSel(c); onChange(c.code); setOpen(false) }}>
-              <span>{c.flag}</span> <span>{c.name}</span> <span className="rf-cc-code">{c.code}</span>
+              <span>{c.flag}</span><span>{c.name}</span><span className="rf-cc-code">{c.code}</span>
             </button>
           ))}
-        </div>,
-        document.body
+        </div>, document.body
       )}
     </div>
   )
 }
 
-/* ── Step components ────────────────────────────── */
+/* ── STEP: GUEST ── */
 function StepGuest({ form, setForm, errors }) {
   const [cc, setCc] = useState('+91')
   const rawPhone = form.phone.startsWith(cc) ? form.phone.slice(cc.length).trim() : form.phone
-
   return (
     <div className="rf-section-group">
       <div className="rf-section">
@@ -191,10 +155,10 @@ function StepGuest({ form, setForm, errors }) {
             {errors.age && <span className="rf-err">{errors.age}</span>}
           </div>
           <div className="rf-field">
-            <label className="rf-label" htmlFor="gPhone">Phone Number <span className="rf-req">*</span></label>
+            <label className="rf-label" htmlFor="gPhone">Phone <span className="rf-req">*</span></label>
             <div className="rf-phone-row">
               <CountryCodeSelect value={cc} onChange={v => { setCc(v); setForm(p => ({ ...p, phone: v + ' ' + rawPhone })) }}/>
-              <input id="gPhone" type="tel" className={`rf-input rf-phone-input${errors.phone ? ' error' : ''}`}
+              <input id="gPhone" type="tel" className="rf-input rf-phone-input"
                 placeholder={cc === '+91' ? '98765 43210' : '555 1234'}
                 value={rawPhone}
                 onChange={e => setForm(p => ({ ...p, phone: cc + ' ' + e.target.value }))}/>
@@ -204,7 +168,6 @@ function StepGuest({ form, setForm, errors }) {
           </div>
         </div>
       </div>
-
       <div className="rf-section">
         <h3 className="rf-section-title"><span className="rf-section-bar"/>Contact</h3>
         <div className="rf-field">
@@ -219,16 +182,15 @@ function StepGuest({ form, setForm, errors }) {
   )
 }
 
+/* ── STEP: COMPANIONS ── */
 function StepCompanions({ form, setForm }) {
   const adults   = form.companions.filter(c => c.type === 'adult')
   const children = form.companions.filter(c => c.type === 'child')
-
   const addAdult  = () => setForm(p => ({ ...p, companions: [...p.companions, { ...emptyAdult(), type: 'adult' }] }))
   const addChild  = () => setForm(p => ({ ...p, companions: [...p.companions, { ...emptyChild(), type: 'child' }] }))
   const removeComp = idx => setForm(p => ({ ...p, companions: p.companions.filter((_, i) => i !== idx) }))
   const updateComp = (idx, key, val) =>
     setForm(p => ({ ...p, companions: p.companions.map((c, i) => i === idx ? { ...c, [key]: val } : c) }))
-
   return (
     <div className="rf-section-group">
       <div className="rf-section">
@@ -247,7 +209,7 @@ function StepCompanions({ form, setForm }) {
               </div>
               <div className="rf-field" style={{ flex: 1.4 }}>
                 <label className="rf-label">Phone</label>
-                <input className="rf-input" placeholder="+91 …" value={c.phone}
+                <input className="rf-input" placeholder="+91…" value={c.phone}
                   onChange={e => updateComp(idx, 'phone', e.target.value)}/>
               </div>
               <button type="button" className="rf-remove-btn" onClick={() => removeComp(idx)} aria-label="Remove">✕</button>
@@ -255,7 +217,6 @@ function StepCompanions({ form, setForm }) {
           </div>
         ))}
       </div>
-
       <div className="rf-section">
         <div className="rf-sec-header">
           <h3 className="rf-section-title" style={{ marginBottom: 0 }}><span className="rf-section-bar"/>Children</h3>
@@ -284,6 +245,7 @@ function StepCompanions({ form, setForm }) {
   )
 }
 
+/* ── STEP: TRAVEL ── */
 function StepTravel({ form, setForm }) {
   const today = new Date()
   const todayStr = today.toISOString().slice(0,10)
@@ -293,24 +255,14 @@ function StepTravel({ form, setForm }) {
         <h3 className="rf-section-title"><span className="rf-section-bar"/>Arrival &amp; Departure</h3>
         <div className="rf-field-row">
           <div className="rf-field">
-            <CustomDatePicker
-              label="Arrival Date"
-              value={form.arrivalDate}
+            <CustomDatePicker label="Arrival Date" value={form.arrivalDate}
               onChange={v => setForm(p => ({ ...p, arrivalDate: v }))}
-              placeholder="Select arrival date"
-              minDate={todayStr}
-              type="arrival"
-            />
+              placeholder="Select arrival date" minDate={todayStr} type="arrival"/>
           </div>
           <div className="rf-field">
-            <CustomDatePicker
-              label="Departure Date"
-              value={form.departureDate}
+            <CustomDatePicker label="Departure Date" value={form.departureDate}
               onChange={v => setForm(p => ({ ...p, departureDate: v }))}
-              placeholder="Select departure date"
-              minDate={form.arrivalDate || todayStr}
-              type="departure"
-            />
+              placeholder="Select departure date" minDate={form.arrivalDate || todayStr} type="departure"/>
           </div>
         </div>
         <div className="rf-field">
@@ -320,7 +272,8 @@ function StepTravel({ form, setForm }) {
         </div>
         <div className="rf-field">
           <label className="rf-label" htmlFor="tNotes">Travel Notes <span className="rf-opt">(optional)</span></label>
-          <textarea id="tNotes" className="rf-textarea" rows={3} placeholder="Flight number, arrival time, any special info…"
+          <textarea id="tNotes" className="rf-textarea" rows={3}
+            placeholder="Flight number, arrival time, any special info…"
             value={form.travelNotes} onChange={e => setForm(p => ({ ...p, travelNotes: e.target.value }))}/>
         </div>
       </div>
@@ -328,6 +281,7 @@ function StepTravel({ form, setForm }) {
   )
 }
 
+/* ── STEP: MEALS ── */
 function StepMeals({ form, setForm }) {
   const setPref = (who, val) => setForm(p => ({ ...p, meals: { ...p.meals, [who]: val } }))
   const allPeople = [
@@ -340,7 +294,7 @@ function StepMeals({ form, setForm }) {
         <h3 className="rf-section-title"><span className="rf-section-bar"/>Meal Preferences</h3>
         <p className="rf-section-hint">Select a meal preference for each guest.</p>
         {allPeople.map(({ key, label }) => (
-          <div key={key} className="rf-meal-row">
+          <div key={key} style={{ marginBottom: 20 }}>
             <span className="rf-meal-name">{label}</span>
             <div className="rf-meal-opts">
               {MEAL_OPTIONS.map(opt => (
@@ -358,6 +312,7 @@ function StepMeals({ form, setForm }) {
   )
 }
 
+/* ── STEP: STAY ── */
 function StepStay({ form, setForm }) {
   return (
     <div className="rf-section-group">
@@ -391,6 +346,7 @@ function StepStay({ form, setForm }) {
   )
 }
 
+/* ── STEP: CONFIRM ── */
 function StepConfirm({ form }) {
   const mealLabel = v => MEAL_OPTIONS.find(o => o.value === v)?.label || '—'
   const allPeople = [
@@ -426,117 +382,7 @@ function StepConfirm({ form }) {
   )
 }
 
-/* ── Sidebar ────────────────────────────────────── */
-function Sidebar({ eventInfo }) {
-  return (
-    <aside className="rf-sidebar">
-      <div className="rf-sb-logo-wrap">
-        {eventInfo.logoUrl
-          ? <img src={eventInfo.logoUrl} alt="Wedding logo" className="rf-sb-logo"/>
-          : <div className="rf-sb-logo-placeholder">M &amp; N</div>}
-      </div>
-      <h2 className="rf-sb-names">{eventInfo.coupleNames}</h2>
-      <p className="rf-sb-subtitle">WEDDING CELEBRATION</p>
-
-      <div className="rf-sb-info">
-        {/* DATE row */}
-        <div className="rf-sb-row">
-          <span className="rf-sb-row-icon" aria-hidden="true">
-            <svg
-              width="14" height="14"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              style={{ display: 'block', width: 14, height: 14, minWidth: 14, maxWidth: 14 }}
-            >
-              <rect x="2" y="3" width="16" height="16" rx="2.5"/>
-              <path d="M2 8h16M6 1v4M14 1v4"/>
-            </svg>
-          </span>
-          <span>{eventInfo.dateRange}</span>
-        </div>
-
-        {/* VENUE row */}
-        <div className="rf-sb-row">
-          <span className="rf-sb-row-icon" aria-hidden="true">
-            <svg
-              width="14" height="14"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              style={{ display: 'block', width: 14, height: 14, minWidth: 14, maxWidth: 14 }}
-            >
-              <circle cx="10" cy="9" r="3"/>
-              <path d="M10 2a7 7 0 0 1 7 7c0 4-7 10-7 10S3 13 3 9a7 7 0 0 1 7-7z"/>
-            </svg>
-          </span>
-          <span>{eventInfo.venue}</span>
-        </div>
-
-        {/* RSVP DEADLINE row */}
-        <div className="rf-sb-row">
-          <span className="rf-sb-row-icon" aria-hidden="true">
-            <svg
-              width="14" height="14"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              style={{ display: 'block', width: 14, height: 14, minWidth: 14, maxWidth: 14 }}
-            >
-              <circle cx="10" cy="10" r="8"/>
-              <path d="M10 5v5l3 3"/>
-            </svg>
-          </span>
-          <span>RSVP by {eventInfo.rsvpDeadline}</span>
-        </div>
-      </div>
-
-      {/* Maps button */}
-      <a
-        href={MAPS_LINK}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="rf-sb-map-btn"
-      >
-        <svg
-          width="13" height="13"
-          viewBox="0 0 20 20"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          style={{ display: 'block', width: 13, height: 13, minWidth: 13, maxWidth: 13, flexShrink: 0 }}
-        >
-          <circle cx="10" cy="9" r="3"/>
-          <path d="M10 2a7 7 0 0 1 7 7c0 4-7 10-7 10S3 13 3 9a7 7 0 0 1 7-7z"/>
-        </svg>
-        View on Google Maps
-      </a>
-
-      {/* Contact */}
-      <div className="rf-sb-contact">
-        <span className="rf-sb-contact-icon" aria-hidden="true">
-          <svg
-            width="13" height="13"
-            viewBox="0 0 20 20"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            style={{ display: 'block', width: 13, height: 13, minWidth: 13, maxWidth: 13 }}
-          >
-            <rect x="2" y="5" width="16" height="12" rx="2"/>
-            <path d="M2 7l8 5 8-5"/>
-          </svg>
-        </span>
-        <span>Questions? <a href={`mailto:${eventInfo.contactEmail}`}>{eventInfo.contactEmail}</a></span>
-      </div>
-    </aside>
-  )
-}
-
-/* ── Main RSVPForm ──────────────────────────────── */
+/* ── MAIN ── */
 export default function RSVPForm() {
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
@@ -544,12 +390,12 @@ export default function RSVPForm() {
   const [submitting, setSubmitting] = useState(false)
   const [errors, setErrors] = useState({})
   const [eventInfo, setEventInfo] = useState({
-    coupleNames:   'Margarita & Nitin',
-    dateRange:     '25 – 26 November 2026',
-    venue:         'Samode Bagh, Jaipur',
-    rsvpDeadline:  '31 Oct 2026',
-    contactEmail:  'contact@bride-groom.com',
-    logoUrl:       null,
+    coupleNames:  'Margarita & Nitin',
+    dateRange:    '25 – 26 November 2026',
+    venue:        'Samode Bagh, Jaipur',
+    rsvpDeadline: '31 Oct 2026',
+    contactEmail: 'contact@bride-groom.com',
+    logoUrl:      null,
   })
   const [form, setForm] = useState({
     name: '', age: '', phone: '', email: '',
@@ -559,7 +405,6 @@ export default function RSVPForm() {
     stayOption: '', stayNotes: '',
   })
 
-  /* load event info */
   useEffect(() => {
     supabase.from('event_config').select('*').single().then(({ data }) => {
       if (data) setEventInfo(p => ({
@@ -598,14 +443,10 @@ export default function RSVPForm() {
   function next() {
     const e = validateStep(step)
     if (Object.keys(e).length) { setErrors(e); return }
-    setErrors({})
-    setDir('forward')
-    setStep(s => Math.min(s + 1, TOTAL - 1))
+    setErrors({}); setDir('forward'); setStep(s => Math.min(s + 1, TOTAL - 1))
   }
   function back() {
-    setErrors({})
-    setDir('back')
-    setStep(s => Math.max(s - 1, 0))
+    setErrors({}); setDir('back'); setStep(s => Math.max(s - 1, 0))
   }
 
   async function submit() {
@@ -615,7 +456,7 @@ export default function RSVPForm() {
         name:           form.name.trim(),
         age:            parseInt(form.age, 10),
         phone:          form.phone.trim(),
-          email:          form.email.trim() || null,
+        email:          form.email.trim() || null,
         companions:     form.companions,
         arrival_date:   form.arrivalDate   || null,
         departure_date: form.departureDate || null,
@@ -648,85 +489,92 @@ export default function RSVPForm() {
 
   return (
     <div className="rf-root">
-      {/* warm radial wash */}
       <BgWash />
-      {/* floating petals */}
       <FloatingPetals />
-      {/* animated warm shapes */}
       <BgSvg />
 
       <div className="rf-layout">
-        {/* ── Top Nav ── */}
+        {/* TOP NAV */}
         <nav className="rf-topnav" aria-label="Form progress">
-          <div className="rf-nav-logo">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-label="Logo">
-              <circle cx="14" cy="14" r="13" stroke="var(--gold)" strokeWidth="1.5"/>
-              <text x="14" y="18" textAnchor="middle" fontFamily="Cormorant Garamond, serif" fontSize="12" fill="var(--gold-dark)" fontStyle="italic">M&amp;N</text>
-            </svg>
-            <span className="rf-nav-brand">RSVP</span>
-          </div>
-          <div className="rf-nav-step-badge">
-            <span className="rf-nav-step-num">STEP {step + 1}</span>
-            <span className="rf-nav-step-sep">OF</span>
-            <span className="rf-nav-step-num">{TOTAL}</span>
-          </div>
-          <div className="rf-nav-dots" aria-hidden="true">
-            {STEPS.map((_, i) => (
-              <span key={i} className={`rf-nav-dot${i === step ? ' active' : i < step ? ' done' : ''}`}/>
-            ))}
+          <div className="rf-topnav-inner">
+            <div className="rf-nav-logo">
+              <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-label="Logo">
+                <circle cx="14" cy="14" r="13" stroke="#c9973a" strokeWidth="1.5"/>
+                <text x="14" y="18" textAnchor="middle" fontFamily="Cormorant Garamond, serif"
+                  fontSize="10" fill="#8a6520" fontStyle="italic">M&amp;N</text>
+              </svg>
+              <span className="rf-nav-brand">Margarita &amp; Nitin</span>
+            </div>
+
+            <div className="rf-nav-dots" aria-hidden="true">
+              {STEPS.map((_, i) => (
+                <div key={i} className="rf-nav-dot-unit">
+                  {i > 0 && <div className="rf-nav-dot-line" />}
+                  <div className={`rf-nav-dot${i === step ? ' active' : i < step ? ' done' : ''}`}>
+                    {i < step
+                      ? <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><path d="M2 5l2.5 2.5L8 2.5"/></svg>
+                      : i + 1
+                    }
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="rf-nav-step-badge">
+              <span className="rf-nav-step-num">{step + 1}</span>
+              <span className="rf-nav-step-sep">/</span>
+              <span>{TOTAL}</span>
+            </div>
           </div>
         </nav>
 
-        {/* ── Progress Bar ── */}
+        {/* PROGRESS BAR */}
         <div className="rf-progress" role="progressbar" aria-valuenow={step+1} aria-valuemin={1} aria-valuemax={TOTAL}>
           <div className="rf-progress-fill" style={{ width: `${((step+1)/TOTAL)*100}%` }}/>
         </div>
 
-        {/* ── Main Content ── */}
+        {/* MAIN */}
         <main className="rf-main">
           <div className="rf-content-wrap">
             <div className="rf-form-col">
               <div className={`rf-step-wrap rf-step-enter--${dir}`}>
+                {/* KICKER */}
+                <div className="rf-step-kicker">Step {step + 1} of {TOTAL}</div>
+
+                {/* STEP HEADER */}
                 <div className="rf-step-header">
-                  <h1 className="rf-step-title">{stepLabels[step]}</h1>
+                  <h2 className="rf-step-title">{stepLabels[step]}</h2>
                   <p className="rf-step-desc">{stepDescs[step]}</p>
                 </div>
+
+                {/* STEP BODY */}
                 <div className="rf-step-body">
                   {stepComponents[step]}
                 </div>
-              </div>
 
-              {/* ── Footer Nav ── */}
-              <div className="rf-footer-nav">
-                {step > 0 && (
-                  <button type="button" className="rf-btn-back" onClick={back}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                      <path d="M10 3L5 8l5 5"/>
-                    </svg>
-                    Back
-                  </button>
-                )}
-                {step < TOTAL - 1
-                  ? <button type="button" className="rf-btn-next" onClick={next}>
-                      Continue
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                        <path d="M6 3l5 5-5 5"/>
-                      </svg>
+                {/* FOOTER NAV — inside card */}
+                <div className="rf-footer-nav">
+                  {step > 0 && (
+                    <button type="button" className="rf-btn-back" onClick={back}>
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M10 3L5 8l5 5"/></svg>
+                      Back
                     </button>
-                  : <button type="button" className="rf-btn-submit" onClick={submit} disabled={submitting}>
-                      {submitting
-                        ? <><span className="rf-spinner"/>Submitting…</>
-                        : <>Submit RSVP
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                              <path d="M6 3l5 5-5 5"/>
-                            </svg>
-                          </>}
-                    </button>
-                }
+                  )}
+                  {step < TOTAL - 1
+                    ? <button type="button" className="rf-btn-next" onClick={next}>
+                        Continue
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 3l5 5-5 5"/></svg>
+                        <span className="rf-btn-arr">→</span>
+                      </button>
+                    : <button type="button" className="rf-btn-submit" onClick={submit} disabled={submitting}>
+                        {submitting
+                          ? <><span className="rf-spinner"/>Submitting…</>
+                          : <>Submit RSVP <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 3l5 5-5 5"/></svg></>}
+                      </button>
+                  }
+                </div>
               </div>
             </div>
-
-            <Sidebar eventInfo={eventInfo} />
           </div>
         </main>
       </div>

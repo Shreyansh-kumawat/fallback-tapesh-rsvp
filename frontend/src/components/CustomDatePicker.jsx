@@ -8,8 +8,36 @@ const MONTHS = [
 ]
 const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa']
 
-export default function CustomDatePicker({ label, value, onChange, placeholder = 'Select date...' }) {
+// SVG plane icon — inline, no emoji
+// type='departure': tilted 30deg (takeoff / nose-up)
+// type='arrival':   tilted 320deg (landing / nose-down)
+function PlaneIcon({ type }) {
+  const deg = type === 'departure' ? -30 : 40  // -30 = nose up 30°, 40 = nose down ~320°
+  return (
+    <svg
+      className="cdp-plane-icon"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ transform: `rotate(${deg}deg)` }}
+      aria-hidden="true"
+    >
+      {/* Simple filled plane path pointing right */}
+      <path d="M21 16v-2l-8-5V3.5A1.5 1.5 0 0 0 11.5 2 1.5 1.5 0 0 0 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>
+    </svg>
+  )
+}
+
+export default function CustomDatePicker({
+  label,
+  value,
+  onChange,
+  placeholder = 'Select date...',
+  minDate,      // YYYY-MM-DD — dates before this are greyed/disabled
+  type,         // 'departure' | 'arrival' — controls which plane icon to show
+}) {
   const today = new Date()
+  const todayYMD = toYMD(today)
   const initDate = value ? new Date(value + 'T00:00:00') : null
   const [open, setOpen] = useState(false)
   const [viewYear, setViewYear] = useState(initDate ? initDate.getFullYear() : today.getFullYear())
@@ -18,6 +46,13 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
   const wrapRef = useRef(null)
   const triggerRef = useRef(null)
   const popupRef = useRef(null)
+
+  function toYMD(d) {
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${y}-${m}-${day}`
+  }
 
   useEffect(() => {
     if (value) {
@@ -54,13 +89,6 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
   }
 
-  const toYMD = d => {
-    const y = d.getFullYear()
-    const m = String(d.getMonth() + 1).padStart(2, '0')
-    const day = String(d.getDate()).padStart(2, '0')
-    return `${y}-${m}-${day}`
-  }
-
   const getDaysInMonth = (y, m) => new Date(y, m + 1, 0).getDate()
   const getFirstDay = (y, m) => new Date(y, m, 1).getDay()
 
@@ -73,17 +101,26 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
     else setViewMonth(m => m + 1)
   }
 
+  const getCellYMD = day => {
+    const y = viewYear
+    const m = String(viewMonth + 1).padStart(2, '0')
+    const d = String(day).padStart(2, '0')
+    return `${y}-${m}-${d}`
+  }
+
+  const isDisabled = day => {
+    if (!minDate) return false
+    return getCellYMD(day) < minDate
+  }
+
   const selectDay = day => {
+    if (isDisabled(day)) return
     const d = new Date(viewYear, viewMonth, day)
     onChange(toYMD(d))
     handleClose()
   }
 
-  const isToday = day =>
-    today.getDate() === day &&
-    today.getMonth() === viewMonth &&
-    today.getFullYear() === viewYear
-
+  // today highlight removed — no isToday styling
   const isSelected = day =>
     selectedDate &&
     selectedDate.getDate() === day &&
@@ -144,13 +181,29 @@ export default function CustomDatePicker({ label, value, onChange, placeholder =
               {DAYS.map(d => <div key={d} className="cdp-wd">{d}</div>)}
             </div>
             <div className="cdp-grid">
-              {cells.map((day, i) =>
-                day === null
-                  ? <div key={`e-${i}`} className="cdp-cell empty" />
-                  : <button key={day} type="button"
-                      className={`cdp-cell${isSelected(day) ? ' selected' : isToday(day) ? ' today' : ''}`}
-                      onClick={() => selectDay(day)}>{day}</button>
-              )}
+              {cells.map((day, i) => {
+                if (day === null) return <div key={`e-${i}`} className="cdp-cell empty" />
+                const disabled = isDisabled(day)
+                const selected = isSelected(day)
+                let cls = 'cdp-cell'
+                if (selected) cls += ' selected'
+                else if (disabled) cls += ' disabled'
+                return (
+                  <button
+                    key={day}
+                    type="button"
+                    className={cls}
+                    onClick={() => selectDay(day)}
+                    disabled={disabled}
+                    aria-pressed={selected}
+                  >
+                    {selected && type
+                      ? <PlaneIcon type={type} />
+                      : day
+                    }
+                  </button>
+                )
+              })}
             </div>
           </div>
         )}

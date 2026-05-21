@@ -180,22 +180,41 @@
   border-radius: 50%;
   transition: background .12s, color .12s;
   cursor: pointer;
+  position: relative;
 }
 .cdp-cell.empty { cursor: default; }
-.cdp-cell:not(.empty):hover {
+
+/* Disabled (before minDate) — greyed out, not clickable */
+.cdp-cell.disabled {
+  color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.cdp-cell.disabled:hover { background: none; color: #ccc; }
+
+/* Normal hover — only non-disabled, non-selected */
+.cdp-cell:not(.empty):not(.disabled):not(.selected):hover {
   background: var(--gold-pale);
   color: var(--gold-dark);
 }
-.cdp-cell.today {
-  font-weight: 600;
-  color: var(--gold);
-  box-shadow: inset 0 0 0 1.5px var(--gold);
-}
+
+/* Today highlight removed — no special style */
+
+/* Selected date */
 .cdp-cell.selected {
   background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
   color: #fff !important;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(184,146,42,.4);
+}
+
+/* Plane icon inside selected cell */
+.cdp-plane-icon {
+  width: 14px;
+  height: 14px;
+  display: block;
+  color: #fff;
+  flex-shrink: 0;
 }
 
 /* MONTHS VIEW */

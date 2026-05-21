@@ -8,26 +8,6 @@ const MONTHS = [
 ]
 const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa']
 
-// SVG plane — departure: nose-up 30deg (takeoff), arrival: nose-down 320deg (landing)
-function PlaneIcon({ type }) {
-  // departure = -30deg (nose up), arrival = 140deg (nose down / landing)
-  const deg = type === 'departure' ? -30 : 140
-  return (
-    <svg
-      className="cdp-plane-icon"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ transform: `rotate(${deg}deg)`, display: 'block' }}
-      aria-hidden="true"
-    >
-      <path d="M3.5 18.5L10 5l1.5 6.5L18 13 3.5 18.5z" />
-      <path d="M10 5l1.5 6.5-4 1.5L10 5z" opacity="0.4" />
-      <path d="M1 21h22" strokeWidth="1.2" stroke="currentColor" fill="none" strokeLinecap="round" />
-    </svg>
-  )
-}
-
 export default function CustomDatePicker({
   label,
   value,
@@ -139,7 +119,7 @@ export default function CustomDatePicker({
           <button type="button" className="cdp-nav-btn"
             onClick={mode === 'years' ? () => setViewYear(y => y - 12) : prevMonth}
             aria-label="Previous">
-            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M8 2L4 6l4 4"/></svg>
+            &#8249;
           </button>
           <div className="cdp-header-center">
             <button type="button" className="cdp-month-btn"
@@ -154,7 +134,7 @@ export default function CustomDatePicker({
           <button type="button" className="cdp-nav-btn"
             onClick={mode === 'years' ? () => setViewYear(y => y + 12) : nextMonth}
             aria-label="Next">
-            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M4 2l4 4-4 4"/></svg>
+            &#8250;
           </button>
         </div>
 
@@ -180,7 +160,7 @@ export default function CustomDatePicker({
                     disabled={disabled}
                     aria-pressed={selected}
                   >
-                    {selected && type ? <PlaneIcon type={type} /> : day}
+                    {day}
                   </button>
                 )
               })}

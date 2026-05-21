@@ -236,7 +236,6 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
       const spaceBelow = vh - rect.bottom
       const spaceAbove = rect.top
       const maxH = Math.min(dropHeight, Math.max(spaceBelow, spaceAbove) - 12)
-      // Clamp left so dropdown never goes off screen right edge
       const w = rect.width
       const left = Math.min(rect.left, vw - w - 8)
 
@@ -326,6 +325,13 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
   )
 }
 
+// ─── Date cross-validation helper ───────────────────────────────────────────
+// Returns true if arrivalDate >= departureDate (both YYYY-MM-DD strings)
+function isArrivalValid(departureDate, arrivalDate) {
+  if (!departureDate || !arrivalDate) return true
+  return arrivalDate >= departureDate
+}
+
 export default function RSVPForm() {
   const navigate = useNavigate()
   const [cur, setCur] = useState(1)
@@ -345,6 +351,24 @@ export default function RSVPForm() {
 
   const up = (key, val) => setForm(p => ({ ...p, [key]: val }))
 
+  // When departure changes: if arrival is now before departure, clear arrival
+  const handleDepartureDateChange = (val) => {
+    up('departureDate', val)
+    if (form.arrivalDate && val && form.arrivalDate < val) {
+      up('arrivalDate', '')
+      toast.error('Arrival date cleared — it must be on or after your departure date.')
+    }
+  }
+
+  // When arrival changes: block if it's before departure
+  const handleArrivalDateChange = (val) => {
+    if (val && form.departureDate && val < form.departureDate) {
+      toast.error('Arrival date cannot be before your departure date.')
+      return
+    }
+    up('arrivalDate', val)
+  }
+
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }) }, [cur])
 
   const validate = step => {
@@ -358,6 +382,8 @@ export default function RSVPForm() {
       if (!form.city) return 'Please select your arrival city in India.'
       if (!form.departureDate) return 'Please select your departure date.'
       if (!form.arrivalDate) return 'Please select your arrival date in India.'
+      if (!isArrivalValid(form.departureDate, form.arrivalDate))
+        return 'Arrival date must be on or after your departure date.'
     }
     return ''
   }
@@ -411,6 +437,9 @@ export default function RSVPForm() {
   const progress = `${(cur / TOTAL) * 100}%`
   const isJaipur = form.city?.isRajasthan === true
   const fitVh = cur <= 3
+
+  // Inline date error message for Step 3
+  const dateError = form.departureDate && form.arrivalDate && !isArrivalValid(form.departureDate, form.arrivalDate)
 
   return (
     <div className="rsvp-page">
@@ -602,7 +631,12 @@ export default function RSVPForm() {
                     <div className="rf-travel-card rf-travel-from">
                       <div className="rf-travel-card-label"><IconPlane /><span>Travel From</span></div>
                       <SearchSelect label="Country *" placeholder="Select country..." items={ALL_COUNTRIES} value={form.country} onChange={v => up('country', v)} dropHeight={200} showFlags={true} />
-                      <CustomDatePicker label="Departure Date *" value={form.departureDate} onChange={v => up('departureDate', v)} placeholder="Select departure date..." />
+                      <CustomDatePicker
+                        label="Departure Date *"
+                        value={form.departureDate}
+                        onChange={handleDepartureDateChange}
+                        placeholder="Select departure date..."
+                      />
                     </div>
 
                     <div className="rf-travel-divider">
@@ -618,9 +652,22 @@ export default function RSVPForm() {
                     <div className="rf-travel-card rf-travel-to">
                       <div className="rf-travel-card-label"><IconHotel /><span>Travel To</span></div>
                       <SearchSelect label="Arrival City in India *" placeholder="Type city or district..." items={INDIA_DISTRICTS} value={form.city} onChange={v => up('city', v)} dropHeight={200} />
-                      <CustomDatePicker label="Arrival Date *" value={form.arrivalDate} onChange={v => up('arrivalDate', v)} placeholder="Select arrival date..." />
+                      <CustomDatePicker
+                        label="Arrival Date *"
+                        value={form.arrivalDate}
+                        onChange={handleArrivalDateChange}
+                        placeholder="Select arrival date..."
+                        minDate={form.departureDate || undefined}
+                      />
                     </div>
                   </div>
+
+                  {/* Inline date cross-validation warning */}
+                  {dateError && (
+                    <div className="rf-date-error-box">
+                      ⚠️ Arrival date must be on or after your departure date.
+                    </div>
+                  )}
 
                   {form.city && (
                     <div className={`rf-transport-box ${isJaipur ? 'green' : 'yellow'}`}>

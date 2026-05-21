@@ -291,23 +291,18 @@
 .rf-shake { animation: rf-shake 0.4s var(--smooth); }
 
 /* ══════════════════════════════════════════════
-   react-phone-number-input — PhoneInput styles
-   Overrides library defaults to match wedding design
+   react-phone-number-input — compact flag style
    ══════════════════════════════════════════════ */
 
-.rf-phone-input-wrap {
-  width: 100%;
-}
-
-/* The outer PhoneInput container rendered by the library */
+/* Outer wrapper = the input box */
 .rf-phone-input-wrap.PhoneInput {
-  display: flex;
-  align-items: center;
-  gap: 0;
+  display: flex !important;
+  align-items: center !important;
   background: rgba(255,255,255,0.82);
   border: 1.5px solid var(--b2);
   border-radius: 9px;
   overflow: hidden;
+  gap: 0 !important;
   transition: border-color 0.22s var(--smooth), box-shadow 0.22s var(--smooth);
 }
 .rf-phone-input-wrap.PhoneInput:focus-within {
@@ -316,76 +311,95 @@
   box-shadow: 0 0 0 3px rgba(201,151,58,0.11);
 }
 .rf-phone-input-wrap.error.PhoneInput {
-  border-color: var(--rose);
-  background: var(--rose-p);
+  border-color: var(--rose) !important;
+  background: var(--rose-p) !important;
 }
 
-/* Country flag+select button */
+/* Left side: flag + arrow */
 .rf-phone-input-wrap .PhoneInputCountry {
-  display: flex;
-  align-items: center;
-  padding: 0 10px 0 12px;
-  background: transparent;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 0 8px 0 10px !important;
+  height: 44px !important;
   border-right: 1px solid var(--b2);
-  gap: 4px;
+  background: transparent !important;
   flex-shrink: 0;
-  height: 44px;
+  position: relative;
   cursor: pointer;
 }
 
-/* The flag image */
+/* Flag icon — small & tidy */
 .rf-phone-input-wrap .PhoneInputCountryIcon {
-  width: 22px;
-  height: 16px;
-  border-radius: 2px;
-  overflow: hidden;
-  flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(44,31,14,0.15);
+  width: 20px !important;
+  height: 14px !important;
+  min-width: 20px !important;
+  min-height: 14px !important;
+  max-width: 20px !important;
+  max-height: 14px !important;
+  border-radius: 2px !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  box-shadow: 0 1px 2px rgba(44,31,14,0.18) !important;
+  line-height: 1 !important;
+  font-size: 0 !important;
 }
-.rf-phone-input-wrap .PhoneInputCountryIcon img,
 .rf-phone-input-wrap .PhoneInputCountryIcon--border {
-  width: 100%;
-  height: 100%;
+  box-shadow: 0 1px 2px rgba(44,31,14,0.18) !important;
+}
+.rf-phone-input-wrap .PhoneInputCountryIcon img {
+  width: 20px !important;
+  height: 14px !important;
+  object-fit: cover !important;
+  display: block !important;
+  border-radius: 2px !important;
+}
+/* Emoji flag fallback (some browsers render flag as emoji char) */
+.rf-phone-input-wrap .PhoneInputCountryIconImg {
+  width: 20px !important;
+  height: 14px !important;
   object-fit: cover;
-  display: block;
 }
 
-/* The hidden native <select> that opens the country dropdown */
+/* The hidden <select> behind flag area */
 .rf-phone-input-wrap .PhoneInputCountrySelect {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  opacity: 0;
-  cursor: pointer;
-  z-index: 1;
+  position: absolute !important;
+  top: 0 !important; left: 0 !important;
+  width: 100% !important; height: 100% !important;
+  opacity: 0 !important;
+  cursor: pointer !important;
+  z-index: 1 !important;
+  border: none !important;
 }
 
-/* Dropdown arrow */
+/* Tiny dropdown chevron */
 .rf-phone-input-wrap .PhoneInputCountrySelectArrow {
-  color: var(--ink3);
-  opacity: 0.7;
-  font-size: 10px;
-  margin-left: 2px;
+  width: 6px !important;
+  height: 6px !important;
+  border-color: var(--ink3) !important;
+  opacity: 0.6;
   flex-shrink: 0;
-  transition: opacity 0.15s;
+  margin-top: 1px;
 }
 .rf-phone-input-wrap .PhoneInputCountry:hover .PhoneInputCountrySelectArrow {
   opacity: 1;
-  color: var(--gold);
+  border-color: var(--gold) !important;
 }
 
-/* The actual phone number text input */
+/* Right side: phone number text input */
 .rf-phone-input-wrap .PhoneInputInput {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  padding: 12px 14px;
-  font-family: var(--sans);
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--ink);
-  min-width: 0;
+  flex: 1 !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  padding: 12px 14px !important;
+  font-family: var(--sans) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  color: var(--ink) !important;
+  min-width: 0 !important;
+  box-shadow: none !important;
 }
 .rf-phone-input-wrap .PhoneInputInput::placeholder {
   color: var(--ink3);

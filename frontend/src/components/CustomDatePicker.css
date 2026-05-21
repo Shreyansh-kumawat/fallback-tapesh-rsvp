@@ -60,9 +60,9 @@
   width: 12px; height: 12px;
   flex-shrink: 0;
   color: var(--gold);
-  transition: transform .25s cubic-bezier(.4,0,.2,1);
+  opacity: 0.2;
+  transform: rotate(180deg);
 }
-.cdp-chevron.open { transform: rotate(180deg); }
 
 /* OVERLAY BACKDROP */
 .cdp-overlay {
@@ -128,11 +128,12 @@
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   color: var(--gold-dark);
+  font-size: 1.2rem;
+  line-height: 1;
   transition: background .15s;
   flex-shrink: 0;
 }
 .cdp-nav-btn:hover { background: var(--gold-pale); }
-.cdp-nav-btn svg { width: 12px; height: 12px; }
 
 .cdp-month-btn, .cdp-year-btn {
   font-family: var(--serif);
@@ -184,7 +185,6 @@
 }
 .cdp-cell.empty { cursor: default; }
 
-/* Disabled (before minDate) — greyed out, not clickable */
 .cdp-cell.disabled {
   color: #ccc;
   cursor: not-allowed;
@@ -192,29 +192,16 @@
 }
 .cdp-cell.disabled:hover { background: none; color: #ccc; }
 
-/* Normal hover — only non-disabled, non-selected */
 .cdp-cell:not(.empty):not(.disabled):not(.selected):hover {
   background: var(--gold-pale);
   color: var(--gold-dark);
 }
 
-/* Today highlight removed — no special style */
-
-/* Selected date */
 .cdp-cell.selected {
   background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
   color: #fff !important;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(184,146,42,.4);
-}
-
-/* Plane icon inside selected cell */
-.cdp-plane-icon {
-  width: 14px;
-  height: 14px;
-  display: block;
-  color: #fff;
-  flex-shrink: 0;
 }
 
 /* MONTHS VIEW */

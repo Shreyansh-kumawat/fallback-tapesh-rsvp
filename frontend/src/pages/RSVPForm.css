@@ -837,7 +837,30 @@ html, body {
   display: flex; align-items: flex-start; gap: .5rem;
   font-size: .76rem; color: var(--text-mid);
 }
-.rf-sb-row-icon { color: var(--gold-dark); flex-shrink: 0; margin-top: 1px; }
+/* ─── FIX: sidebar row icons must be small and not expand ─── */
+.rf-sb-row-icon {
+  color: var(--gold-dark);
+  flex-shrink: 0;
+  margin-top: 1px;
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+  max-width: 14px;
+  max-height: 14px;
+  display: block;
+}
+.rf-sb-row-icon svg,
+.rf-sb-row svg {
+  width: 14px !important;
+  height: 14px !important;
+  min-width: 14px;
+  min-height: 14px;
+  max-width: 14px;
+  max-height: 14px;
+  flex-shrink: 0;
+  display: block;
+}
 .rf-sb-map-link { color: var(--text-mid); text-decoration: none; }
 .rf-sb-map-link:hover { color: var(--gold-dark); text-decoration: underline; }
 .rf-sb-sep {
@@ -856,13 +879,27 @@ html, body {
   transition: all .2s;
 }
 .rf-sb-maps-btn:hover { background: var(--gold-pale); color: var(--gold-dark); border-color: var(--gold); }
+.rf-sb-maps-btn svg {
+  width: 13px !important;
+  height: 13px !important;
+  flex-shrink: 0;
+}
 
 .rf-sb-contact {
   display: flex; align-items: center; gap: .4rem;
   font-size: .7rem; color: var(--text-light);
   justify-content: center;
 }
-.rf-sb-contact-icon { color: var(--gold); flex-shrink: 0; }
+.rf-sb-contact-icon {
+  color: var(--gold);
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+}
+.rf-sb-contact-icon svg {
+  width: 13px !important;
+  height: 13px !important;
+}
 .rf-sb-contact a { color: var(--gold-dark); text-decoration: none; font-weight: 500; }
 .rf-sb-contact a:hover { text-decoration: underline; }
 

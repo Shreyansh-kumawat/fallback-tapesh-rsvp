@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabase.js'
+import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 import './RSVPForm.css'
 import CustomDatePicker from '../components/CustomDatePicker.jsx'
@@ -15,12 +16,12 @@ const emptyChild = () => ({ name: '', age: '' })
 
 const MAPS_LINK = 'https://maps.app.goo.gl/6EnhNqNissXUDHJ59'
 
-/* ── BgWash ── */
+/* ─ BgWash ─ */
 function BgWash() {
   return <div className="rf-bg-wash" aria-hidden="true" />
 }
 
-/* ── Floating Petals ── */
+/* ─ Floating Petals ─ */
 const PETALS = [
   { left: '8%',  delay: '0s',   dur: '14s', size: 10, color: '#e8c57a' },
   { left: '22%', delay: '3s',   dur: '18s', size: 8,  color: '#e8a09a' },
@@ -46,7 +47,7 @@ function FloatingPetals() {
   )
 }
 
-/* ── BgSvg ── */
+/* ─ BgSvg ─ */
 function BgSvg() {
   return (
     <svg className="rf-bg-svg" xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +88,7 @@ function BgSvg() {
   )
 }
 
-/* ── MEAL OPTIONS ── */
+/* ─ MEAL OPTIONS ─ */
 const MEAL_OPTIONS = [
   { value: 'veg',    label: 'Vegetarian' },
   { value: 'nonveg', label: 'Non-Vegetarian' },
@@ -95,47 +96,8 @@ const MEAL_OPTIONS = [
   { value: 'vegan',  label: 'Vegan' },
 ]
 
-/* ── COUNTRY CODE SELECT ── */
-const COUNTRY_OPTIONS = [
-  { code: '+91',  flag: '🇮🇳', name: 'India' },
-  { code: '+1',   flag: '🇺🇸', name: 'USA' },
-  { code: '+44',  flag: '🇬🇧', name: 'UK' },
-  { code: '+61',  flag: '🇦🇺', name: 'Australia' },
-  { code: '+971', flag: '🇦🇪', name: 'UAE' },
-  { code: '+65',  flag: '🇸🇬', name: 'Singapore' },
-  { code: '+1',   flag: '🇨🇦', name: 'Canada' },
-]
-function CountryCodeSelect({ value, onChange }) {
-  const [open, setOpen] = useState(false)
-  const [sel, setSel] = useState(COUNTRY_OPTIONS[0])
-  return (
-    <div className={`rf-cc-wrap${open ? ' open' : ''}`} tabIndex={0}
-      onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false) }}>
-      <button type="button" className="rf-cc-trigger" onClick={() => setOpen(p => !p)}>
-        <span>{sel.flag}</span>
-        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-          <path d="M2 4l4 4 4-4"/>
-        </svg>
-      </button>
-      {open && createPortal(
-        <div className="rf-cc-dropdown">
-          {COUNTRY_OPTIONS.map((c, i) => (
-            <button key={i} type="button"
-              className={`rf-cc-option${sel.code === c.code && sel.flag === c.flag ? ' selected' : ''}`}
-              onClick={() => { setSel(c); onChange(c.code); setOpen(false) }}>
-              <span>{c.flag}</span><span>{c.name}</span><span className="rf-cc-code">{c.code}</span>
-            </button>
-          ))}
-        </div>, document.body
-      )}
-    </div>
-  )
-}
-
-/* ── STEP: GUEST ── */
+/* ─ STEP: GUEST ─ */
 function StepGuest({ form, setForm, errors }) {
-  const [cc, setCc] = useState('+91')
-  const rawPhone = form.phone.startsWith(cc) ? form.phone.slice(cc.length).trim() : form.phone
   return (
     <div className="rf-section-group">
       <div className="rf-section">
@@ -156,14 +118,14 @@ function StepGuest({ form, setForm, errors }) {
           </div>
           <div className="rf-field">
             <label className="rf-label" htmlFor="gPhone">Phone <span className="rf-req">*</span></label>
-            <div className="rf-phone-row">
-              <CountryCodeSelect value={cc} onChange={v => { setCc(v); setForm(p => ({ ...p, phone: v + ' ' + rawPhone })) }}/>
-              <input id="gPhone" type="tel" className="rf-input rf-phone-input"
-                placeholder={cc === '+91' ? '98765 43210' : '555 1234'}
-                value={rawPhone}
-                onChange={e => setForm(p => ({ ...p, phone: cc + ' ' + e.target.value }))}/>
-            </div>
-            <span className="rf-phone-hint">— Select your country flag for the correct code</span>
+            <PhoneInput
+              id="gPhone"
+              international
+              defaultCountry="IN"
+              value={form.phone}
+              onChange={val => setForm(p => ({ ...p, phone: val || '' }))}
+              className={`rf-phone-input-wrap${errors.phone ? ' error' : ''}`}
+            />
             {errors.phone && <span className="rf-err">{errors.phone}</span>}
           </div>
         </div>
@@ -182,7 +144,7 @@ function StepGuest({ form, setForm, errors }) {
   )
 }
 
-/* ── STEP: COMPANIONS ── */
+/* ─ STEP: COMPANIONS ─ */
 function StepCompanions({ form, setForm }) {
   const adults   = form.companions.filter(c => c.type === 'adult')
   const children = form.companions.filter(c => c.type === 'child')
@@ -245,7 +207,7 @@ function StepCompanions({ form, setForm }) {
   )
 }
 
-/* ── STEP: TRAVEL ── */
+/* ─ STEP: TRAVEL ─ */
 function StepTravel({ form, setForm }) {
   const today = new Date()
   const todayStr = today.toISOString().slice(0,10)
@@ -281,7 +243,7 @@ function StepTravel({ form, setForm }) {
   )
 }
 
-/* ── STEP: MEALS ── */
+/* ─ STEP: MEALS ─ */
 function StepMeals({ form, setForm }) {
   const setPref = (who, val) => setForm(p => ({ ...p, meals: { ...p.meals, [who]: val } }))
   const allPeople = [
@@ -312,7 +274,7 @@ function StepMeals({ form, setForm }) {
   )
 }
 
-/* ── STEP: STAY ── */
+/* ─ STEP: STAY ─ */
 function StepStay({ form, setForm }) {
   return (
     <div className="rf-section-group">
@@ -346,7 +308,7 @@ function StepStay({ form, setForm }) {
   )
 }
 
-/* ── STEP: CONFIRM ── */
+/* ─ STEP: CONFIRM ─ */
 function StepConfirm({ form }) {
   const mealLabel = v => MEAL_OPTIONS.find(o => o.value === v)?.label || '—'
   const allPeople = [
@@ -382,7 +344,7 @@ function StepConfirm({ form }) {
   )
 }
 
-/* ── MAIN ── */
+/* ─ MAIN ─ */
 export default function RSVPForm() {
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
@@ -434,7 +396,7 @@ export default function RSVPForm() {
     if (s === 0) {
       if (!form.name.trim())  e.name  = 'Name is required.'
       if (!form.age || isNaN(+form.age) || +form.age < 1) e.age = 'Enter a valid age.'
-      if (!form.phone.trim()) e.phone = 'Phone number is required.'
+      if (!form.phone || !form.phone.trim()) e.phone = 'Phone number is required.'
       if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email.'
     }
     return e
@@ -552,7 +514,7 @@ export default function RSVPForm() {
                   {stepComponents[step]}
                 </div>
 
-                {/* FOOTER NAV — inside card */}
+                {/* FOOTER NAV */}
                 <div className="rf-footer-nav">
                   {step > 0 && (
                     <button type="button" className="rf-btn-back" onClick={back}>

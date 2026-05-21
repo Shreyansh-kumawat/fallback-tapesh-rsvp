@@ -71,7 +71,8 @@ html, body {
   height: 100%;
 }
 
-.rsvp-page {
+.rsvp-page,
+.rf-root {
   height: 98vh;
   max-height: 98vh;
   font-family: var(--sans);
@@ -83,6 +84,42 @@ html, body {
   flex-direction: column;
   position: relative;
   overflow: hidden;
+}
+
+.rf-layout {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.rf-main {
+  flex: 1;
+  min-height: 0;
+}
+
+.rf-step-wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.rf-step-header {
+  margin-bottom: 1rem;
+}
+
+.rf-step-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.rf-footer-nav {
+  display: flex;
+  gap: .6rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  margin-top: auto;
 }
 
 /* ─── ANIMATED SVG BACKGROUND ───────────────────────── */
@@ -132,8 +169,12 @@ html, body {
   position: relative;
   z-index: 50;
 }
-.rf-prog-track { height: 3px; background: rgba(0,0,0,.08); }
-.rf-prog-fill {
+.rf-prog-track,
+.rf-progress {
+  height: 3px; background: rgba(0,0,0,.08);
+}
+.rf-prog-fill,
+.rf-progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--gold), var(--rose));
   transition: width .55s var(--ease);
@@ -206,7 +247,8 @@ html, body {
 .rf-step-enter--back    { animation: rf-step-back    .25s var(--ease) both; }
 
 /* ─── MAIN LAYOUT ─────────────────────────────────── */
-.rf-page-wrap {
+.rf-page-wrap,
+.rf-content-wrap {
   flex: 1;
   min-height: 0;
   display: grid;
@@ -236,7 +278,8 @@ html, body {
 }
 
 /* ─── FORM AREA ───────────────────────────────────── */
-.rf-form-card {
+.rf-form-card,
+.rf-form-col {
   background: transparent;
   border: none;
   border-radius: 0;

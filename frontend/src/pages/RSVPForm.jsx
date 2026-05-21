@@ -3,8 +3,6 @@ import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabase.js'
-import PhoneInput from 'react-phone-number-input'
-import 'react-phone-number-input/style.css'
 import './RSVPForm.css'
 import CustomDatePicker from '../components/CustomDatePicker.jsx'
 
@@ -15,6 +13,95 @@ const emptyAdult = () => ({ name: '', phone: '' })
 const emptyChild = () => ({ name: '', age: '' })
 
 const MAPS_LINK = 'https://maps.app.goo.gl/6EnhNqNissXUDHJ59'
+
+/* ─ Country codes list ─ */
+const COUNTRY_CODES = [
+  { code: '+91',  flag: '🇮🇳', name: 'India' },
+  { code: '+1',   flag: '🇺🇸', name: 'USA' },
+  { code: '+44',  flag: '🇬🇧', name: 'UK' },
+  { code: '+61',  flag: '🇦🇺', name: 'Australia' },
+  { code: '+971', flag: '🇦🇪', name: 'UAE' },
+  { code: '+966', flag: '🇸🇦', name: 'Saudi Arabia' },
+  { code: '+65',  flag: '🇸🇬', name: 'Singapore' },
+  { code: '+60',  flag: '🇲🇾', name: 'Malaysia' },
+  { code: '+49',  flag: '🇩🇪', name: 'Germany' },
+  { code: '+33',  flag: '🇫🇷', name: 'France' },
+  { code: '+39',  flag: '🇮🇹', name: 'Italy' },
+  { code: '+34',  flag: '🇪🇸', name: 'Spain' },
+  { code: '+31',  flag: '🇳🇱', name: 'Netherlands' },
+  { code: '+41',  flag: '🇨🇭', name: 'Switzerland' },
+  { code: '+46',  flag: '🇸🇪', name: 'Sweden' },
+  { code: '+47',  flag: '🇳🇴', name: 'Norway' },
+  { code: '+45',  flag: '🇩🇰', name: 'Denmark' },
+  { code: '+358', flag: '🇫🇮', name: 'Finland' },
+  { code: '+7',   flag: '🇷🇺', name: 'Russia' },
+  { code: '+81',  flag: '🇯🇵', name: 'Japan' },
+  { code: '+82',  flag: '🇰🇷', name: 'South Korea' },
+  { code: '+86',  flag: '🇨🇳', name: 'China' },
+  { code: '+92',  flag: '🇵🇰', name: 'Pakistan' },
+  { code: '+880', flag: '🇧🇩', name: 'Bangladesh' },
+  { code: '+94',  flag: '🇱🇰', name: 'Sri Lanka' },
+  { code: '+977', flag: '🇳🇵', name: 'Nepal' },
+  { code: '+27',  flag: '🇿🇦', name: 'South Africa' },
+  { code: '+20',  flag: '🇪🇬', name: 'Egypt' },
+  { code: '+234', flag: '🇳🇬', name: 'Nigeria' },
+  { code: '+254', flag: '🇰🇪', name: 'Kenya' },
+  { code: '+55',  flag: '🇧🇷', name: 'Brazil' },
+  { code: '+52',  flag: '🇲🇽', name: 'Mexico' },
+  { code: '+54',  flag: '🇦🇷', name: 'Argentina' },
+  { code: '+64',  flag: '🇳🇿', name: 'New Zealand' },
+  { code: '+63',  flag: '🇵🇭', name: 'Philippines' },
+  { code: '+66',  flag: '🇹🇭', name: 'Thailand' },
+  { code: '+84',  flag: '🇻🇳', name: 'Vietnam' },
+  { code: '+62',  flag: '🇮🇩', name: 'Indonesia' },
+]
+
+/* ─ Phone input with 2 separate boxes ─ */
+function PhoneField({ value, onChange, error, id }) {
+  // value stored as "countryCode|number" e.g. "+91|9876543210"
+  const parts   = (value || '').split('|')
+  const selCode = parts[0] || '+91'
+  const numVal  = parts[1] || ''
+
+  const setCode = c => onChange(`${c}|${numVal}`)
+  const setNum  = n => onChange(`${selCode}|${n}`)
+
+  const selected = COUNTRY_CODES.find(c => c.code === selCode) || COUNTRY_CODES[0]
+
+  return (
+    <div className={`rf-phone-wrap${error ? ' error' : ''}`}>
+      {/* Country code box */}
+      <div className="rf-phone-code-box">
+        <span className="rf-phone-flag">{selected.flag}</span>
+        <span className="rf-phone-code">{selected.code}</span>
+        <svg className="rf-phone-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
+        <select
+          className="rf-phone-select"
+          value={selCode}
+          onChange={e => setCode(e.target.value)}
+          aria-label="Country code"
+        >
+          {COUNTRY_CODES.map(c => (
+            <option key={c.code} value={c.code}>{c.flag} {c.name} ({c.code})</option>
+          ))}
+        </select>
+      </div>
+      {/* Number input box */}
+      <input
+        id={id}
+        type="tel"
+        className="rf-phone-number"
+        placeholder="9876543210"
+        value={numVal}
+        onChange={e => setNum(e.target.value.replace(/[^0-9]/g, ''))}
+        maxLength={15}
+        autoComplete="tel-national"
+      />
+    </div>
+  )
+}
 
 /* ─ BgWash ─ */
 function BgWash() {
@@ -118,13 +205,11 @@ function StepGuest({ form, setForm, errors }) {
           </div>
           <div className="rf-field">
             <label className="rf-label" htmlFor="gPhone">Phone <span className="rf-req">*</span></label>
-            <PhoneInput
+            <PhoneField
               id="gPhone"
-              international
-              defaultCountry="IN"
               value={form.phone}
-              onChange={val => setForm(p => ({ ...p, phone: val || '' }))}
-              className={`rf-phone-input-wrap${errors.phone ? ' error' : ''}`}
+              onChange={val => setForm(p => ({ ...p, phone: val }))}
+              error={errors.phone}
             />
             {errors.phone && <span className="rf-err">{errors.phone}</span>}
           </div>
@@ -315,6 +400,10 @@ function StepConfirm({ form }) {
     { key: 'self', label: form.name || 'You' },
     ...form.companions.map((c, i) => ({ key: `comp_${i}`, label: c.name || `Companion ${i+1}` }))
   ]
+  // Display phone nicely: combine code + number
+  const phoneParts = (form.phone || '').split('|')
+  const displayPhone = phoneParts[1] ? `${phoneParts[0]} ${phoneParts[1]}` : form.phone || '—'
+
   return (
     <div className="rf-section-group">
       <div className="rf-section">
@@ -322,7 +411,7 @@ function StepConfirm({ form }) {
         <div className="rf-confirm-grid">
           <div className="rf-confirm-row"><span className="rf-confirm-lbl">Name</span><span>{form.name || '—'}</span></div>
           <div className="rf-confirm-row"><span className="rf-confirm-lbl">Age</span><span>{form.age || '—'}</span></div>
-          <div className="rf-confirm-row"><span className="rf-confirm-lbl">Phone</span><span>{form.phone || '—'}</span></div>
+          <div className="rf-confirm-row"><span className="rf-confirm-lbl">Phone</span><span>{displayPhone}</span></div>
           {form.email && <div className="rf-confirm-row"><span className="rf-confirm-lbl">Email</span><span>{form.email}</span></div>}
           <div className="rf-confirm-row"><span className="rf-confirm-lbl">Companions</span><span>{form.companions.length === 0 ? 'None' : form.companions.length}</span></div>
           <div className="rf-confirm-row"><span className="rf-confirm-lbl">Arrival</span><span>{form.arrivalDate || '—'}</span></div>
@@ -360,7 +449,7 @@ export default function RSVPForm() {
     logoUrl:      null,
   })
   const [form, setForm] = useState({
-    name: '', age: '', phone: '', email: '',
+    name: '', age: '', phone: '+91|', email: '',
     companions: [],
     arrivalDate: '', departureDate: '', transport: '', travelNotes: '',
     meals: {},
@@ -394,9 +483,11 @@ export default function RSVPForm() {
   function validateStep(s) {
     const e = {}
     if (s === 0) {
-      if (!form.name.trim())  e.name  = 'Name is required.'
+      if (!form.name.trim()) e.name = 'Name is required.'
       if (!form.age || isNaN(+form.age) || +form.age < 1) e.age = 'Enter a valid age.'
-      if (!form.phone || !form.phone.trim()) e.phone = 'Phone number is required.'
+      // phone stored as "code|number" — validate number part
+      const phoneParts = (form.phone || '').split('|')
+      if (!phoneParts[1] || phoneParts[1].trim().length < 5) e.phone = 'Enter a valid phone number.'
       if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email.'
     }
     return e
@@ -414,10 +505,14 @@ export default function RSVPForm() {
   async function submit() {
     setSubmitting(true)
     try {
+      // combine phone: "+91|9876543210" → "+91 9876543210"
+      const phoneParts = (form.phone || '').split('|')
+      const fullPhone = phoneParts[1] ? `${phoneParts[0]} ${phoneParts[1]}` : form.phone
+
       const payload = {
         name:           form.name.trim(),
         age:            parseInt(form.age, 10),
-        phone:          form.phone.trim(),
+        phone:          fullPhone.trim(),
         email:          form.email.trim() || null,
         companions:     form.companions,
         arrival_date:   form.arrivalDate   || null,

@@ -291,117 +291,99 @@
 .rf-shake { animation: rf-shake 0.4s var(--smooth); }
 
 /* ══════════════════════════════════════════════
-   react-phone-number-input — compact flag style
+   Custom Phone Field — 2 separate boxes
+   Box 1: flag emoji + country code (with hidden select)
+   Box 2: number input
    ══════════════════════════════════════════════ */
 
-/* Outer wrapper = the input box */
-.rf-phone-input-wrap.PhoneInput {
-  display: flex !important;
-  align-items: center !important;
-  background: rgba(255,255,255,0.82);
-  border: 1.5px solid var(--b2);
-  border-radius: 9px;
-  overflow: hidden;
-  gap: 0 !important;
-  transition: border-color 0.22s var(--smooth), box-shadow 0.22s var(--smooth);
+.rf-phone-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
 }
-.rf-phone-input-wrap.PhoneInput:focus-within {
-  border-color: var(--gold);
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(201,151,58,0.11);
-}
-.rf-phone-input-wrap.error.PhoneInput {
+.rf-phone-wrap.error .rf-phone-code-box,
+.rf-phone-wrap.error .rf-phone-number {
   border-color: var(--rose) !important;
   background: var(--rose-p) !important;
 }
 
-/* Left side: flag + arrow */
-.rf-phone-input-wrap .PhoneInputCountry {
-  display: flex !important;
-  align-items: center !important;
-  gap: 4px !important;
-  padding: 0 8px 0 10px !important;
-  height: 44px !important;
-  border-right: 1px solid var(--b2);
-  background: transparent !important;
-  flex-shrink: 0;
+/* Box 1 — country code */
+.rf-phone-code-box {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px;
+  height: 44px;
+  background: rgba(255,255,255,0.82);
+  border: 1.5px solid var(--b2);
+  border-radius: 9px;
   cursor: pointer;
+  flex-shrink: 0;
+  min-width: 90px;
+  transition: border-color 0.22s var(--smooth), box-shadow 0.22s var(--smooth);
+  user-select: none;
+}
+.rf-phone-code-box:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,151,58,0.11);
+  background: #fff;
 }
 
-/* Flag icon — small & tidy */
-.rf-phone-input-wrap .PhoneInputCountryIcon {
-  width: 20px !important;
-  height: 14px !important;
-  min-width: 20px !important;
-  min-height: 14px !important;
-  max-width: 20px !important;
-  max-height: 14px !important;
-  border-radius: 2px !important;
-  overflow: hidden !important;
-  flex-shrink: 0 !important;
-  display: flex !important;
-  box-shadow: 0 1px 2px rgba(44,31,14,0.18) !important;
-  line-height: 1 !important;
-  font-size: 0 !important;
+.rf-phone-flag {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
 }
-.rf-phone-input-wrap .PhoneInputCountryIcon--border {
-  box-shadow: 0 1px 2px rgba(44,31,14,0.18) !important;
+.rf-phone-code {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  flex-shrink: 0;
 }
-.rf-phone-input-wrap .PhoneInputCountryIcon img {
-  width: 20px !important;
-  height: 14px !important;
-  object-fit: cover !important;
-  display: block !important;
-  border-radius: 2px !important;
-}
-/* Emoji flag fallback (some browsers render flag as emoji char) */
-.rf-phone-input-wrap .PhoneInputCountryIconImg {
-  width: 20px !important;
-  height: 14px !important;
-  object-fit: cover;
-}
-
-/* The hidden <select> behind flag area */
-.rf-phone-input-wrap .PhoneInputCountrySelect {
-  position: absolute !important;
-  top: 0 !important; left: 0 !important;
-  width: 100% !important; height: 100% !important;
-  opacity: 0 !important;
-  cursor: pointer !important;
-  z-index: 1 !important;
-  border: none !important;
-}
-
-/* Tiny dropdown chevron */
-.rf-phone-input-wrap .PhoneInputCountrySelectArrow {
-  width: 6px !important;
-  height: 6px !important;
-  border-color: var(--ink3) !important;
+.rf-phone-chevron {
+  color: var(--ink3);
   opacity: 0.6;
   flex-shrink: 0;
-  margin-top: 1px;
-}
-.rf-phone-input-wrap .PhoneInputCountry:hover .PhoneInputCountrySelectArrow {
-  opacity: 1;
-  border-color: var(--gold) !important;
+  margin-left: 1px;
 }
 
-/* Right side: phone number text input */
-.rf-phone-input-wrap .PhoneInputInput {
-  flex: 1 !important;
-  border: none !important;
-  outline: none !important;
-  background: transparent !important;
-  padding: 12px 14px !important;
-  font-family: var(--sans) !important;
-  font-size: 14px !important;
-  font-weight: 400 !important;
-  color: var(--ink) !important;
-  min-width: 0 !important;
-  box-shadow: none !important;
+/* Hidden native select stretched over entire box */
+.rf-phone-select {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  border: none;
+  font-size: 16px; /* prevent iOS zoom */
 }
-.rf-phone-input-wrap .PhoneInputInput::placeholder {
+
+/* Box 2 — number input */
+.rf-phone-number {
+  flex: 1;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.82);
+  border: 1.5px solid var(--b2);
+  border-radius: 9px;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 400;
+  outline: none;
+  transition: border-color 0.22s var(--smooth), box-shadow 0.22s var(--smooth), background 0.22s var(--smooth);
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 0;
+}
+.rf-phone-number:focus {
+  border-color: var(--gold);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(201,151,58,0.11);
+}
+.rf-phone-number::placeholder {
   color: var(--ink3);
   opacity: 0.5;
 }
@@ -570,6 +552,7 @@
   .rf-main { padding: 18px 10px 60px; }
   .rf-topnav-inner { padding: 10px 14px; }
   .rf-nav-brand { display: none; }
+  .rf-phone-code-box { min-width: 80px; }
 }
 @media (max-width: 380px) {
   .rf-nav-dot-line { width: 6px; }

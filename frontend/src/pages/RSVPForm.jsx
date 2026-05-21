@@ -211,7 +211,6 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
     return low ? items.filter(i => i.label.toLowerCase().includes(low)) : items
   }, [items, q])
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return
     const handler = e => {
@@ -224,10 +223,8 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
     return () => document.removeEventListener('mousedown', handler)
   }, [open])
 
-  // Recalculate portal position whenever open changes
   useEffect(() => {
     if (!open || !btnRef.current) return
-
     const calcPos = () => {
       if (!btnRef.current) return
       const rect = btnRef.current.getBoundingClientRect()
@@ -238,28 +235,12 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
       const maxH = Math.min(dropHeight, Math.max(spaceBelow, spaceAbove) - 12)
       const w = rect.width
       const left = Math.min(rect.left, vw - w - 8)
-
       if (spaceBelow >= 120 || spaceBelow >= spaceAbove) {
-        setDropStyle({
-          position: 'fixed',
-          top: rect.bottom + 4,
-          left: Math.max(8, left),
-          width: w,
-          maxHeight: maxH,
-          zIndex: 99999,
-        })
+        setDropStyle({ position: 'fixed', top: rect.bottom + 4, left: Math.max(8, left), width: w, maxHeight: maxH, zIndex: 99999 })
       } else {
-        setDropStyle({
-          position: 'fixed',
-          top: rect.top - maxH - 4,
-          left: Math.max(8, left),
-          width: w,
-          maxHeight: maxH,
-          zIndex: 99999,
-        })
+        setDropStyle({ position: 'fixed', top: rect.top - maxH - 4, left: Math.max(8, left), width: w, maxHeight: maxH, zIndex: 99999 })
       }
     }
-
     calcPos()
     window.addEventListener('scroll', calcPos, true)
     window.addEventListener('resize', calcPos)
@@ -272,27 +253,15 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
   const toggleOpen = () => setOpen(p => !p)
 
   const dropdownEl = open ? (
-    <div
-      className="rf-csel-drop rf-csel-drop-portal"
-      style={dropStyle}
-    >
-      <input
-        className="rf-csel-search"
-        placeholder="Search..."
-        value={q}
-        onChange={e => setQ(e.target.value)}
-        autoFocus
-      />
+    <div className="rf-csel-drop rf-csel-drop-portal" style={dropStyle}>
+      <input className="rf-csel-search" placeholder="Search..." value={q} onChange={e => setQ(e.target.value)} autoFocus />
       <div className="rf-csel-list" style={{ maxHeight: ((dropStyle.maxHeight || dropHeight) - 46) + 'px' }}>
         {filtered.length === 0
           ? <div className="rf-csel-empty">No results found</div>
           : filtered.map(item => (
-            <button
-              key={item.value}
-              type="button"
+            <button key={item.value} type="button"
               className={`rf-csel-opt${value && value.value === item.value ? ' sel' : ''}`}
-              onClick={() => { onChange(item); setOpen(false); setQ('') }}
-            >
+              onClick={() => { onChange(item); setOpen(false); setQ('') }}>
               {showFlags && item.flag && <span className="rf-csel-opt-flag">{item.flag}</span>}
               {item.label}
             </button>
@@ -305,12 +274,7 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
   return (
     <div className="rf-field rf-csel-wrap" ref={wrapRef}>
       {label && <label>{label}</label>}
-      <button
-        ref={btnRef}
-        type="button"
-        className={`rf-csel-btn${open ? ' open' : ''}`}
-        onClick={toggleOpen}
-      >
+      <button ref={btnRef} type="button" className={`rf-csel-btn${open ? ' open' : ''}`} onClick={toggleOpen}>
         <span className={`rf-csel-value-wrap${!value ? ' placeholder' : ''}`}>
           {value
             ? (<>{showFlags && value.flag && <span className="rf-csel-flag">{value.flag}</span>}<span>{value.label}</span></>)
@@ -319,14 +283,11 @@ function SearchSelect({ label, placeholder, items, value, onChange, dropHeight =
         </span>
         <span className={`rf-csel-chevron${open ? ' open' : ''}`}>&#9662;</span>
       </button>
-
       {createPortal(dropdownEl, document.body)}
     </div>
   )
 }
 
-// ─── Date cross-validation helper ───────────────────────────────────────────
-// Returns true if arrivalDate >= departureDate (both YYYY-MM-DD strings)
 function isArrivalValid(departureDate, arrivalDate) {
   if (!departureDate || !arrivalDate) return true
   return arrivalDate >= departureDate
@@ -351,7 +312,6 @@ export default function RSVPForm() {
 
   const up = (key, val) => setForm(p => ({ ...p, [key]: val }))
 
-  // When departure changes: if arrival is now before departure, clear arrival
   const handleDepartureDateChange = (val) => {
     up('departureDate', val)
     if (form.arrivalDate && val && form.arrivalDate < val) {
@@ -360,7 +320,6 @@ export default function RSVPForm() {
     }
   }
 
-  // When arrival changes: block if it's before departure
   const handleArrivalDateChange = (val) => {
     if (val && form.departureDate && val < form.departureDate) {
       toast.error('Arrival date cannot be before your departure date.')
@@ -437,8 +396,6 @@ export default function RSVPForm() {
   const progress = `${(cur / TOTAL) * 100}%`
   const isJaipur = form.city?.isRajasthan === true
   const fitVh = cur <= 3
-
-  // Inline date error message for Step 3
   const dateError = form.departureDate && form.arrivalDate && !isArrivalValid(form.departureDate, form.arrivalDate)
 
   return (
@@ -493,7 +450,6 @@ export default function RSVPForm() {
                   <p className="rf-step-desc rf-step-desc--sm">Share your basic details to confirm attendance.</p>
                 </div>
                 <div className="rf-form-card-body rf-form-card-body--fit rf-form-card-body--scroll">
-
                   <div className="rf-field-group-box">
                     <div className="rf-field-group-label">Personal Info</div>
                     <div className="rf-field rf-field--compact">
@@ -514,7 +470,6 @@ export default function RSVPForm() {
                       </div>
                     </div>
                   </div>
-
                   <div className="rf-field-group-box">
                     <div className="rf-field-group-label">Contact</div>
                     <div className="rf-field rf-field--compact">
@@ -522,13 +477,10 @@ export default function RSVPForm() {
                       <input type="email" value={form.email} onChange={e => up('email', e.target.value)} placeholder="you@example.com" />
                     </div>
                   </div>
-
                 </div>
                 <div className="rf-nav-btns">
                   <div />
-                  <button className="rf-btn-next" onClick={() => go(2)}>
-                    Continue <IconArrowRight />
-                  </button>
+                  <button className="rf-btn-next" onClick={() => go(2)}>Continue <IconArrowRight /></button>
                 </div>
               </>
             )}
@@ -545,15 +497,12 @@ export default function RSVPForm() {
                   <p className="rf-step-desc rf-step-desc--sm">Add adults and children travelling with you.</p>
                 </div>
                 <div className="rf-form-card-body rf-form-card-body--fit rf-form-card-body--scroll">
-
                   <div className="rf-guests-group rf-guests-group--compact">
                     <div className="rf-sec-header">
                       <span className="rf-sec-label">Adults</span>
                       {form.adults.length > 0 && <span className="rf-sec-count">{form.adults.length} added</span>}
                     </div>
-                    {form.adults.length === 0 && (
-                      <div className="rf-empty-hint">No adults added &mdash; click below to add</div>
-                    )}
+                    {form.adults.length === 0 && <div className="rf-empty-hint">No adults added &mdash; click below to add</div>}
                     {form.adults.map((a, idx) => (
                       <div className="rf-pax-card rf-pax-card--compact" key={`adult-${idx}`}>
                         <div className="rf-pax-title">
@@ -575,15 +524,12 @@ export default function RSVPForm() {
                     ))}
                     <button className="rf-add-btn" disabled={form.adults.length >= 10} onClick={() => up('adults', [...form.adults, emptyAdult()])}>+ Add Adult</button>
                   </div>
-
                   <div className="rf-guests-group rf-guests-group--compact">
                     <div className="rf-sec-header">
                       <span className="rf-sec-label">Children</span>
                       {form.children.length > 0 && <span className="rf-sec-count">{form.children.length} added</span>}
                     </div>
-                    {form.children.length === 0 && (
-                      <div className="rf-empty-hint">No children added &mdash; click below to add</div>
-                    )}
+                    {form.children.length === 0 && <div className="rf-empty-hint">No children added &mdash; click below to add</div>}
                     {form.children.map((c, idx) => (
                       <div className="rf-pax-card rf-pax-card--compact" key={`child-${idx}`}>
                         <div className="rf-pax-title">
@@ -605,7 +551,6 @@ export default function RSVPForm() {
                     ))}
                     <button className="rf-add-btn" disabled={form.children.length >= 10} onClick={() => up('children', [...form.children, emptyChild()])}>+ Add Child</button>
                   </div>
-
                 </div>
                 <div className="rf-nav-btns">
                   <button className="rf-btn-back" onClick={() => go(1)}>Back</button>
@@ -626,7 +571,6 @@ export default function RSVPForm() {
                   <p className="rf-step-desc rf-step-desc--sm">Where are you travelling from and landing in India?</p>
                 </div>
                 <div className="rf-form-card-body rf-form-card-body--fit rf-form-card-body--scroll">
-
                   <div className="rf-travel-grid">
                     <div className="rf-travel-card rf-travel-from">
                       <div className="rf-travel-card-label"><IconPlane /><span>Travel From</span></div>
@@ -636,6 +580,7 @@ export default function RSVPForm() {
                         value={form.departureDate}
                         onChange={handleDepartureDateChange}
                         placeholder="Select departure date..."
+                        type="departure"
                       />
                     </div>
 
@@ -658,11 +603,11 @@ export default function RSVPForm() {
                         onChange={handleArrivalDateChange}
                         placeholder="Select arrival date..."
                         minDate={form.departureDate || undefined}
+                        type="arrival"
                       />
                     </div>
                   </div>
 
-                  {/* Inline date cross-validation warning */}
                   {dateError && (
                     <div className="rf-date-error-box">
                       ⚠️ Arrival date must be on or after your departure date.
@@ -683,7 +628,6 @@ export default function RSVPForm() {
                       </div>
                     </div>
                   )}
-
                 </div>
                 <div className="rf-nav-btns">
                   <button className="rf-btn-back" onClick={() => go(2)}>Back</button>
@@ -696,10 +640,7 @@ export default function RSVPForm() {
             {cur === 4 && (
               <>
                 <div className="rf-form-card-head">
-                  <div className="rf-step-num">
-                    <span className="rf-step-icon">🌿</span>
-                    Step 4 of {TOTAL}
-                  </div>
+                  <div className="rf-step-num"><span className="rf-step-icon">🌿</span>Step 4 of {TOTAL}</div>
                   <h2 className="rf-step-title">Food &amp; Allergies</h2>
                   <p className="rf-step-desc">Please let us know about any dietary requirements or food allergies, so we can make sure you are well taken care of.</p>
                 </div>
@@ -721,10 +662,7 @@ export default function RSVPForm() {
             {cur === 5 && (
               <>
                 <div className="rf-form-card-head">
-                  <div className="rf-step-num">
-                    <span className="rf-step-icon">💬</span>
-                    Step 5 of {TOTAL}
-                  </div>
+                  <div className="rf-step-num"><span className="rf-step-icon">💬</span>Step 5 of {TOTAL}</div>
                   <h2 className="rf-step-title">Anything Else?</h2>
                   <p className="rf-step-desc">Any questions, special requests, or a message for the couple &mdash; we would love to hear it!</p>
                 </div>
@@ -745,15 +683,11 @@ export default function RSVPForm() {
             {cur === 6 && (
               <>
                 <div className="rf-form-card-head">
-                  <div className="rf-step-num">
-                    <span className="rf-step-icon">✅</span>
-                    Step 6 of {TOTAL}
-                  </div>
+                  <div className="rf-step-num"><span className="rf-step-icon">✅</span>Step 6 of {TOTAL}</div>
                   <h2 className="rf-step-title">Review &amp; Confirm</h2>
                   <p className="rf-step-desc">Please review your details before confirming your RSVP.</p>
                 </div>
                 <div className="rf-form-card-body">
-
                   <div className="rf-rev-block">
                     <div className="rf-rev-head">
                       <span className="rf-rev-head-title">👤 Guest Detail</span>
@@ -764,7 +698,6 @@ export default function RSVPForm() {
                     <div className="rf-rev-row"><span className="rf-rk">Phone</span><span className="rf-rv">{form.phone}</span></div>
                     {form.email && <div className="rf-rev-row"><span className="rf-rk">Email</span><span className="rf-rv">{form.email}</span></div>}
                   </div>
-
                   <div className="rf-rev-block">
                     <div className="rf-rev-head">
                       <span className="rf-rev-head-title">👥 Guests ({form.adults.length + form.children.length})</span>
@@ -788,7 +721,6 @@ export default function RSVPForm() {
                         </>
                     }
                   </div>
-
                   <div className="rf-rev-block">
                     <div className="rf-rev-head">
                       <span className="rf-rev-head-title">✈️ From &amp; To</span>
@@ -812,7 +744,6 @@ export default function RSVPForm() {
                       </div>
                     )}
                   </div>
-
                   <div className="rf-rev-block">
                     <div className="rf-rev-head">
                       <span className="rf-rev-head-title">🌿 Food &amp; Allergies</span>
@@ -820,7 +751,6 @@ export default function RSVPForm() {
                     </div>
                     <div className="rf-rev-row"><span className="rf-rk">Details</span><span className="rf-rv">{form.allergy || 'None'}</span></div>
                   </div>
-
                   {form.notes && (
                     <div className="rf-rev-block">
                       <div className="rf-rev-head">
@@ -830,7 +760,6 @@ export default function RSVPForm() {
                       <div className="rf-rev-row"><span className="rf-rk">Message</span><span className="rf-rv">{form.notes}</span></div>
                     </div>
                   )}
-
                 </div>
                 <div className="rf-nav-btns">
                   <button className="rf-btn-back" onClick={() => go(5)}>Back</button>
@@ -854,7 +783,6 @@ export default function RSVPForm() {
               <div className="rf-sb-ornament">❧</div>
               <div className="rf-sb-name">Margarita &amp; Nitin</div>
               <div className="rf-sb-sub">Wedding Celebration</div>
-
               <div className="rf-sb-rows">
                 <div className="rf-sb-row">
                   <span className="rf-sb-row-icon"><IconCal /></span>
@@ -871,18 +799,14 @@ export default function RSVPForm() {
                   <span>RSVP by 31 Oct 2026</span>
                 </div>
               </div>
-
               <div className="rf-sb-sep" />
-
               <div className="rf-sb-maps-btn-wrap">
                 <a href={MAPS_LINK} target="_blank" rel="noopener noreferrer" className="rf-sb-maps-btn">
                   <IconMap />
                   View on Google Maps
                 </a>
               </div>
-
               <div className="rf-sb-sep" />
-
               <div className="rf-sb-contact">
                 <span className="rf-sb-contact-icon"><IconMail /></span>
                 Questions? <a href="mailto:contact@bride-groom.com">contact@bride-groom.com</a>

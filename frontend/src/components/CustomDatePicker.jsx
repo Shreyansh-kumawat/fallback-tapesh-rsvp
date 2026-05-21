@@ -8,22 +8,22 @@ const MONTHS = [
 ]
 const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa']
 
-// SVG plane icon — inline, no emoji
-// type='departure': tilted 30deg (takeoff / nose-up)
-// type='arrival':   tilted 320deg (landing / nose-down)
+// SVG plane — departure: nose-up 30deg (takeoff), arrival: nose-down 320deg (landing)
 function PlaneIcon({ type }) {
-  const deg = type === 'departure' ? -30 : 40  // -30 = nose up 30°, 40 = nose down ~320°
+  // departure = -30deg (nose up), arrival = 140deg (nose down / landing)
+  const deg = type === 'departure' ? -30 : 140
   return (
     <svg
       className="cdp-plane-icon"
       viewBox="0 0 24 24"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ transform: `rotate(${deg}deg)` }}
+      style={{ transform: `rotate(${deg}deg)`, display: 'block' }}
       aria-hidden="true"
     >
-      {/* Simple filled plane path pointing right */}
-      <path d="M21 16v-2l-8-5V3.5A1.5 1.5 0 0 0 11.5 2 1.5 1.5 0 0 0 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>
+      <path d="M3.5 18.5L10 5l1.5 6.5L18 13 3.5 18.5z" />
+      <path d="M10 5l1.5 6.5-4 1.5L10 5z" opacity="0.4" />
+      <path d="M1 21h22" strokeWidth="1.2" stroke="currentColor" fill="none" strokeLinecap="round" />
     </svg>
   )
 }
@@ -33,11 +33,10 @@ export default function CustomDatePicker({
   value,
   onChange,
   placeholder = 'Select date...',
-  minDate,      // YYYY-MM-DD — dates before this are greyed/disabled
-  type,         // 'departure' | 'arrival' — controls which plane icon to show
+  minDate,
+  type,
 }) {
   const today = new Date()
-  const todayYMD = toYMD(today)
   const initDate = value ? new Date(value + 'T00:00:00') : null
   const [open, setOpen] = useState(false)
   const [viewYear, setViewYear] = useState(initDate ? initDate.getFullYear() : today.getFullYear())
@@ -62,7 +61,6 @@ export default function CustomDatePicker({
     }
   }, [value])
 
-  // Lock body scroll when open
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden'
@@ -72,15 +70,8 @@ export default function CustomDatePicker({
     return () => { document.body.style.overflow = '' }
   }, [open])
 
-  const handleClose = () => {
-    setOpen(false)
-    setMode('days')
-  }
-
-  const handleOpen = () => {
-    setOpen(p => !p)
-    setMode('days')
-  }
+  const handleClose = () => { setOpen(false); setMode('days') }
+  const handleOpen = () => { setOpen(p => !p); setMode('days') }
 
   const selectedDate = value ? new Date(value + 'T00:00:00') : null
 
@@ -115,12 +106,10 @@ export default function CustomDatePicker({
 
   const selectDay = day => {
     if (isDisabled(day)) return
-    const d = new Date(viewYear, viewMonth, day)
-    onChange(toYMD(d))
+    onChange(toYMD(new Date(viewYear, viewMonth, day)))
     handleClose()
   }
 
-  // today highlight removed — no isToday styling
   const isSelected = day =>
     selectedDate &&
     selectedDate.getDate() === day &&
@@ -138,13 +127,7 @@ export default function CustomDatePicker({
 
   const portal = open ? createPortal(
     <>
-      {/* Backdrop overlay */}
-      <div
-        className="cdp-overlay"
-        onClick={handleClose}
-        aria-hidden="true"
-      />
-      {/* Centered popup */}
+      <div className="cdp-overlay" onClick={handleClose} aria-hidden="true" />
       <div
         ref={popupRef}
         className="cdp-popup cdp-popup--centered"
@@ -197,10 +180,7 @@ export default function CustomDatePicker({
                     disabled={disabled}
                     aria-pressed={selected}
                   >
-                    {selected && type
-                      ? <PlaneIcon type={type} />
-                      : day
-                    }
+                    {selected && type ? <PlaneIcon type={type} /> : day}
                   </button>
                 )
               })}

@@ -1,46 +1,79 @@
-@import "tailwindcss";
+/* ── Global base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── Global Reset & Base ─────────────────────────── */
+:root {
+  --cream: #fdf8f0;
+  --cream2: #faf3e8;
+  --gold: #c9973a;
+  --gold-l: #e8c57a;
+  --gold-p: #f5e8cc;
+  --rose: #c9605a;
+  --rose-l: #e8a09a;
+  --rose-p: #faeae9;
+  --sage: #7a9e7e;
+  --sage-l: #a8c5ac;
+  --sage-p: #edf4ee;
+  --ink: #2c1f0e;
+  --ink2: #4a3520;
+  --ink3: #7a6040;
+  --b: rgba(201,151,58,0.2);
+  --b2: rgba(201,151,58,0.35);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Manrope', sans-serif;
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 html {
   scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  margin: 0;
-  padding: 0;
+  font-family: var(--sans);
+  background: var(--cream);
+  color: var(--ink);
   min-height: 100vh;
-  /* warm cream background matching HTML design */
-  background: #fdf8f0;
-  font-family: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
-  color: #2c1f0e;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ── Scrollbar ──────────────────────────────────── */
-::-webkit-scrollbar       { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: #faf3e8; }
-::-webkit-scrollbar-thumb {
-  background: #e8c57a;
-  border-radius: 99px;
-}
-::-webkit-scrollbar-thumb:hover { background: #c9973a; }
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--gold-l); border-radius: 99px; }
 
-/* ── Selection ──────────────────────────────────── */
-::selection {
-  background: rgba(201,151,58,0.22);
-  color: #2c1f0e;
-}
-
-/* ── Focus ring ─────────────────────────────────── */
-:focus-visible {
-  outline: 2px solid #c9973a;
-  outline-offset: 3px;
-  border-radius: 4px;
+/* Background radial wash — used in main.jsx via .bg-wash div */
+.bg-wash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 10% 15%, rgba(201,151,58,0.07), transparent),
+    radial-gradient(ellipse 50% 60% at 90% 85%, rgba(212,115,106,0.06), transparent),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(122,158,126,0.04), transparent);
 }
 
-/* ── Transitions for interactive elements ───────── */
-a, button, [role="button"] {
-  transition: color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+/* Floating petals */
+.petal {
+  position: fixed;
+  top: -40px;
+  pointer-events: none;
+  animation: petalFall linear infinite;
+  z-index: 0;
+  opacity: 0.4;
+}
+.petal svg { display: block; }
+
+@keyframes petalFall {
+  0%   { transform: translateY(0)     rotate(0deg)   translateX(0);    opacity: 0.4; }
+  25%  { transform: translateY(25vh)  rotate(90deg)  translateX(28px); }
+  50%  { transform: translateY(50vh)  rotate(180deg) translateX(-18px); }
+  75%  { transform: translateY(75vh)  rotate(270deg) translateX(22px); }
+  100% { transform: translateY(110vh) rotate(360deg) translateX(-8px);  opacity: 0; }
+}
+
+#root {
+  position: relative;
+  z-index: 1;
 }

@@ -1,5 +1,6 @@
-import { useFormContext, useFieldArray } from 'react-hook-form'
+import { useFormContext, useFieldArray, Controller } from 'react-hook-form'
 import { FiUserPlus, FiTrash2, FiUsers } from 'react-icons/fi'
+import PhoneField from './PhoneField'
 
 const inputClass = `
   w-full bg-transparent border border-white/10 rounded-none
@@ -23,7 +24,7 @@ export default function CompanionForm() {
 
   const addCompanion = () => {
     if (fields.length >= 10) return
-    append({ name: '', phone: '' })
+    append({ name: '', phone: '+91|' })
   }
 
   return (
@@ -106,26 +107,31 @@ export default function CompanionForm() {
               )}
             </div>
 
-            {/* Phone */}
-            <div>
-              <label className={labelClass}>Mobile <span className="text-white/20 normal-case tracking-normal">(optional)</span></label>
-              <input
-                {...register(`companions.${index}.phone`, {
-                  pattern: {
-                    value: /^[6-9]\d{9}$/,
-                    message: 'Valid 10 digit number',
-                  },
-                })}
-                placeholder="10 digit number"
-                maxLength={10}
-                className={inputClass}
-              />
-              {errors?.companions?.[index]?.phone && (
-                <p className="text-red-400 text-[0.65rem] mt-1">
-                  {errors.companions[index].phone.message}
-                </p>
+            {/* Phone — searchable country code dropdown */}
+            <Controller
+              name={`companions.${index}.phone`}
+              control={control}
+              defaultValue="+91|"
+              rules={{
+                validate: (val) => {
+                  if (!val) return true  // optional
+                  const [, num] = (val || '').split('|')
+                  if (num && num.length > 0 && num.length < 5)
+                    return 'Valid number daalen (min 5 digits)'
+                  return true
+                },
+              }}
+              render={({ field }) => (
+                <PhoneField
+                  value={field.value || '+91|'}
+                  onChange={field.onChange}
+                  error={errors?.companions?.[index]?.phone?.message}
+                  required={false}
+                  label="Mobile (optional)"
+                  placeholder="Number daalen"
+                />
               )}
-            </div>
+            />
           </div>
         </div>
       ))}

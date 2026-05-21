@@ -1,5 +1,6 @@
-import { useFormContext } from 'react-hook-form'
-import { FiUser, FiPhone, FiMail } from 'react-icons/fi'
+import { useFormContext, Controller } from 'react-hook-form'
+import { FiUser, FiMail } from 'react-icons/fi'
+import PhoneField from './PhoneField'
 
 const inputClass = `
   w-full bg-transparent border border-white/10 rounded-none
@@ -21,6 +22,7 @@ export default function GuestInfo() {
     register,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useFormContext()
 
@@ -45,28 +47,29 @@ export default function GuestInfo() {
         )}
       </div>
 
-      {/* Phone */}
-      <div>
-        <label className={labelClass}>Mobile Number *</label>
-        <div className="relative">
-          <IconWrap><FiPhone /></IconWrap>
-          <input
-            {...register('guest_phone', {
-              required: 'Mobile number zaroori hai',
-              pattern: {
-                value: /^[6-9]\d{9}$/,
-                message: '10 digit valid Indian number daalen',
-              },
-            })}
-            placeholder="10 digit mobile number"
-            maxLength={10}
-            className={`${inputClass} pl-9`}
+      {/* Phone — searchable country code dropdown */}
+      <Controller
+        name="guest_phone"
+        control={control}
+        defaultValue="+91|"
+        rules={{
+          validate: (val) => {
+            const [, num] = (val || '').split('|')
+            if (!num || num.length < 5) return 'Valid mobile number daalen'
+            return true
+          },
+        }}
+        render={({ field }) => (
+          <PhoneField
+            value={field.value || '+91|'}
+            onChange={field.onChange}
+            error={errors.guest_phone?.message}
+            required
+            label="Mobile Number"
+            placeholder="Number daalen"
           />
-        </div>
-        {errors.guest_phone && (
-          <p className="text-red-400 text-[0.7rem] mt-1">{errors.guest_phone.message}</p>
         )}
-      </div>
+      />
 
       {/* Email — optional */}
       <div>

@@ -30,6 +30,7 @@ function useSvgPlayPause(svgRef) {
   }, [play, svgRef])
 }
 
+/* ── Warm-toned SVG background — matches RSVPForm palette ── */
 function BgSvg({ svgRef }) {
   return (
     <svg
@@ -43,58 +44,89 @@ function BgSvg({ svgRef }) {
       aria-hidden="true"
       preserveAspectRatio="xMidYMid slice"
     >
+      <defs>
+        <linearGradient id="tyBgGrad1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#e8c57a" stopOpacity="0.22"/>
+          <stop offset="100%" stopColor="#f5e8cc" stopOpacity="0.10"/>
+        </linearGradient>
+        <linearGradient id="tyBgGrad2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#e8a09a" stopOpacity="0.18"/>
+          <stop offset="100%" stopColor="#faeae9" stopOpacity="0.08"/>
+        </linearGradient>
+        <linearGradient id="tyBgGrad3" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#a8c5ac" stopOpacity="0.16"/>
+          <stop offset="100%" stopColor="#edf4ee" stopOpacity="0.06"/>
+        </linearGradient>
+      </defs>
       <style>{`
-        #tBg3_tr {animation: tBg3_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes tBg3_tr__tr { 0% {transform: translate(1485.265524px,923.716668px) rotate(107.849898deg)} 100% {transform: translate(1485.265524px,923.716668px) rotate(252.130785deg)}}
-        #tBg4_tr {animation: tBg4_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes tBg4_tr__tr { 0% {transform: translate(1106.552084px,11.479169px) rotate(-104.755169deg)} 100% {transform: translate(1106.552084px,11.479169px) rotate(-194.755169deg)}}
-        #tBg5_tr {animation: tBg5_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes tBg5_tr__tr { 0% {transform: translate(77.951956px,316.57267px) rotate(179.858074deg)} 100% {transform: translate(77.951956px,316.57267px) rotate(107.849898deg)}}
-        #tBg6_to {animation: tBg6_to__to 12000ms linear infinite normal forwards}
-        @keyframes tBg6_to__to { 0% {offset-distance: 0%} 50% {offset-distance: 49.378847%} 100% {offset-distance: 100%}}
-        #tBg7_to {animation: tBg7_to__to 12000ms linear infinite normal forwards}
-        @keyframes tBg7_to__to { 0% {transform: translate(1625.977098px,922.267927px)} 33.333333% {transform: translate(1567.951321px,818.908093px)} 66.666667% {transform: translate(1427.428392px,987.533986px)} 100% {transform: translate(1625.977098px,922.267927px)}}
-        #tBg8_to {animation: tBg8_to__to 12000ms linear infinite normal forwards}
-        @keyframes tBg8_to__to { 0% {offset-distance: 0%} 50% {offset-distance: 50.699739%} 100% {offset-distance: 100%}}
-        #tBg9_tr {animation: tBg9_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes tBg9_tr__tr { 0% {transform: translate(1332.072109px,696.229369px) rotate(179.858074deg)} 100% {transform: translate(1332.072109px,696.229369px) rotate(323.892738deg)}}
-        #tBg10_tr {animation: tBg10_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes tBg10_tr__tr { 0% {transform: translate(820.871069px,284.144659px) rotate(179.858074deg)} 100% {transform: translate(820.871069px,284.144659px) rotate(-35.842484deg)}}
-        #tBg11_tr {animation: tBg11_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes tBg11_tr__tr { 0% {transform: translate(762.743219px,965.073357px) rotate(0deg)} 100% {transform: translate(762.743219px,965.073357px) rotate(360deg)}}
-        #tBg12_tr {animation: tBg12_tr__tr 12000ms linear infinite normal forwards}
-        @keyframes tBg12_tr__tr { 0% {transform: translate(1474.519794px,224.809739px) rotate(390.798193deg)} 100% {transform: translate(1474.519794px,224.809739px) rotate(30.798193deg)}}
+        #tyBg3_tr {animation: tyBg3_tr__tr 14000ms linear infinite normal forwards}
+        @keyframes tyBg3_tr__tr { 0% {transform: translate(1485.265524px,923.716668px) rotate(107.849898deg)} 100% {transform: translate(1485.265524px,923.716668px) rotate(252.130785deg)}}
+        #tyBg4_tr {animation: tyBg4_tr__tr 14000ms linear infinite normal forwards}
+        @keyframes tyBg4_tr__tr { 0% {transform: translate(1106.552084px,11.479169px) rotate(-104.755169deg)} 100% {transform: translate(1106.552084px,11.479169px) rotate(-194.755169deg)}}
+        #tyBg5_tr {animation: tyBg5_tr__tr 14000ms linear infinite normal forwards}
+        @keyframes tyBg5_tr__tr { 0% {transform: translate(77.951956px,316.57267px) rotate(179.858074deg)} 100% {transform: translate(77.951956px,316.57267px) rotate(107.849898deg)}}
+        #tyBg6_to {animation: tyBg6_to__to 14000ms linear infinite normal forwards}
+        @keyframes tyBg6_to__to { 0% {offset-distance: 0%} 50% {offset-distance: 49.378847%} 100% {offset-distance: 100%}}
+        #tyBg7_to {animation: tyBg7_to__to 14000ms linear infinite normal forwards}
+        @keyframes tyBg7_to__to { 0% {transform: translate(1625.977098px,922.267927px)} 33.333333% {transform: translate(1567.951321px,818.908093px)} 66.666667% {transform: translate(1427.428392px,987.533986px)} 100% {transform: translate(1625.977098px,922.267927px)}}
+        #tyBg8_to {animation: tyBg8_to__to 14000ms linear infinite normal forwards}
+        @keyframes tyBg8_to__to { 0% {offset-distance: 0%} 50% {offset-distance: 50.699739%} 100% {offset-distance: 100%}}
+        #tyBg9_tr {animation: tyBg9_tr__tr 14000ms linear infinite normal forwards}
+        @keyframes tyBg9_tr__tr { 0% {transform: translate(1332.072109px,696.229369px) rotate(179.858074deg)} 100% {transform: translate(1332.072109px,696.229369px) rotate(323.892738deg)}}
+        #tyBg10_tr {animation: tyBg10_tr__tr 14000ms linear infinite normal forwards}
+        @keyframes tyBg10_tr__tr { 0% {transform: translate(820.871069px,284.144659px) rotate(179.858074deg)} 100% {transform: translate(820.871069px,284.144659px) rotate(-35.842484deg)}}
+        #tyBg11_tr {animation: tyBg11_tr__tr 14000ms linear infinite normal forwards}
+        @keyframes tyBg11_tr__tr { 0% {transform: translate(762.743219px,965.073357px) rotate(0deg)} 100% {transform: translate(762.743219px,965.073357px) rotate(360deg)}}
+        #tyBg12_tr {animation: tyBg12_tr__tr 14000ms linear infinite normal forwards}
+        @keyframes tyBg12_tr__tr { 0% {transform: translate(1474.519794px,224.809739px) rotate(390.798193deg)} 100% {transform: translate(1474.519794px,224.809739px) rotate(30.798193deg)}}
       `}</style>
       <g transform="matrix(.388384 0 0 0.388384 0.446734-9.821674)">
-        <g id="tBg3_tr" transform="translate(1485.265524,923.716668) rotate(107.849898)">
-          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605" transform="scale(3.947276,3.947276) translate(0,0)" fill="#e3f1fb" strokeWidth="0"/>
+        {/* gold pentagon */}
+        <g id="tyBg3_tr" transform="translate(1485.265524,923.716668) rotate(107.849898)">
+          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605"
+            transform="scale(3.947276,3.947276) translate(0,0)" fill="url(#tyBgGrad1)" strokeWidth="0"/>
         </g>
-        <g id="tBg4_tr" transform="translate(1106.552084,11.479169) rotate(-104.755169)">
-          <rect width="274.170362" height="274.170362" rx="0" ry="0" transform="scale(2.383871,2.383871) translate(-137.085181,-137.085181)" fill="#e9f3f8" strokeWidth="0"/>
+        {/* rose rect */}
+        <g id="tyBg4_tr" transform="translate(1106.552084,11.479169) rotate(-104.755169)">
+          <rect width="274.170362" height="274.170362" rx="0" ry="0"
+            transform="scale(2.383871,2.383871) translate(-137.085181,-137.085181)" fill="url(#tyBgGrad2)" strokeWidth="0"/>
         </g>
-        <g id="tBg5_tr" transform="translate(77.951956,316.57267) rotate(179.858074)">
-          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605" transform="scale(3.253384,3.253384) translate(0,0)" fill="#def6f6" strokeWidth="0"/>
+        {/* sage pentagon */}
+        <g id="tyBg5_tr" transform="translate(77.951956,316.57267) rotate(179.858074)">
+          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605"
+            transform="scale(3.253384,3.253384) translate(0,0)" fill="url(#tyBgGrad3)" strokeWidth="0"/>
         </g>
-        <g id="tBg6_to" style={{offsetPath:"path('M182.879698,901.477028C182.879698,819.603496,543.979817,653.846134,593.96611,782.977375C643.952403,912.108616,182.879698,986.922985,182.879698,901.477028')", offsetRotate:'0deg'}}>
-          <ellipse rx="289.447928" ry="289.447928" transform="scale(0.232635,0.232635) translate(0,0)" fill="#bee1fa" strokeWidth="0"/>
+        {/* gold ellipse path */}
+        <g id="tyBg6_to" style={{offsetPath:"path('M182.879698,901.477028C182.879698,819.603496,543.979817,653.846134,593.96611,782.977375C643.952403,912.108616,182.879698,986.922985,182.879698,901.477028')", offsetRotate:'0deg'}}>
+          <ellipse rx="289.447928" ry="289.447928" transform="scale(0.232635,0.232635) translate(0,0)" fill="#e8c57a" fillOpacity="0.18" strokeWidth="0"/>
         </g>
-        <g id="tBg7_to" transform="translate(1625.977098,922.267927)">
-          <ellipse rx="289.447928" ry="289.447928" transform="scale(0.080091,0.080091) translate(0,0)" fill="#c5e4e4" strokeWidth="0"/>
+        {/* rose ellipse */}
+        <g id="tyBg7_to" transform="translate(1625.977098,922.267927)">
+          <ellipse rx="289.447928" ry="289.447928" transform="scale(0.080091,0.080091) translate(0,0)" fill="#e8a09a" fillOpacity="0.22" strokeWidth="0"/>
         </g>
-        <g id="tBg8_to" style={{offsetPath:"path('M1220.487918,290.262889C1110.853792,377.293206,903.033468,181.544933,1184.090696,96.285342C1465.147924,11.025751,1334.309017,201.397504,1220.487918,290.262888')", offsetRotate:'0deg'}}>
-          <ellipse rx="289.447928" ry="289.447928" transform="scale(0.107632,0.107632) translate(0,0)" fill="#a3d6d5" strokeWidth="0"/>
+        {/* sage ellipse path */}
+        <g id="tyBg8_to" style={{offsetPath:"path('M1220.487918,290.262889C1110.853792,377.293206,903.033468,181.544933,1184.090696,96.285342C1465.147924,11.025751,1334.309017,201.397504,1220.487918,290.262888')", offsetRotate:'0deg'}}>
+          <ellipse rx="289.447928" ry="289.447928" transform="scale(0.107632,0.107632) translate(0,0)" fill="#a8c5ac" fillOpacity="0.20" strokeWidth="0"/>
         </g>
-        <g id="tBg9_tr" transform="translate(1332.072109,696.229369) rotate(179.858074)">
-          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605" transform="scale(1.200094,1.200094) translate(0,0)" fill="#bee1fa" strokeWidth="0"/>
+        {/* gold pentagon small */}
+        <g id="tyBg9_tr" transform="translate(1332.072109,696.229369) rotate(179.858074)">
+          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605"
+            transform="scale(1.200094,1.200094) translate(0,0)" fill="#e8c57a" fillOpacity="0.14" strokeWidth="0"/>
         </g>
-        <g id="tBg10_tr" transform="translate(820.871069,284.144659) rotate(179.858074)">
-          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605" transform="scale(0.6936,0.6936) translate(0,0)" fill="#c9e7ec" strokeWidth="0"/>
+        {/* rose pentagon xs */}
+        <g id="tyBg10_tr" transform="translate(820.871069,284.144659) rotate(179.858074)">
+          <polygon points="0,-187.908605 178.711703,-58.066952 110.449907,152.021255 -110.449907,152.021255 -178.711703,-58.066952 0,-187.908605"
+            transform="scale(0.6936,0.6936) translate(0,0)" fill="#e8a09a" fillOpacity="0.12" strokeWidth="0"/>
         </g>
-        <g id="tBg11_tr" transform="translate(762.743219,965.073357) rotate(0)">
-          <path d="M0,0v277.977304L234.170207,138.840986L0,0Z" transform="scale(1.31015,1.31015) translate(-128.822737,-138.988652)" fill="#d3e9f6" strokeWidth="3.6"/>
+        {/* sage triangle */}
+        <g id="tyBg11_tr" transform="translate(762.743219,965.073357) rotate(0)">
+          <path d="M0,0v277.977304L234.170207,138.840986L0,0Z"
+            transform="scale(1.31015,1.31015) translate(-128.822737,-138.988652)" fill="#a8c5ac" fillOpacity="0.13" strokeWidth="0"/>
         </g>
-        <g id="tBg12_tr" transform="translate(1474.519794,224.809739) rotate(390.798193)">
-          <path d="M0,0v277.977304L234.170207,138.840986L0,0Z" transform="scale(0.512094,0.512094) translate(-128.822737,-138.988652)" fill="#bacedc" strokeWidth="3.6"/>
+        {/* gold triangle xs */}
+        <g id="tyBg12_tr" transform="translate(1474.519794,224.809739) rotate(390.798193)">
+          <path d="M0,0v277.977304L234.170207,138.840986L0,0Z"
+            transform="scale(0.512094,0.512094) translate(-128.822737,-138.988652)" fill="#e8c57a" fillOpacity="0.15" strokeWidth="0"/>
         </g>
       </g>
     </svg>
